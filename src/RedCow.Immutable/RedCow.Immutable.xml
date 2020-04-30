@@ -1,0 +1,41 @@
+<?xml version="1.0"?>
+<doc>
+    <assembly>
+        <name>RedCow.Immutable</name>
+    </assembly>
+    <members>
+        <member name="T:RedCow.GenerateMutable">
+            <summary>
+            Generate Mutable Attribute. Can be applied to a class to automatically generate properties that are mutable for
+            the specified immutable interface.
+            </summary>
+        </member>
+        <member name="M:RedCow.GenerateMutable.#ctor(System.Type)">
+            <summary>
+            Initializes a new instance of the <see cref="T:RedCow.GenerateMutable"/> class.
+            </summary>
+            <param name="immutableInterfaceType">
+            The type of the Immutable interface that needs to be implemented.
+            </param>
+        </member>
+        <member name="P:RedCow.GenerateMutable.ImmutableInterfaceType">
+            <summary>
+            Gets the type of the Immutable Interface.
+            </summary>
+        </member>
+        <member name="T:RedCow.Immutable`1">
+            <summary>
+            Interface for Immutable instances of <typeparamref name="T"/>.
+            </summary>
+            <typeparam name="T">The mutable type.</typeparam>
+        </member>
+        <member name="M:RedCow.Immutable`1.Produce(System.Func{`0,`0})">
+            <summary>
+            Produces the next <see cref="T:RedCow.Immutable`1"/> based on the
+            specified producer function.
+            </summary>
+            <param name="producer">The producer function.</param>
+            <returns>The next immutable state.</returns>
+        </member>
+    </members>
+</doc>

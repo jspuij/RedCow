@@ -20,7 +20,21 @@ namespace RedCow
     using System.Collections.Generic;
     using System.Text;
 
+    /// <summary>
+    /// Interface for Immutable instances of <typeparamref name="T"/>.
+    /// </summary>
+    /// <typeparam name="T">The mutable type.</typeparam>
     public interface Immutable<T>
     {
+        /// <summary>
+        /// Produces the next <see cref="Immutable{T}"/> based on the
+        /// specified producer function.
+        /// </summary>
+        /// <param name="producer">The producer function.</param>
+        /// <returns>The next immutable state.</returns>
+        public Immutable<T> Produce(Func<T, T> producer)
+        {
+            throw new NotImplementedException();
+        }
     }
 }

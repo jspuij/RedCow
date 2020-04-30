@@ -64,23 +64,26 @@ namespace RedCow.Generators
             // Our generator is applied to any class that our attribute is applied to.
             var applyToClass = (ClassDeclarationSyntax)context.ProcessingNode;
 
+            var modifiers = applyToClass.Modifiers.ToList();
+            modifiers.Insert(1, Token(SyntaxKind.AbstractKeyword));
+
             var copy = ClassDeclaration(applyToClass.Identifier)
-                .AddModifiers(applyToClass.Modifiers.ToArray())
-                .AddBaseListTypes(SyntaxFactory.SimpleBaseType(SyntaxFactory.ParseTypeName(this.interfaceType.Name)));
+                .AddModifiers(modifiers.ToArray())
+                .AddBaseListTypes(SimpleBaseType(ParseTypeName(this.interfaceType.Name)));
 
             copy = copy.AddMembers(
                 this.interfaceType.GetMembers().
                 Where(x => x is IPropertySymbol).
                 Cast<IPropertySymbol>().Select(p =>
                 {
-                    var result = PropertyDeclaration(SyntaxFactory.ParseTypeName(p.Type.Name), p.Name)
-                    .AddModifiers(SyntaxFactory.Token(SyntaxKind.PublicKeyword))
-                    .AddModifiers(SyntaxFactory.Token(SyntaxKind.VirtualKeyword))
+                    var property = PropertyDeclaration(ParseTypeName(p.Type.Name), p.Name)
+                    .AddModifiers(Token(SyntaxKind.PublicKeyword))
+                    .AddModifiers(Token(SyntaxKind.VirtualKeyword))
                     .AddAccessorListAccessors(
-                        SyntaxFactory.AccessorDeclaration(SyntaxKind.GetAccessorDeclaration).WithSemicolonToken(SyntaxFactory.Token(SyntaxKind.SemicolonToken)),
-                        SyntaxFactory.AccessorDeclaration(SyntaxKind.SetAccessorDeclaration).WithSemicolonToken(SyntaxFactory.Token(SyntaxKind.SemicolonToken)));
+                        AccessorDeclaration(SyntaxKind.GetAccessorDeclaration).WithSemicolonToken(Token(SyntaxKind.SemicolonToken)),
+                        AccessorDeclaration(SyntaxKind.SetAccessorDeclaration).WithSemicolonToken(Token(SyntaxKind.SemicolonToken)));
 
-                    return result;
+                    return property;
                 }).ToArray());
 
             return Task.FromResult(SingletonList<MemberDeclarationSyntax>(copy));
