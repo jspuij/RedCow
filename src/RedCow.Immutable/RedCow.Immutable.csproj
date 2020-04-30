@@ -1,9 +1,10 @@
 <Project Sdk="Microsoft.NET.Sdk">
-  <Sdk Name="CodeGeneration.Roslyn.Plugin.Sdk" Version="0.7.63" />
 
   <PropertyGroup>
-    <TargetFramework>netcoreapp2.1</TargetFramework>
+    <TargetFramework>netstandard2.1</TargetFramework>
+    <RootNamespace>RedCow</RootNamespace>
     <GeneratePackageOnBuild>false</GeneratePackageOnBuild>
+    <Nullable>enable</Nullable>
   </PropertyGroup>
 
   <ItemGroup>
@@ -15,6 +16,7 @@
   </ItemGroup>
 
   <ItemGroup>
+    <PackageReference Include="CodeGeneration.Roslyn.Attributes" Version="0.7.63" />
     <PackageReference Include="StyleCop.Analyzers" Version="1.1.118">
       <PrivateAssets>all</PrivateAssets>
       <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>

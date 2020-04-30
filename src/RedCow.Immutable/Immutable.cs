@@ -1,4 +1,4 @@
-﻿// <copyright file="TestPerson.cs" company="Jan-Willem Spuij">
+﻿// <copyright file="Immutable.cs" company="Jan-Willem Spuij">
 // Copyright 2020 Jan-Willem Spuij
 //
 // Permission is hereby granted, free of charge, to any person obtaining a copy of this software and associated documentation
@@ -14,17 +14,13 @@
 // ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 // </copyright>
 
-namespace RedCow.Test
+namespace RedCow
 {
     using System;
     using System.Collections.Generic;
     using System.Text;
 
-    /// <summary>
-    /// The mutable type.
-    /// </summary>
-    [GenerateMutable(typeof(ITestPerson))]
-    public partial class TestPerson
+    public interface Immutable<T>
     {
     }
 }

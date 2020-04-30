@@ -1,4 +1,4 @@
-﻿// <copyright file="TestPerson.cs" company="Jan-Willem Spuij">
+﻿// <copyright file="GenerateMutable.cs" company="Jan-Willem Spuij">
 // Copyright 2020 Jan-Willem Spuij
 //
 // Permission is hereby granted, free of charge, to any person obtaining a copy of this software and associated documentation
@@ -14,17 +14,35 @@
 // ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 // </copyright>
 
-namespace RedCow.Test
+namespace RedCow
 {
     using System;
-    using System.Collections.Generic;
-    using System.Text;
+    using System.Diagnostics;
+    using CodeGeneration.Roslyn;
 
     /// <summary>
-    /// The mutable type.
+    /// Generate Mutable Attribute. Can be applied to a class to automatically generate properties that are mutable for
+    /// the specified immutable interface.
     /// </summary>
-    [GenerateMutable(typeof(ITestPerson))]
-    public partial class TestPerson
+    [AttributeUsage(AttributeTargets.Class, Inherited = false, AllowMultiple = true)]
+    [CodeGenerationAttribute("RedCow.Generators.MutableClassGenerator, RedCow.Generators")]
+    [Conditional("CodeGeneration")]
+    public class GenerateMutable : Attribute
     {
+        /// <summary>
+        /// Initializes a new instance of the <see cref="GenerateMutable"/> class.
+        /// </summary>
+        /// <param name="immutableInterfaceType">
+        /// The type of the Immutable interface that needs to be implemented.
+        /// </param>
+        public GenerateMutable(Type immutableInterfaceType)
+        {
+            this.ImmutableInterfaceType = immutableInterfaceType;
+        }
+
+        /// <summary>
+        /// Gets the type of the Immutable Interface.
+        /// </summary>
+        public Type ImmutableInterfaceType { get; }
     }
 }
