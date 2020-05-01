@@ -23,6 +23,21 @@
             Gets the type of the Immutable Interface.
             </summary>
         </member>
+        <member name="T:RedCow.ICloneProvider">
+            <summary>
+            Interface for Clone Providers. Clone Providers can clone the public properties of an object
+            to another object.
+            </summary>
+        </member>
+        <member name="M:RedCow.ICloneProvider.Clone``2(``0,``1)">
+            <summary>
+            Clones the public properties of an object to another object.
+            </summary>
+            <typeparam name="TSource">The source type.</typeparam>
+            <typeparam name="TDestination">The destination type.</typeparam>
+            <param name="source">The source.</param>
+            <param name="destination">The destination.</param>
+        </member>
         <member name="T:RedCow.IDraft`1">
             <summary>
             An interface of a Draft object of <typeparamref name="T"/>.
@@ -62,6 +77,20 @@
             <param name="producer">The producer function that operates on objects of type T with a single argument.</param>
             <typeparam name="TArg">The type of the argument.</typeparam>
             <returns>A producer delegate.</returns>
+        </member>
+        <member name="T:RedCow.ReflectionCloneProvider">
+            <summary>
+            Provides cloning using reflection.
+            </summary>
+        </member>
+        <member name="M:RedCow.ReflectionCloneProvider.Clone``2(``0,``1)">
+            <summary>
+            Clones the public properties of an object to another object.
+            </summary>
+            <typeparam name="TSource">The source type.</typeparam>
+            <typeparam name="TDestination">The destination type.</typeparam>
+            <param name="source">The source.</param>
+            <param name="destination">The destination.</param>
         </member>
     </members>
 </doc>
