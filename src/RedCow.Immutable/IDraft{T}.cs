@@ -1,4 +1,4 @@
-﻿// <copyright file="Immutable.cs" company="Jan-Willem Spuij">
+﻿// <copyright file="IDraft{T}.cs" company="Jan-Willem Spuij">
 // Copyright 2020 Jan-Willem Spuij
 //
 // Permission is hereby granted, free of charge, to any person obtaining a copy of this software and associated documentation
@@ -21,20 +21,14 @@ namespace RedCow
     using System.Text;
 
     /// <summary>
-    /// Interface for Immutable instances of <typeparamref name="T"/>.
+    /// An interface of a Draft object of <typeparamref name="T"/>.
     /// </summary>
-    /// <typeparam name="T">The mutable type.</typeparam>
-    public interface Immutable<T>
+    /// <typeparam name="T">The draft Type.</typeparam>
+    public interface IDraft<T>
     {
         /// <summary>
-        /// Produces the next <see cref="Immutable{T}"/> based on the
-        /// specified producer function.
+        /// Gets the original immutable object.
         /// </summary>
-        /// <param name="producer">The producer function.</param>
-        /// <returns>The next immutable state.</returns>
-        public Immutable<T> Produce(Func<T, T> producer)
-        {
-            throw new NotImplementedException();
-        }
+        public Immutable<T> Original { get; }
     }
 }

@@ -44,5 +44,25 @@
             Gets or sets a value indicating whether IsAdult is true.
             </summary>
         </member>
+        <member name="T:RedCow.Test.ImmutableTestPerson">
+             <summary>
+            Immutable Implementation of <see cref="T:RedCow.Test.TestPerson"/>.
+             </summary>
+        </member>
+        <member name="P:RedCow.Test.ImmutableTestPerson.FirstName">
+            <summary>
+            Gets or sets FirstName.
+            </summary>
+        </member>
+        <member name="P:RedCow.Test.ImmutableTestPerson.LastName">
+            <summary>
+            Gets or sets LastName.
+            </summary>
+        </member>
+        <member name="P:RedCow.Test.ImmutableTestPerson.IsAdult">
+            <summary>
+            Gets or sets a value indicating whether IsAdult is true.
+            </summary>
+        </member>
     </members>
 </doc>

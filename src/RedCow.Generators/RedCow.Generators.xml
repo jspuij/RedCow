@@ -36,14 +36,29 @@
             <param name="p">The property to generate the Getter and Setter for.</param>
             <returns>An <see cref="T:Microsoft.CodeAnalysis.CSharp.Syntax.PropertyDeclarationSyntax"/>.</returns>
         </member>
-        <member name="M:RedCow.Generators.MutableClassGenerator.GenerateXmlDocForProperty(Microsoft.CodeAnalysis.IPropertySymbol)">
+        <member name="M:RedCow.Generators.MutableClassGenerator.CreateImmutableProperty(Microsoft.CodeAnalysis.IPropertySymbol)">
+            <summary>
+            Creates a property with getter and setter that throws an <see cref="T:System.InvalidOperationException"/>,
+            based on the readonly interface property.
+            </summary>
+            <param name="p">The property to generate the Getter and Setter for.</param>
+            <returns>An <see cref="T:Microsoft.CodeAnalysis.CSharp.Syntax.PropertyDeclarationSyntax"/>.</returns>
+        </member>
+        <member name="M:RedCow.Generators.MutableClassGenerator.GenerateXmlDoc(System.String)">
             <summary>
             Generate the XML Documentation for the Property.
             </summary>
-            <param name="p">The property info.</param>
+            <param name="documentationText">The documentation text.</param>
             <returns>The XML Documentation as <see cref="T:Microsoft.CodeAnalysis.SyntaxTriviaList"/>.</returns>
         </member>
         <member name="M:RedCow.Generators.MutableClassGenerator.GenerateAbstractPartial(Microsoft.CodeAnalysis.CSharp.Syntax.ClassDeclarationSyntax)">
+            <summary>
+            Generates the abstract partial part of the class.
+            </summary>
+            <param name="sourceClassDeclaration">The source class declaration.</param>
+            <returns>A partial class declaration.</returns>
+        </member>
+        <member name="M:RedCow.Generators.MutableClassGenerator.GenerateImmutable(Microsoft.CodeAnalysis.CSharp.Syntax.ClassDeclarationSyntax)">
             <summary>
             Generates the abstract partial part of the class.
             </summary>

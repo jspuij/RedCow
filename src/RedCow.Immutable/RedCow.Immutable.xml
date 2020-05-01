@@ -23,6 +23,17 @@
             Gets the type of the Immutable Interface.
             </summary>
         </member>
+        <member name="T:RedCow.IDraft`1">
+            <summary>
+            An interface of a Draft object of <typeparamref name="T"/>.
+            </summary>
+            <typeparam name="T">The draft Type.</typeparam>
+        </member>
+        <member name="P:RedCow.IDraft`1.Original">
+            <summary>
+            Gets the original immutable object.
+            </summary>
+        </member>
         <member name="T:RedCow.Immutable`1">
             <summary>
             Interface for Immutable instances of <typeparamref name="T"/>.
@@ -36,6 +47,21 @@
             </summary>
             <param name="producer">The producer function.</param>
             <returns>The next immutable state.</returns>
+        </member>
+        <member name="M:RedCow.Immutable`1.Producer(System.Func{`0,`0})">
+            <summary>
+            Creates a Producer delegate that can be used to curry on an Immutable State.
+            </summary>
+            <param name="producer">The producer function that operates on objects of type T.</param>
+            <returns>A producer delegate.</returns>
+        </member>
+        <member name="M:RedCow.Immutable`1.Producer``1(System.Func{`0,``0,`0})">
+            <summary>
+            Creates a Producer delegate that can be used to curry on an Immutable State.
+            </summary>
+            <param name="producer">The producer function that operates on objects of type T with a single argument.</param>
+            <typeparam name="TArg">The type of the argument.</typeparam>
+            <returns>A producer delegate.</returns>
         </member>
     </members>
 </doc>

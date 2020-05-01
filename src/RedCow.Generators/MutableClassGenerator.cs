@@ -48,7 +48,7 @@ namespace RedCow.Generators
             // System.Diagnostics.Debugger.Launch();
             // while (!System.Diagnostics.Debugger.IsAttached)
             // {
-            //     Thread.Sleep(500); // eww, eww, eww
+            //    Thread.Sleep(500); // eww, eww, eww
             // }
         }
 
@@ -64,9 +64,11 @@ namespace RedCow.Generators
             // Our generator is applied to any class that our attribute is applied to.
             var applyToClass = (ClassDeclarationSyntax)context.ProcessingNode;
 
-            ClassDeclarationSyntax copy = this.GenerateAbstractPartial(applyToClass);
+            ClassDeclarationSyntax partial = this.GenerateAbstractPartial(applyToClass);
 
-            return Task.FromResult(SingletonList<MemberDeclarationSyntax>(copy));
+            ClassDeclarationSyntax immutable = this.GenerateImmutable(applyToClass);
+
+            return Task.FromResult(List<MemberDeclarationSyntax>(new[] { partial, immutable }));
         }
 
         /// <summary>
@@ -76,13 +78,15 @@ namespace RedCow.Generators
         /// <returns>An <see cref="PropertyDeclarationSyntax"/>.</returns>
         private static PropertyDeclarationSyntax CreateProperty(IPropertySymbol p)
         {
+            string documentationText = p.Type.SpecialType == SpecialType.System_Boolean ? $" Gets or sets a value indicating whether {p.Name} is true." : $" Gets or sets {p.Name}.";
+
             return PropertyDeclaration(ParseTypeName(p.Type.Name), p.Name)
                     .WithModifiers(
                         TokenList(
                             new[]
                             {
                 Token(
-                    GenerateXmlDocForProperty(p),
+                    GenerateXmlDoc(documentationText),
                     SyntaxKind.PublicKeyword,
                     TriviaList()),
                 Token(SyntaxKind.VirtualKeyword),
@@ -105,13 +109,62 @@ namespace RedCow.Generators
         }
 
         /// <summary>
-        /// Generate the XML Documentation for the Property.
+        /// Creates a property with getter and setter that throws an <see cref="InvalidOperationException"/>,
+        /// based on the readonly interface property.
         /// </summary>
-        /// <param name="p">The property info.</param>
-        /// <returns>The XML Documentation as <see cref="SyntaxTriviaList"/>.</returns>
-        private static SyntaxTriviaList GenerateXmlDocForProperty(IPropertySymbol p)
+        /// <param name="p">The property to generate the Getter and Setter for.</param>
+        /// <returns>An <see cref="PropertyDeclarationSyntax"/>.</returns>
+        private static PropertyDeclarationSyntax CreateImmutableProperty(IPropertySymbol p)
         {
             string documentationText = p.Type.SpecialType == SpecialType.System_Boolean ? $" Gets or sets a value indicating whether {p.Name} is true." : $" Gets or sets {p.Name}.";
+
+            return PropertyDeclaration(ParseTypeName(p.Type.Name), p.Name)
+                    .WithModifiers(
+                        TokenList(
+                            new[]
+                            {
+                Token(
+                    GenerateXmlDoc(documentationText),
+                    SyntaxKind.PublicKeyword,
+                    TriviaList()),
+                Token(SyntaxKind.OverrideKeyword),
+                            }))
+        .WithAccessorList(
+            AccessorList(
+                List(
+                    new AccessorDeclarationSyntax[]
+                    {
+                        AccessorDeclaration(
+                            SyntaxKind.GetAccessorDeclaration)
+                        .WithExpressionBody(
+                            ArrowExpressionClause(
+                                MemberAccessExpression(
+                                    SyntaxKind.SimpleMemberAccessExpression,
+                                    BaseExpression(),
+                                    IdentifierName(p.Name))))
+                        .WithSemicolonToken(
+                            Token(SyntaxKind.SemicolonToken)),
+                        AccessorDeclaration(
+                            SyntaxKind.SetAccessorDeclaration)
+                        .WithExpressionBody(
+                            ArrowExpressionClause(
+                                ThrowExpression(
+                                    ObjectCreationExpression(
+                                        IdentifierName("InvalidOperationException"))
+                                    .WithArgumentList(
+                                        ArgumentList()))))
+                        .WithSemicolonToken(
+                            Token(SyntaxKind.SemicolonToken)),
+                    }))).NormalizeWhitespace();
+        }
+
+        /// <summary>
+        /// Generate the XML Documentation for the Property.
+        /// </summary>
+        /// <param name="documentationText">The documentation text.</param>
+        /// <returns>The XML Documentation as <see cref="SyntaxTriviaList"/>.</returns>
+        private static SyntaxTriviaList GenerateXmlDoc(string documentationText)
+        {
             return TriviaList(
                     Trivia(
                         DocumentationCommentTrivia(
@@ -187,18 +240,44 @@ namespace RedCow.Generators
             var modifiers = sourceClassDeclaration.Modifiers.ToList();
             modifiers.Insert(1, Token(SyntaxKind.AbstractKeyword));
 
-            var copy = ClassDeclaration(sourceClassDeclaration.Identifier)
-                            .AddModifiers(modifiers.ToArray())
-                            .AddBaseListTypes(SimpleBaseType(ParseTypeName(this.interfaceType.Name)));
+            var result = ClassDeclaration(sourceClassDeclaration.Identifier)
+                            .AddModifiers(modifiers.ToArray());
 
-            copy = copy.AddMembers(
+            result = result.AddMembers(
                 this.interfaceType.GetMembers().
                 Where(x => x is IPropertySymbol).
                 Cast<IPropertySymbol>().Select(p =>
                 {
                     return CreateProperty(p);
                 }).ToArray());
-            return copy;
+            return result;
+        }
+
+        /// <summary>
+        /// Generates the abstract partial part of the class.
+        /// </summary>
+        /// <param name="sourceClassDeclaration">The source class declaration.</param>
+        /// <returns>A partial class declaration.</returns>
+        private ClassDeclarationSyntax GenerateImmutable(ClassDeclarationSyntax sourceClassDeclaration)
+        {
+            var modifiers = sourceClassDeclaration.Modifiers.ToList();
+            modifiers[0] = Token(
+                GenerateXmlDoc($"Immutable Implementation of <see cref=\"{sourceClassDeclaration.Identifier}\"/>."),
+                modifiers[0].Kind(),
+                TriviaList());
+
+            var result = ClassDeclaration($"Immutable{sourceClassDeclaration.Identifier}")
+                            .AddModifiers(modifiers.ToArray())
+                            .AddBaseListTypes(SimpleBaseType(ParseTypeName(sourceClassDeclaration.Identifier.Text)), SimpleBaseType(ParseTypeName(this.interfaceType.Name)));
+
+            result = result.AddMembers(
+                this.interfaceType.GetMembers().
+                Where(x => x is IPropertySymbol).
+                Cast<IPropertySymbol>().Select(p =>
+                {
+                    return CreateImmutableProperty(p);
+                }).ToArray());
+            return result;
         }
     }
 }
