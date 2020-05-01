@@ -43,5 +43,12 @@
             <param name="p">The property info.</param>
             <returns>The XML Documentation as <see cref="T:Microsoft.CodeAnalysis.SyntaxTriviaList"/>.</returns>
         </member>
+        <member name="M:RedCow.Generators.MutableClassGenerator.GenerateAbstractPartial(Microsoft.CodeAnalysis.CSharp.Syntax.ClassDeclarationSyntax)">
+            <summary>
+            Generates the abstract partial part of the class.
+            </summary>
+            <param name="sourceClassDeclaration">The source class declaration.</param>
+            <returns>A partial class declaration.</returns>
+        </member>
     </members>
 </doc>

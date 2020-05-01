@@ -64,20 +64,7 @@ namespace RedCow.Generators
             // Our generator is applied to any class that our attribute is applied to.
             var applyToClass = (ClassDeclarationSyntax)context.ProcessingNode;
 
-            var modifiers = applyToClass.Modifiers.ToList();
-            modifiers.Insert(1, Token(SyntaxKind.AbstractKeyword));
-
-            var copy = ClassDeclaration(applyToClass.Identifier)
-                .AddModifiers(modifiers.ToArray())
-                .AddBaseListTypes(SimpleBaseType(ParseTypeName(this.interfaceType.Name)));
-
-            copy = copy.AddMembers(
-                this.interfaceType.GetMembers().
-                Where(x => x is IPropertySymbol).
-                Cast<IPropertySymbol>().Select(p =>
-                {
-                    return CreateProperty(p);
-                }).ToArray());
+            ClassDeclarationSyntax copy = this.GenerateAbstractPartial(applyToClass);
 
             return Task.FromResult(SingletonList<MemberDeclarationSyntax>(copy));
         }
@@ -188,6 +175,30 @@ namespace RedCow.Generators
                                 Environment.NewLine,
                                 TriviaList()))),
                             }))));
+        }
+
+        /// <summary>
+        /// Generates the abstract partial part of the class.
+        /// </summary>
+        /// <param name="sourceClassDeclaration">The source class declaration.</param>
+        /// <returns>A partial class declaration.</returns>
+        private ClassDeclarationSyntax GenerateAbstractPartial(ClassDeclarationSyntax sourceClassDeclaration)
+        {
+            var modifiers = sourceClassDeclaration.Modifiers.ToList();
+            modifiers.Insert(1, Token(SyntaxKind.AbstractKeyword));
+
+            var copy = ClassDeclaration(sourceClassDeclaration.Identifier)
+                            .AddModifiers(modifiers.ToArray())
+                            .AddBaseListTypes(SimpleBaseType(ParseTypeName(this.interfaceType.Name)));
+
+            copy = copy.AddMembers(
+                this.interfaceType.GetMembers().
+                Where(x => x is IPropertySymbol).
+                Cast<IPropertySymbol>().Select(p =>
+                {
+                    return CreateProperty(p);
+                }).ToArray());
+            return copy;
         }
     }
 }
