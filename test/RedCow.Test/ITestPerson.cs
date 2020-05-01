@@ -34,5 +34,10 @@ namespace RedCow.Test
         /// Gets the last name.
         /// </summary>
         public string LastName { get; }
+
+        /// <summary>
+        /// Gets a value indicating whether isAdult is true.
+        /// </summary>
+        public bool IsAdult { get;  }
     }
 }

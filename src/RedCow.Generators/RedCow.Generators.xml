@@ -1,0 +1,47 @@
+<?xml version="1.0"?>
+<doc>
+    <assembly>
+        <name>RedCow.Generators</name>
+    </assembly>
+    <members>
+        <member name="T:RedCow.Generators.MutableClassGenerator">
+            <summary>
+            Generates a Mutable class.
+            </summary>
+        </member>
+        <member name="F:RedCow.Generators.MutableClassGenerator.interfaceType">
+            <summary>
+            The type of the Immutable Interface.
+            </summary>
+        </member>
+        <member name="M:RedCow.Generators.MutableClassGenerator.#ctor(Microsoft.CodeAnalysis.AttributeData)">
+            <summary>
+            Initializes a new instance of the <see cref="T:RedCow.Generators.MutableClassGenerator"/> class.
+            </summary>
+            <param name="attributeData">The attribute data to use.</param>
+        </member>
+        <member name="M:RedCow.Generators.MutableClassGenerator.GenerateAsync(CodeGeneration.Roslyn.TransformationContext,System.IProgress{Microsoft.CodeAnalysis.Diagnostic},System.Threading.CancellationToken)">
+            <summary>
+            Generates the code.
+            </summary>
+            <param name="context">The transformation context.</param>
+            <param name="progress">Progress information.</param>
+            <param name="cancellationToken">The cancellation token.</param>
+            <returns>A <see cref="T:System.Threading.Tasks.Task"/> representing the asynchronous operation.</returns>
+        </member>
+        <member name="M:RedCow.Generators.MutableClassGenerator.CreateProperty(Microsoft.CodeAnalysis.IPropertySymbol)">
+            <summary>
+            Creates a property with getter and setter based on the readonly interface property.
+            </summary>
+            <param name="p">The property to generate the Getter and Setter for.</param>
+            <returns>An <see cref="T:Microsoft.CodeAnalysis.CSharp.Syntax.PropertyDeclarationSyntax"/>.</returns>
+        </member>
+        <member name="M:RedCow.Generators.MutableClassGenerator.GenerateXmlDocForProperty(Microsoft.CodeAnalysis.IPropertySymbol)">
+            <summary>
+            Generate the XML Documentation for the Property.
+            </summary>
+            <param name="p">The property info.</param>
+            <returns>The XML Documentation as <see cref="T:Microsoft.CodeAnalysis.SyntaxTriviaList"/>.</returns>
+        </member>
+    </members>
+</doc>

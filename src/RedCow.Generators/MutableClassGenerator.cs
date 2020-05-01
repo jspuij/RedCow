@@ -76,17 +76,118 @@ namespace RedCow.Generators
                 Where(x => x is IPropertySymbol).
                 Cast<IPropertySymbol>().Select(p =>
                 {
-                    var property = PropertyDeclaration(ParseTypeName(p.Type.Name), p.Name)
-                    .AddModifiers(Token(SyntaxKind.PublicKeyword))
-                    .AddModifiers(Token(SyntaxKind.VirtualKeyword))
-                    .AddAccessorListAccessors(
-                        AccessorDeclaration(SyntaxKind.GetAccessorDeclaration).WithSemicolonToken(Token(SyntaxKind.SemicolonToken)),
-                        AccessorDeclaration(SyntaxKind.SetAccessorDeclaration).WithSemicolonToken(Token(SyntaxKind.SemicolonToken)));
-
-                    return property;
+                    return CreateProperty(p);
                 }).ToArray());
 
             return Task.FromResult(SingletonList<MemberDeclarationSyntax>(copy));
+        }
+
+        /// <summary>
+        /// Creates a property with getter and setter based on the readonly interface property.
+        /// </summary>
+        /// <param name="p">The property to generate the Getter and Setter for.</param>
+        /// <returns>An <see cref="PropertyDeclarationSyntax"/>.</returns>
+        private static PropertyDeclarationSyntax CreateProperty(IPropertySymbol p)
+        {
+            return PropertyDeclaration(ParseTypeName(p.Type.Name), p.Name)
+                    .WithModifiers(
+                        TokenList(
+                            new[]
+                            {
+                Token(
+                    GenerateXmlDocForProperty(p),
+                    SyntaxKind.PublicKeyword,
+                    TriviaList()),
+                Token(SyntaxKind.VirtualKeyword),
+                            }))
+                .WithAccessorList(
+                        AccessorList(
+                            List(
+                                new AccessorDeclarationSyntax[]
+                                {
+                    AccessorDeclaration(
+                        SyntaxKind.GetAccessorDeclaration)
+                    .WithSemicolonToken(
+                        Token(SyntaxKind.SemicolonToken)),
+                    AccessorDeclaration(
+                        SyntaxKind.SetAccessorDeclaration)
+                    .WithSemicolonToken(
+                        Token(SyntaxKind.SemicolonToken)),
+                                })))
+                .NormalizeWhitespace();
+        }
+
+        /// <summary>
+        /// Generate the XML Documentation for the Property.
+        /// </summary>
+        /// <param name="p">The property info.</param>
+        /// <returns>The XML Documentation as <see cref="SyntaxTriviaList"/>.</returns>
+        private static SyntaxTriviaList GenerateXmlDocForProperty(IPropertySymbol p)
+        {
+            string documentationText = p.Type.SpecialType == SpecialType.System_Boolean ? $" Gets or sets a value indicating whether {p.Name} is true." : $" Gets or sets {p.Name}.";
+            return TriviaList(
+                    Trivia(
+                        DocumentationCommentTrivia(
+                        SyntaxKind.SingleLineDocumentationCommentTrivia,
+                        List(
+                            new XmlNodeSyntax[]
+                            {
+                    XmlText()
+                    .WithTextTokens(
+                        TokenList(
+                            XmlTextLiteral(
+                                TriviaList(
+                                    DocumentationCommentExterior("///")),
+                                " ",
+                                " ",
+                                TriviaList()))),
+                    XmlExampleElement(
+                        SingletonList(
+                            (XmlNodeSyntax)XmlText()
+                            .WithTextTokens(
+                                TokenList(
+                                    new[]
+                                    {
+                                        XmlTextNewLine(
+                                            TriviaList(),
+                                            Environment.NewLine,
+                                            Environment.NewLine,
+                                            TriviaList()),
+                                        XmlTextLiteral(
+                                            TriviaList(
+                                                DocumentationCommentExterior("///")),
+                                            documentationText,
+                                            documentationText,
+                                            TriviaList()),
+                                        XmlTextNewLine(
+                                            TriviaList(),
+                                            Environment.NewLine,
+                                            Environment.NewLine,
+                                            TriviaList()),
+                                        XmlTextLiteral(
+                                            TriviaList(
+                                                DocumentationCommentExterior("///")),
+                                            " ",
+                                            " ",
+                                            TriviaList()),
+                                    }))))
+                    .WithStartTag(
+                        XmlElementStartTag(
+                            XmlName(
+                                Identifier("summary"))))
+                    .WithEndTag(
+                        XmlElementEndTag(
+                            XmlName(
+                                Identifier("summary")))),
+                    XmlText()
+                    .WithTextTokens(
+                        TokenList(
+                            XmlTextNewLine(
+                                TriviaList(),
+                                Environment.NewLine,
+                                Environment.NewLine,
+                                TriviaList()))),
+                            }))));
         }
     }
 }

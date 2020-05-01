@@ -1,0 +1,48 @@
+<?xml version="1.0"?>
+<doc>
+    <assembly>
+        <name>RedCow.Test</name>
+    </assembly>
+    <members>
+        <member name="T:RedCow.Test.ITestPerson">
+            <summary>
+            Interface for an Immutable Test Person.
+            </summary>
+        </member>
+        <member name="P:RedCow.Test.ITestPerson.FirstName">
+            <summary>
+            Gets the first name.
+            </summary>
+        </member>
+        <member name="P:RedCow.Test.ITestPerson.LastName">
+            <summary>
+            Gets the last name.
+            </summary>
+        </member>
+        <member name="P:RedCow.Test.ITestPerson.IsAdult">
+            <summary>
+            Gets a value indicating whether isAdult is true.
+            </summary>
+        </member>
+        <member name="T:RedCow.Test.TestPerson">
+            <summary>
+            The mutable type.
+            </summary>
+        </member>
+        <member name="P:RedCow.Test.TestPerson.FirstName">
+            <summary>
+            Gets or sets FirstName.
+            </summary>
+        </member>
+        <member name="P:RedCow.Test.TestPerson.LastName">
+            <summary>
+            Gets or sets LastName.
+            </summary>
+        </member>
+        <member name="P:RedCow.Test.TestPerson.IsAdult">
+            <summary>
+            Gets or sets a value indicating whether IsAdult is true.
+            </summary>
+        </member>
+    </members>
+</doc>
