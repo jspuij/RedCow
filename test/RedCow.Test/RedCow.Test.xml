@@ -39,7 +39,7 @@
             Produces the next <see cref="T:RedCow.Immutable`1"/> based on the
             specified producer function.
             </summary>
-            <param name="producer">The producer function.</param>
+            <param name="producer">The producer action.</param>
             <param name="cloneProvider">The clone provider to use.</param>
             <returns>The next immutable state.</returns>
         </member>
@@ -49,42 +49,61 @@
             specified producer function.
             </summary>
             <param name="initialState">The initial State.</param>
+            <param name="producer">The producer action.</param>
+            <param name="cloneProvider">The clone provider to use.</param>
+            <returns>The next immutable state.</returns>
+        </member>
+        <member name="M:RedCow.Test.ITestPerson.Produce(System.Func{RedCow.Test.TestPerson},RedCow.ICloneProvider)">
+            <summary>
+            Produces the next <see cref="T:RedCow.Immutable`1"/> based on the
+            specified producer function.
+            </summary>
             <param name="producer">The producer function.</param>
             <param name="cloneProvider">The clone provider to use.</param>
+            <returns>The next immutable state.</returns>
+        </member>
+        <member name="M:RedCow.Test.ITestPerson.Produce(RedCow.Test.TestPerson,System.Func{RedCow.Test.TestPerson},RedCow.ICloneProvider)">
+            <summary>
+            Produces the next <see cref = "T:RedCow.Immutable`1"/> based on the
+            specified producer function.
+            </summary>
+            <param name = "initialState">The initial State.</param>
+            <param name = "producer">The producer function.</param>
+            <param name = "cloneProvider">The clone provider to use.</param>
             <returns>The next immutable state.</returns>
         </member>
         <member name="M:RedCow.Test.ITestPerson.Producer(System.Action{RedCow.Test.TestPerson},RedCow.ICloneProvider)">
             <summary>
             Creates a Producer delegate that can be used to curry on an Immutable State.
             </summary>
-            <param name="producer">The producer function that operates on objects of type T.</param>
-            <param name="cloneProvider">The clone provider to use.</param>
+            <param name = "producer">The producer action that operates on an object of type T.</param>
+            <param name = "cloneProvider">The clone provider to use.</param>
             <returns>A producer delegate.</returns>
         </member>
         <member name="M:RedCow.Test.ITestPerson.Producer(System.Func{RedCow.Test.TestPerson},RedCow.ICloneProvider)">
             <summary>
             Creates a Producer delegate that can be used to curry on an Immutable State.
             </summary>
-            <param name="producer">The producer function that operates on objects of type T.</param>
-            <param name="cloneProvider">The clone provider to use.</param>
+            <param name = "producer">The producer function that returns an object of type T.</param>
+            <param name = "cloneProvider">The clone provider to use.</param>
             <returns>A producer delegate.</returns>
         </member>
         <member name="M:RedCow.Test.ITestPerson.Producer``1(System.Action{RedCow.Test.TestPerson,``0},RedCow.ICloneProvider)">
             <summary>
             Creates a Producer delegate that can be used to curry on an Immutable State.
             </summary>
-            <param name="producer">The producer function that operates on objects of type T with a single argument.</param>
-            <param name="cloneProvider">The clone provider to use.</param>
-            <typeparam name="TArg">The type of the argument.</typeparam>
+            <param name = "producer">The producer action that operates on an object of type T with a single argument.</param>
+            <param name = "cloneProvider">The clone provider to use.</param>
+            <typeparam name = "TArg">The type of the argument.</typeparam>
             <returns>A producer delegate.</returns>
         </member>
         <member name="M:RedCow.Test.ITestPerson.Producer``1(System.Func{``0,RedCow.Test.TestPerson},RedCow.ICloneProvider)">
             <summary>
             Creates a Producer delegate that can be used to curry on an Immutable State.
             </summary>
-            <param name="producer">The producer function that operates on objects of type T with a single argument.</param>
-            <param name="cloneProvider">The clone provider to use.</param>
-            <typeparam name="TArg">The type of the argument.</typeparam>
+            <param name = "producer">The producer function that returns an object of type T with a single argument.</param>
+            <param name = "cloneProvider">The clone provider to use.</param>
+            <typeparam name = "TArg">The type of the argument.</typeparam>
             <returns>A producer delegate.</returns>
         </member>
         <member name="T:RedCow.Test.ReflectionCloneProviderTests">

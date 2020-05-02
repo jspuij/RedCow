@@ -1,4 +1,4 @@
-﻿// <copyright file="GenerateProducerAttribute.cs" company="Jan-Willem Spuij">
+﻿// <copyright file="GenerateProducersAttribute.cs" company="Jan-Willem Spuij">
 // Copyright 2020 Jan-Willem Spuij
 //
 // Permission is hereby granted, free of charge, to any person obtaining a copy of this software and associated documentation
@@ -28,7 +28,22 @@ namespace RedCow
     [AttributeUsage(AttributeTargets.Interface, Inherited = false, AllowMultiple = false)]
     [CodeGenerationAttribute("RedCow.Generators.ProducerInterfaceGenerator, RedCow.Generators")]
     [Conditional("CodeGeneration")]
-    public class GenerateProducerAttribute : Attribute
+    public class GenerateProducersAttribute : Attribute
     {
+        /// <summary>
+        /// Initializes a new instance of the <see cref="GenerateProducersAttribute"/> class.
+        /// </summary>
+        /// <param name="mutableType">
+        /// The type of the Immutable interface that needs to be implemented.
+        /// </param>
+        public GenerateProducersAttribute(Type mutableType)
+        {
+            this.MutableType = mutableType;
+        }
+
+        /// <summary>
+        /// Gets the type of the Immutable Interface.
+        /// </summary>
+        public Type MutableType { get; }
     }
 }

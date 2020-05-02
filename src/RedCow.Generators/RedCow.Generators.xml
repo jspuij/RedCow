@@ -70,6 +70,11 @@
             Generates producer methods on the Immutable interface.
             </summary>
         </member>
+        <member name="F:RedCow.Generators.ProducerInterfaceGenerator.mutableType">
+            <summary>
+            The type of the Mutable.
+            </summary>
+        </member>
         <member name="M:RedCow.Generators.ProducerInterfaceGenerator.#ctor(Microsoft.CodeAnalysis.AttributeData)">
             <summary>
             Initializes a new instance of the <see cref="T:RedCow.Generators.ProducerInterfaceGenerator"/> class.
@@ -89,8 +94,67 @@
             <summary>
             Generates a partial for the interface.
             </summary>
-            <param name="applyToInterface">The interface to apply the partial to.</param>
+            <param name="interfaceDeclaration">The interface to apply the partial to.</param>
             <returns>The interface declaration syntax.</returns>
+        </member>
+        <member name="M:RedCow.Generators.ProducerInterfaceGenerator.GenerateProduceFunction(Microsoft.CodeAnalysis.CSharp.Syntax.InterfaceDeclarationSyntax)">
+            <summary>
+            Generates the produce function that accepts a function.
+            </summary>
+            <param name="interfaceDeclaration">The interface declaration.</param>
+            <returns>The method declaration.</returns>
+        </member>
+        <member name="M:RedCow.Generators.ProducerInterfaceGenerator.GenerateStaticProduceFunction(Microsoft.CodeAnalysis.CSharp.Syntax.InterfaceDeclarationSyntax)">
+            <summary>
+            Generates the static produce function that accepts a function.
+            </summary>
+            <param name="interfaceDeclaration">The interface declaration.</param>
+            <returns>The method declaration.</returns>
+        </member>
+        <member name="M:RedCow.Generators.ProducerInterfaceGenerator.GenerateProduceDocumentation(Microsoft.CodeAnalysis.CSharp.Syntax.InterfaceDeclarationSyntax,System.Boolean)">
+            <summary>
+            Generate the documentation for the produce method.
+            </summary>
+            <param name="interfaceDeclaration">The interface declaration.</param>
+            <param name="isStatic">Whether this is the static produce method.</param>
+            <returns>The documentation.</returns>
+        </member>
+        <member name="M:RedCow.Generators.ProducerInterfaceGenerator.GenerateProducerAction(Microsoft.CodeAnalysis.CSharp.Syntax.InterfaceDeclarationSyntax)">
+            <summary>
+            Generates the producer function that accepts a function.
+            </summary>
+            <param name="interfaceDeclaration">The interface declaration.</param>
+            <returns>The method declaration.</returns>
+        </member>
+        <member name="M:RedCow.Generators.ProducerInterfaceGenerator.GenerateProducerFunction(Microsoft.CodeAnalysis.CSharp.Syntax.InterfaceDeclarationSyntax)">
+            <summary>
+            Generates the producer function that accepts an action.
+            </summary>
+            <param name="interfaceDeclaration">The interface declaration.</param>
+            <returns>The method declaration.</returns>
+        </member>
+        <member name="M:RedCow.Generators.ProducerInterfaceGenerator.GenerateProducerActionWithArgument(Microsoft.CodeAnalysis.CSharp.Syntax.InterfaceDeclarationSyntax)">
+            <summary>
+            Generate the producer which accepts an action with a single Argument.
+            </summary>
+            <param name="interfaceDeclaration">The interface declaration.</param>
+            <returns>The method declaration.</returns>
+        </member>
+        <member name="M:RedCow.Generators.ProducerInterfaceGenerator.GenerateProducerFunctionWithArgument(Microsoft.CodeAnalysis.CSharp.Syntax.InterfaceDeclarationSyntax)">
+            <summary>
+            Generate the producer which accepts a function with a single Argument.
+            </summary>
+            <param name="interfaceDeclaration">The interface declaration.</param>
+            <returns>The method declaration.</returns>
+        </member>
+        <member name="M:RedCow.Generators.ProducerInterfaceGenerator.GenerateProducerDocumentation(Microsoft.CodeAnalysis.CSharp.Syntax.InterfaceDeclarationSyntax,System.Boolean,System.Boolean)">
+            <summary>
+            Generates Method Documentation.
+            </summary>
+            <param name="interfaceDeclaration">The immutable interface declaration.</param>
+            <param name="usesFunction">Whether the producer uses a function or an action.</param>
+            <param name="hasArgument">Indicates whether the producer has an argument.</param>
+            <returns>The documentation.</returns>
         </member>
     </members>
 </doc>

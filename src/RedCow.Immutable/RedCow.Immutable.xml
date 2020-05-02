@@ -23,9 +23,22 @@
             Gets the type of the Immutable Interface.
             </summary>
         </member>
-        <member name="T:RedCow.GenerateProducerAttribute">
+        <member name="T:RedCow.GenerateProducersAttribute">
             <summary>
             Attribute to indicate that producer methods should be generated.
+            </summary>
+        </member>
+        <member name="M:RedCow.GenerateProducersAttribute.#ctor(System.Type)">
+            <summary>
+            Initializes a new instance of the <see cref="T:RedCow.GenerateProducersAttribute"/> class.
+            </summary>
+            <param name="mutableType">
+            The type of the Immutable interface that needs to be implemented.
+            </param>
+        </member>
+        <member name="P:RedCow.GenerateProducersAttribute.MutableType">
+            <summary>
+            Gets the type of the Immutable Interface.
             </summary>
         </member>
         <member name="T:RedCow.ICloneProvider">

@@ -23,6 +23,7 @@ namespace RedCow.Test
     /// <summary>
     /// Interface for an Immutable Test Person.
     /// </summary>
+    [GenerateProducers(typeof(TestPerson))]
     public partial interface ITestPerson : Immutable<TestPerson>
     {
         /// <summary>
@@ -70,64 +71,5 @@ namespace RedCow.Test
         /// <returns>The next immutable state.</returns>
         public ITestPerson Produce(Func<TestPerson> producer, ICloneProvider cloneProvider = null) =>
             Produce((TestPerson)this, producer, cloneProvider);
-
-        /// <summary>
-        /// Produces the next <see cref="Immutable{T}"/> based on the
-        /// specified producer function.
-        /// </summary>
-        /// <param name="initialState">The initial State.</param>
-        /// <param name="producer">The producer function.</param>
-        /// <param name="cloneProvider">The clone provider to use.</param>
-        /// <returns>The next immutable state.</returns>
-        public static ITestPerson Produce(TestPerson initialState, Func<TestPerson> producer, ICloneProvider cloneProvider = null) =>
-            Producer(producer, cloneProvider)(initialState);
-
-        /// <summary>
-        /// Creates a Producer delegate that can be used to curry on an Immutable State.
-        /// </summary>
-        /// <param name="producer">The producer action that operates on objects of type T.</param>
-        /// <param name="cloneProvider">The clone provider to use.</param>
-        /// <returns>A producer delegate.</returns>
-        public static Func<TestPerson, ITestPerson> Producer(Action<TestPerson> producer, ICloneProvider cloneProvider = null) =>
-            (imm1) => Producer<object>((arg1, _) => producer(arg1), cloneProvider)(imm1, null);
-
-        /// <summary>
-        /// Creates a Producer delegate that can be used to curry on an Immutable State.
-        /// </summary>
-        /// <param name="producer">The producer function that operates on objects of type T.</param>
-        /// <param name="cloneProvider">The clone provider to use.</param>
-        /// <returns>A producer delegate.</returns>
-        public static Func<TestPerson, ITestPerson> Producer(Func<TestPerson> producer, ICloneProvider cloneProvider = null) =>
-            (imm1) => Producer<object>(_ => producer(), cloneProvider)(imm1, null);
-
-        /// <summary>
-        /// Creates a Producer delegate that can be used to curry on an Immutable State.
-        /// </summary>
-        /// <param name="producer">The producer action that operates on objects of type T with a single argument.</param>
-        /// <param name="cloneProvider">The clone provider to use.</param>
-        /// <typeparam name="TArg">The type of the argument.</typeparam>
-        /// <returns>A producer delegate.</returns>
-        public static Func<TestPerson, TArg, ITestPerson> Producer<TArg>(Action<TestPerson, TArg> producer, ICloneProvider cloneProvider = null) =>
-            (imm1, arg1) =>
-            {
-                using var scope = imm1.CreateDraft(out var draft, cloneProvider);
-                producer((TestPerson)draft, arg1);
-                return (ITestPerson)scope.FinishDraft((TestPerson)draft);
-            };
-
-        /// <summary>
-        /// Creates a Producer delegate that can be used to curry on an Immutable State.
-        /// </summary>
-        /// <param name="producer">The producer function that operates on objects of type T with a single argument.</param>
-        /// <param name="cloneProvider">The clone provider to use.</param>
-        /// <typeparam name="TArg">The type of the argument.</typeparam>
-        /// <returns>A producer delegate.</returns>
-        public static Func<TestPerson, TArg, ITestPerson> Producer<TArg>(Func<TArg, TestPerson> producer, ICloneProvider cloneProvider = null) =>
-            (imm1, arg1) =>
-            {
-                using var scope = imm1.CreateDraft(out var _, cloneProvider);
-                TestPerson draft = producer(arg1);
-                return (ITestPerson)scope.FinishDraft(draft);
-            };
     }
 }

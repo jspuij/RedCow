@@ -56,6 +56,12 @@ namespace RedCow.Test
                 p.FirstName = "Jane";
                 p.IsAdult = false;
             });
+
+            var producer2 = ITestPerson.Producer((TestPerson p, int index) =>
+            {
+                p.FirstName = "Jane";
+                p.IsAdult = false;
+            });
         }
     }
 }
