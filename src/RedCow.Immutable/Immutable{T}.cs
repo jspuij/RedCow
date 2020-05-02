@@ -31,24 +31,28 @@ namespace RedCow
         /// specified producer function.
         /// </summary>
         /// <param name="producer">The producer function.</param>
+        /// <param name="cloneProvider">The clone provider to use.</param>
         /// <returns>The next immutable state.</returns>
-        public Immutable<T> Produce(Func<T, T> producer) => Immutable<T>.Producer(producer)(this);
+        public Immutable<T> Produce(Func<T, T> producer, ICloneProvider? cloneProvider = null) =>
+            Immutable<T>.Producer(producer, cloneProvider)(this);
 
         /// <summary>
         /// Creates a Producer delegate that can be used to curry on an Immutable State.
         /// </summary>
         /// <param name="producer">The producer function that operates on objects of type T.</param>
+        /// <param name="cloneProvider">The clone provider to use.</param>
         /// <returns>A producer delegate.</returns>
-        public static Func<Immutable<T>, Immutable<T>> Producer(Func<T, T> producer) =>
-            (imm1) => Producer<object?>((arg1, _) => producer(arg1))(imm1, null);
+        public static Func<Immutable<T>, Immutable<T>> Producer(Func<T, T> producer, ICloneProvider? cloneProvider = null) =>
+            (imm1) => Producer<object?>((arg1, _) => producer(arg1), cloneProvider)(imm1, null);
 
         /// <summary>
         /// Creates a Producer delegate that can be used to curry on an Immutable State.
         /// </summary>
         /// <param name="producer">The producer function that operates on objects of type T with a single argument.</param>
+        /// <param name="cloneProvider">The clone provider to use.</param>
         /// <typeparam name="TArg">The type of the argument.</typeparam>
         /// <returns>A producer delegate.</returns>
-        public static Func<Immutable<T>, TArg, Immutable<T>> Producer<TArg>(Func<T, TArg, T> producer)
+        public static Func<Immutable<T>, TArg, Immutable<T>> Producer<TArg>(Func<T, TArg, T> producer, ICloneProvider? cloneProvider = null)
         {
             throw new NotImplementedException();
         }

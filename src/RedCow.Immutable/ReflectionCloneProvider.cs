@@ -40,7 +40,7 @@ namespace RedCow
             {
                 var destinationProperty = destinationType.GetProperty(sourceProperty.Name);
 
-                if (destinationProperty == null)
+                if (destinationProperty == null || destinationProperty.SetMethod == null)
                 {
                     continue;
                 }

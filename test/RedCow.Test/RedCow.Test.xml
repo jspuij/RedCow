@@ -24,6 +24,21 @@
             Gets a value indicating whether isAdult is true.
             </summary>
         </member>
+        <member name="T:RedCow.Test.ReflectionCloneProviderTests">
+            <summary>
+            Unit tests for <see cref="T:RedCow.ReflectionCloneProvider"/>.
+            </summary>
+        </member>
+        <member name="M:RedCow.Test.ReflectionCloneProviderTests.ClonesAllPublicProperties">
+            <summary>
+            Tests whether the Clone provider clones all properties.
+            </summary>
+        </member>
+        <member name="M:RedCow.Test.ReflectionCloneProviderTests.DoesNotClonePrivatePropertiesAndFields">
+            <summary>
+            Tests that the clone provider does not clone fields, private and readonly properties.
+            </summary>
+        </member>
         <member name="T:RedCow.Test.TestPerson">
             <summary>
             The mutable type.

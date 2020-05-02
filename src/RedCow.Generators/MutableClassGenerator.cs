@@ -35,7 +35,7 @@ namespace RedCow.Generators
         /// <summary>
         /// The type of the Immutable Interface.
         /// </summary>
-        private INamedTypeSymbol interfaceType;
+        private readonly INamedTypeSymbol interfaceType;
 
         /// <summary>
         /// Initializes a new instance of the <see cref="MutableClassGenerator"/> class.
@@ -64,7 +64,7 @@ namespace RedCow.Generators
             // Our generator is applied to any class that our attribute is applied to.
             var applyToClass = (ClassDeclarationSyntax)context.ProcessingNode;
 
-            ClassDeclarationSyntax partial = this.GenerateAbstractPartial(applyToClass);
+            ClassDeclarationSyntax partial = this.GeneratePartial(applyToClass);
 
             ClassDeclarationSyntax immutable = this.GenerateImmutable(applyToClass);
 
@@ -231,17 +231,14 @@ namespace RedCow.Generators
         }
 
         /// <summary>
-        /// Generates the abstract partial part of the class.
+        /// Generates the partial part of the class.
         /// </summary>
         /// <param name="sourceClassDeclaration">The source class declaration.</param>
         /// <returns>A partial class declaration.</returns>
-        private ClassDeclarationSyntax GenerateAbstractPartial(ClassDeclarationSyntax sourceClassDeclaration)
+        private ClassDeclarationSyntax GeneratePartial(ClassDeclarationSyntax sourceClassDeclaration)
         {
-            var modifiers = sourceClassDeclaration.Modifiers.ToList();
-            modifiers.Insert(1, Token(SyntaxKind.AbstractKeyword));
-
             var result = ClassDeclaration(sourceClassDeclaration.Identifier)
-                            .AddModifiers(modifiers.ToArray());
+                            .AddModifiers(sourceClassDeclaration.Modifiers.ToArray());
 
             result = result.AddMembers(
                 this.interfaceType.GetMembers().

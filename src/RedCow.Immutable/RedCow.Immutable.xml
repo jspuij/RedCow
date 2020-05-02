@@ -55,26 +55,29 @@
             </summary>
             <typeparam name="T">The mutable type.</typeparam>
         </member>
-        <member name="M:RedCow.Immutable`1.Produce(System.Func{`0,`0})">
+        <member name="M:RedCow.Immutable`1.Produce(System.Func{`0,`0},RedCow.ICloneProvider)">
             <summary>
             Produces the next <see cref="T:RedCow.Immutable`1"/> based on the
             specified producer function.
             </summary>
             <param name="producer">The producer function.</param>
+            <param name="cloneProvider">The clone provider to use.</param>
             <returns>The next immutable state.</returns>
         </member>
-        <member name="M:RedCow.Immutable`1.Producer(System.Func{`0,`0})">
+        <member name="M:RedCow.Immutable`1.Producer(System.Func{`0,`0},RedCow.ICloneProvider)">
             <summary>
             Creates a Producer delegate that can be used to curry on an Immutable State.
             </summary>
             <param name="producer">The producer function that operates on objects of type T.</param>
+            <param name="cloneProvider">The clone provider to use.</param>
             <returns>A producer delegate.</returns>
         </member>
-        <member name="M:RedCow.Immutable`1.Producer``1(System.Func{`0,``0,`0})">
+        <member name="M:RedCow.Immutable`1.Producer``1(System.Func{`0,``0,`0},RedCow.ICloneProvider)">
             <summary>
             Creates a Producer delegate that can be used to curry on an Immutable State.
             </summary>
             <param name="producer">The producer function that operates on objects of type T with a single argument.</param>
+            <param name="cloneProvider">The clone provider to use.</param>
             <typeparam name="TArg">The type of the argument.</typeparam>
             <returns>A producer delegate.</returns>
         </member>
