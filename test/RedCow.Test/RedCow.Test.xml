@@ -36,30 +36,30 @@
         </member>
         <member name="M:RedCow.Test.ITestPerson.Produce(System.Action{RedCow.Test.TestPerson},RedCow.ICloneProvider)">
             <summary>
-            Produces the next <see cref="T:RedCow.Immutable`1"/> based on the
-            specified producer function.
+            Produces the next <see cref = "T:RedCow.Immutable`1"/> based on the
+            specified producer action.
             </summary>
-            <param name="producer">The producer action.</param>
-            <param name="cloneProvider">The clone provider to use.</param>
+            <param name = "producer">The producer action.</param>
+            <param name = "cloneProvider">The clone provider to use.</param>
             <returns>The next immutable state.</returns>
         </member>
         <member name="M:RedCow.Test.ITestPerson.Produce(RedCow.Test.TestPerson,System.Action{RedCow.Test.TestPerson},RedCow.ICloneProvider)">
             <summary>
-            Produces the next <see cref="T:RedCow.Immutable`1"/> based on the
-            specified producer function.
+            Produces the next <see cref = "T:RedCow.Immutable`1"/> based on the
+            specified producer action.
             </summary>
-            <param name="initialState">The initial State.</param>
-            <param name="producer">The producer action.</param>
-            <param name="cloneProvider">The clone provider to use.</param>
+            <param name = "initialState">The initial State.</param>
+            <param name = "producer">The producer action.</param>
+            <param name = "cloneProvider">The clone provider to use.</param>
             <returns>The next immutable state.</returns>
         </member>
         <member name="M:RedCow.Test.ITestPerson.Produce(System.Func{RedCow.Test.TestPerson},RedCow.ICloneProvider)">
             <summary>
-            Produces the next <see cref="T:RedCow.Immutable`1"/> based on the
+            Produces the next <see cref = "T:RedCow.Immutable`1"/> based on the
             specified producer function.
             </summary>
-            <param name="producer">The producer function.</param>
-            <param name="cloneProvider">The clone provider to use.</param>
+            <param name = "producer">The producer function.</param>
+            <param name = "cloneProvider">The clone provider to use.</param>
             <returns>The next immutable state.</returns>
         </member>
         <member name="M:RedCow.Test.ITestPerson.Produce(RedCow.Test.TestPerson,System.Func{RedCow.Test.TestPerson},RedCow.ICloneProvider)">

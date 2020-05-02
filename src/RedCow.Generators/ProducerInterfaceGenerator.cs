@@ -80,6 +80,8 @@ namespace RedCow.Generators
                 .AddModifiers(interfaceDeclaration.Modifiers.ToArray());
 
             result = result.AddMembers(
+                this.GenerateProduceAction(interfaceDeclaration),
+                this.GenerateStaticProduceAction(interfaceDeclaration),
                 this.GenerateProduceFunction(interfaceDeclaration),
                 this.GenerateStaticProduceFunction(interfaceDeclaration),
                 this.GenerateProducerAction(interfaceDeclaration),
@@ -87,6 +89,142 @@ namespace RedCow.Generators
                 this.GenerateProducerActionWithArgument(interfaceDeclaration),
                 this.GenerateProducerFunctionWithArgument(interfaceDeclaration));
             return result;
+        }
+
+        private MemberDeclarationSyntax GenerateProduceAction(InterfaceDeclarationSyntax interfaceDeclaration)
+        {
+            return
+            MethodDeclaration(
+                IdentifierName(interfaceDeclaration.Identifier),
+                Identifier("Produce"))
+            .WithModifiers(
+                TokenList(
+                    Token(
+                        this.GenerateProduceDocumentation(interfaceDeclaration, false, false),
+                        SyntaxKind.PublicKeyword,
+                        TriviaList())))
+            .WithParameterList(
+                ParameterList(
+                    SeparatedList<ParameterSyntax>(
+                        new SyntaxNodeOrToken[]
+                        {
+                            Parameter(
+                                Identifier("producer"))
+                            .WithType(
+                                GenericName(
+                                    Identifier("Action"))
+                                .WithTypeArgumentList(
+                                    TypeArgumentList(
+                                        SingletonSeparatedList<TypeSyntax>(
+                                            IdentifierName(this.mutableType.Name))))),
+                            Token(SyntaxKind.CommaToken),
+                            Parameter(
+                                Identifier("cloneProvider"))
+                            .WithType(
+                                IdentifierName("RedCow.ICloneProvider"))
+                            .WithDefault(
+                                EqualsValueClause(
+                                    LiteralExpression(
+                                        SyntaxKind.NullLiteralExpression))),
+                        })))
+            .WithExpressionBody(
+                ArrowExpressionClause(
+                    InvocationExpression(
+                        IdentifierName("Produce"))
+                    .WithArgumentList(
+                        ArgumentList(
+                            SeparatedList<ArgumentSyntax>(
+                                new SyntaxNodeOrToken[]
+                                {
+                                    Argument(
+                                        CastExpression(
+                                            IdentifierName(this.mutableType.Name),
+                                            ThisExpression())),
+                                    Token(SyntaxKind.CommaToken),
+                                    Argument(
+                                        IdentifierName("producer")),
+                                    Token(SyntaxKind.CommaToken),
+                                    Argument(
+                                        IdentifierName("cloneProvider")),
+                                })))))
+            .WithSemicolonToken(
+                Token(SyntaxKind.SemicolonToken))
+            .NormalizeWhitespace();
+        }
+
+        /// <summary>
+        /// Generates the static produce function that accepts an action.
+        /// </summary>
+        /// <param name="interfaceDeclaration">The interface declaration.</param>
+        /// <returns>The method declaration.</returns>
+        private MemberDeclarationSyntax GenerateStaticProduceAction(InterfaceDeclarationSyntax interfaceDeclaration)
+        {
+            return MethodDeclaration(
+                IdentifierName(interfaceDeclaration.Identifier),
+                Identifier("Produce"))
+            .WithModifiers(
+                TokenList(
+                    new[]
+                    {
+                        Token(
+                            this.GenerateProduceDocumentation(interfaceDeclaration, true, false),
+                            SyntaxKind.PublicKeyword,
+                            TriviaList()),
+                        Token(SyntaxKind.StaticKeyword),
+                    }))
+            .WithParameterList(
+                ParameterList(
+                    SeparatedList<ParameterSyntax>(
+                        new SyntaxNodeOrToken[]
+                        {
+                            Parameter(
+                                Identifier("initialState"))
+                            .WithType(
+                                IdentifierName(this.mutableType.Name)),
+                            Token(SyntaxKind.CommaToken),
+                            Parameter(
+                                Identifier("producer"))
+                            .WithType(
+                                GenericName(
+                                    Identifier("Action"))
+                                .WithTypeArgumentList(
+                                    TypeArgumentList(
+                                        SingletonSeparatedList<TypeSyntax>(
+                                            IdentifierName(this.mutableType.Name))))),
+                            Token(SyntaxKind.CommaToken),
+                            Parameter(
+                                Identifier("cloneProvider"))
+                            .WithType(
+                                IdentifierName("RedCow.ICloneProvider"))
+                            .WithDefault(
+                                EqualsValueClause(
+                                    LiteralExpression(
+                                        SyntaxKind.NullLiteralExpression))),
+                        })))
+            .WithExpressionBody(
+                ArrowExpressionClause(
+                    InvocationExpression(
+                        InvocationExpression(
+                            IdentifierName("Producer"))
+                        .WithArgumentList(
+                            ArgumentList(
+                                SeparatedList<ArgumentSyntax>(
+                                    new SyntaxNodeOrToken[]
+                                    {
+                                        Argument(
+                                            IdentifierName("producer")),
+                                        Token(SyntaxKind.CommaToken),
+                                        Argument(
+                                            IdentifierName("cloneProvider")),
+                                    }))))
+                    .WithArgumentList(
+                        ArgumentList(
+                            SingletonSeparatedList(
+                                Argument(
+                                    IdentifierName("initialState")))))))
+            .WithSemicolonToken(
+                Token(SyntaxKind.SemicolonToken))
+    .NormalizeWhitespace();
         }
 
         /// <summary>
@@ -102,7 +240,7 @@ namespace RedCow.Generators
             .WithModifiers(
                 TokenList(
                     Token(
-                        this.GenerateProduceDocumentation(interfaceDeclaration, false),
+                        this.GenerateProduceDocumentation(interfaceDeclaration, false, true),
                         SyntaxKind.PublicKeyword,
                         TriviaList())))
             .WithParameterList(
@@ -169,7 +307,7 @@ namespace RedCow.Generators
                     new[]
                     {
                         Token(
-                            this.GenerateProduceDocumentation(interfaceDeclaration, true),
+                            this.GenerateProduceDocumentation(interfaceDeclaration, true, true),
                             SyntaxKind.PublicKeyword,
                             TriviaList()),
                         Token(SyntaxKind.StaticKeyword),
@@ -234,268 +372,286 @@ namespace RedCow.Generators
         /// </summary>
         /// <param name="interfaceDeclaration">The interface declaration.</param>
         /// <param name="isStatic">Whether this is the static produce method.</param>
+        /// <param name="usesFunction">Whether the producer uses a function or an action.</param>
         /// <returns>The documentation.</returns>
-        private SyntaxTriviaList GenerateProduceDocumentation(InterfaceDeclarationSyntax interfaceDeclaration, bool isStatic)
+        private SyntaxTriviaList GenerateProduceDocumentation(InterfaceDeclarationSyntax interfaceDeclaration, bool isStatic, bool usesFunction)
         {
+            string functionOrAction = usesFunction ? "function" : "action";
+
+            var list = new List<XmlNodeSyntax>()
+            {
+                XmlText()
+    .WithTextTokens(
+        TokenList(
+            XmlTextLiteral(
+                TriviaList(
+                    DocumentationCommentExterior("///")),
+                " ",
+                " ",
+                TriviaList()))),
+                XmlExampleElement(
+                    XmlText()
+                    .WithTextTokens(
+                        TokenList(
+                            new[]
+                            {
+                                XmlTextNewLine(
+                                    TriviaList(),
+                                    Environment.NewLine,
+                                    Environment.NewLine,
+                                    TriviaList()),
+                                XmlTextLiteral(
+                                    TriviaList(
+                                        DocumentationCommentExterior("        ///")),
+                                    " Produces the next ",
+                                    " Produces the next ",
+                                    TriviaList()),
+                            })),
+                    XmlNullKeywordElement()
+                    .WithAttributes(
+                        SingletonList<XmlAttributeSyntax>(
+                            XmlCrefAttribute(
+                                NameMemberCref(
+                                    GenericName(
+                                        Identifier("Immutable"))
+                                    .WithTypeArgumentList(
+                                        TypeArgumentList(
+                                            SingletonSeparatedList<TypeSyntax>(
+                                                IdentifierName("T")))))))),
+                    XmlText()
+                    .WithTextTokens(
+                        TokenList(
+                            new[]
+                            {
+                                XmlTextLiteral(
+                                    TriviaList(),
+                                    " based on the",
+                                    " based on the",
+                                    TriviaList()),
+                                XmlTextNewLine(
+                                    TriviaList(),
+                                    Environment.NewLine,
+                                    Environment.NewLine,
+                                    TriviaList()),
+                                XmlTextLiteral(
+                                    TriviaList(
+                                        DocumentationCommentExterior("        ///")),
+                                    $" specified producer {functionOrAction}.",
+                                    $" specified producer {functionOrAction}.",
+                                    TriviaList()),
+                                XmlTextNewLine(
+                                    TriviaList(),
+                                    Environment.NewLine,
+                                    Environment.NewLine,
+                                    TriviaList()),
+                                XmlTextLiteral(
+                                    TriviaList(
+                                        DocumentationCommentExterior("        ///")),
+                                    " ",
+                                    " ",
+                                    TriviaList()),
+                            })))
+                .WithStartTag(
+                    XmlElementStartTag(
+                        XmlName(
+                            Identifier("summary"))))
+                .WithEndTag(
+                    XmlElementEndTag(
+                        XmlName(
+                            Identifier("summary")))),
+            };
+
+            if (isStatic)
+            {
+                list.Add(
+                XmlText()
+                .WithTextTokens(
+                    TokenList(
+                        new[]
+                        {
+                            XmlTextNewLine(
+                                TriviaList(),
+                                Environment.NewLine,
+                                Environment.NewLine,
+                                TriviaList()),
+                            XmlTextLiteral(
+                                TriviaList(
+                                    DocumentationCommentExterior("        ///")),
+                                " ",
+                                " ",
+                                TriviaList()),
+                        })));
+                list.Add(
+                XmlExampleElement(
+                    SingletonList<XmlNodeSyntax>(
+                        XmlText()
+                        .WithTextTokens(
+                            TokenList(
+                                XmlTextLiteral(
+                                    TriviaList(),
+                                    "The initial State.",
+                                    "The initial State.",
+                                    TriviaList())))))
+                .WithStartTag(
+                    XmlElementStartTag(
+                        XmlName(
+                            Identifier("param")))
+                    .WithAttributes(
+                        SingletonList<XmlAttributeSyntax>(
+                            XmlNameAttribute(
+                                XmlName(
+                                    Identifier("name")),
+                                Token(SyntaxKind.DoubleQuoteToken),
+                                IdentifierName("initialState"),
+                                Token(SyntaxKind.DoubleQuoteToken)))))
+                .WithEndTag(
+                    XmlElementEndTag(
+                        XmlName(
+                            Identifier("param")))));
+            }
+
+            list.Add(
+            XmlText()
+            .WithTextTokens(
+                TokenList(
+                    new[]
+                    {
+                            XmlTextNewLine(
+                                TriviaList(),
+                                Environment.NewLine,
+                                Environment.NewLine,
+                                TriviaList()),
+                            XmlTextLiteral(
+                                TriviaList(
+                                    DocumentationCommentExterior("        ///")),
+                                " ",
+                                " ",
+                                TriviaList()),
+                    })));
+            list.Add(
+            XmlExampleElement(
+                SingletonList<XmlNodeSyntax>(
+                    XmlText()
+                    .WithTextTokens(
+                        TokenList(
+                            XmlTextLiteral(
+                                TriviaList(),
+                                $"The producer {functionOrAction}.",
+                                $"The producer {functionOrAction}.",
+                                TriviaList())))))
+            .WithStartTag(
+                XmlElementStartTag(
+                    XmlName(
+                        Identifier("param")))
+                .WithAttributes(
+                    SingletonList<XmlAttributeSyntax>(
+                        XmlNameAttribute(
+                            XmlName(
+                                Identifier("name")),
+                            Token(SyntaxKind.DoubleQuoteToken),
+                            IdentifierName("producer"),
+                            Token(SyntaxKind.DoubleQuoteToken)))))
+            .WithEndTag(
+                XmlElementEndTag(
+                    XmlName(
+                        Identifier("param")))));
+            list.Add(
+            XmlText()
+            .WithTextTokens(
+                TokenList(
+                    new[]
+                    {
+                            XmlTextNewLine(
+                                TriviaList(),
+                                Environment.NewLine,
+                                Environment.NewLine,
+                                TriviaList()),
+                            XmlTextLiteral(
+                                TriviaList(
+                                    DocumentationCommentExterior("        ///")),
+                                " ",
+                                " ",
+                                TriviaList()),
+                    })));
+            list.Add(
+            XmlExampleElement(
+                SingletonList<XmlNodeSyntax>(
+                    XmlText()
+                    .WithTextTokens(
+                        TokenList(
+                            XmlTextLiteral(
+                                TriviaList(),
+                                "The clone provider to use.",
+                                "The clone provider to use.",
+                                TriviaList())))))
+            .WithStartTag(
+                XmlElementStartTag(
+                    XmlName(
+                        Identifier("param")))
+                .WithAttributes(
+                    SingletonList<XmlAttributeSyntax>(
+                        XmlNameAttribute(
+                            XmlName(
+                                Identifier("name")),
+                            Token(SyntaxKind.DoubleQuoteToken),
+                            IdentifierName("cloneProvider"),
+                            Token(SyntaxKind.DoubleQuoteToken)))))
+            .WithEndTag(
+                XmlElementEndTag(
+                    XmlName(
+                        Identifier("param")))));
+            list.Add(
+            XmlText()
+            .WithTextTokens(
+                TokenList(
+                    new[]
+                    {
+                            XmlTextNewLine(
+                                TriviaList(),
+                                Environment.NewLine,
+                                Environment.NewLine,
+                                TriviaList()),
+                            XmlTextLiteral(
+                                TriviaList(
+                                    DocumentationCommentExterior("        ///")),
+                                " ",
+                                " ",
+                                TriviaList()),
+                    })));
+            list.Add(
+            XmlExampleElement(
+                SingletonList<XmlNodeSyntax>(
+                    XmlText()
+                    .WithTextTokens(
+                        TokenList(
+                            XmlTextLiteral(
+                                TriviaList(),
+                                "The next immutable state.",
+                                "The next immutable state.",
+                                TriviaList())))))
+            .WithStartTag(
+                XmlElementStartTag(
+                    XmlName(
+                        Identifier("returns"))))
+            .WithEndTag(
+                XmlElementEndTag(
+                    XmlName(
+                        Identifier("returns")))));
+            list.Add(
+        XmlText()
+        .WithTextTokens(
+            TokenList(
+                XmlTextNewLine(
+                    TriviaList(),
+                    Environment.NewLine,
+                    Environment.NewLine,
+                    TriviaList()))));
+
             return TriviaList(
-                            Trivia(
-                                DocumentationCommentTrivia(
-                                    SyntaxKind.SingleLineDocumentationCommentTrivia,
-                                    List(
-                                        new XmlNodeSyntax[]
-                                        {
-                                            XmlText()
-                                            .WithTextTokens(
-                                                TokenList(
-                                                    XmlTextLiteral(
-                                                        TriviaList(
-                                                            DocumentationCommentExterior("///")),
-                                                        " ",
-                                                        " ",
-                                                        TriviaList()))),
-                                            XmlExampleElement(
-                                                XmlText()
-                                                .WithTextTokens(
-                                                    TokenList(
-                                                        new[]
-                                                        {
-                                                            XmlTextNewLine(
-                                                                TriviaList(),
-                                                                Environment.NewLine,
-                                                                Environment.NewLine,
-                                                                TriviaList()),
-                                                            XmlTextLiteral(
-                                                                TriviaList(
-                                                                    DocumentationCommentExterior("        ///")),
-                                                                " Produces the next ",
-                                                                " Produces the next ",
-                                                                TriviaList()),
-                                                        })),
-                                                XmlNullKeywordElement()
-                                                .WithAttributes(
-                                                    SingletonList<XmlAttributeSyntax>(
-                                                        XmlCrefAttribute(
-                                                            NameMemberCref(
-                                                                GenericName(
-                                                                    Identifier("Immutable"))
-                                                                .WithTypeArgumentList(
-                                                                    TypeArgumentList(
-                                                                        SingletonSeparatedList<TypeSyntax>(
-                                                                            IdentifierName("T")))))))),
-                                                XmlText()
-                                                .WithTextTokens(
-                                                    TokenList(
-                                                        new[]
-                                                        {
-                                                            XmlTextLiteral(
-                                                                TriviaList(),
-                                                                " based on the",
-                                                                " based on the",
-                                                                TriviaList()),
-                                                            XmlTextNewLine(
-                                                                TriviaList(),
-                                                                Environment.NewLine,
-                                                                Environment.NewLine,
-                                                                TriviaList()),
-                                                            XmlTextLiteral(
-                                                                TriviaList(
-                                                                    DocumentationCommentExterior("        ///")),
-                                                                " specified producer function.",
-                                                                " specified producer function.",
-                                                                TriviaList()),
-                                                            XmlTextNewLine(
-                                                                TriviaList(),
-                                                                Environment.NewLine,
-                                                                Environment.NewLine,
-                                                                TriviaList()),
-                                                            XmlTextLiteral(
-                                                                TriviaList(
-                                                                    DocumentationCommentExterior("        ///")),
-                                                                " ",
-                                                                " ",
-                                                                TriviaList()),
-                                                        })))
-                                            .WithStartTag(
-                                                XmlElementStartTag(
-                                                    XmlName(
-                                                        Identifier("summary"))))
-                                            .WithEndTag(
-                                                XmlElementEndTag(
-                                                    XmlName(
-                                                        Identifier("summary")))),
-                                            XmlText()
-                                            .WithTextTokens(
-                                                TokenList(
-                                                    new[]
-                                                    {
-                                                        XmlTextNewLine(
-                                                            TriviaList(),
-                                                            Environment.NewLine,
-                                                            Environment.NewLine,
-                                                            TriviaList()),
-                                                        XmlTextLiteral(
-                                                            TriviaList(
-                                                                DocumentationCommentExterior("        ///")),
-                                                            " ",
-                                                            " ",
-                                                            TriviaList()),
-                                                    })),
-                                            XmlExampleElement(
-                                                SingletonList<XmlNodeSyntax>(
-                                                    XmlText()
-                                                    .WithTextTokens(
-                                                        TokenList(
-                                                            XmlTextLiteral(
-                                                                TriviaList(),
-                                                                "The initial State.",
-                                                                "The initial State.",
-                                                                TriviaList())))))
-                                            .WithStartTag(
-                                                XmlElementStartTag(
-                                                    XmlName(
-                                                        Identifier("param")))
-                                                .WithAttributes(
-                                                    SingletonList<XmlAttributeSyntax>(
-                                                        XmlNameAttribute(
-                                                            XmlName(
-                                                                Identifier("name")),
-                                                            Token(SyntaxKind.DoubleQuoteToken),
-                                                            IdentifierName("initialState"),
-                                                            Token(SyntaxKind.DoubleQuoteToken)))))
-                                            .WithEndTag(
-                                                XmlElementEndTag(
-                                                    XmlName(
-                                                        Identifier("param")))),
-                                            XmlText()
-                                            .WithTextTokens(
-                                                TokenList(
-                                                    new[]
-                                                    {
-                                                        XmlTextNewLine(
-                                                            TriviaList(),
-                                                            Environment.NewLine,
-                                                            Environment.NewLine,
-                                                            TriviaList()),
-                                                        XmlTextLiteral(
-                                                            TriviaList(
-                                                                DocumentationCommentExterior("        ///")),
-                                                            " ",
-                                                            " ",
-                                                            TriviaList()),
-                                                    })),
-                                            XmlExampleElement(
-                                                SingletonList<XmlNodeSyntax>(
-                                                    XmlText()
-                                                    .WithTextTokens(
-                                                        TokenList(
-                                                            XmlTextLiteral(
-                                                                TriviaList(),
-                                                                "The producer function.",
-                                                                "The producer function.",
-                                                                TriviaList())))))
-                                            .WithStartTag(
-                                                XmlElementStartTag(
-                                                    XmlName(
-                                                        Identifier("param")))
-                                                .WithAttributes(
-                                                    SingletonList<XmlAttributeSyntax>(
-                                                        XmlNameAttribute(
-                                                            XmlName(
-                                                                Identifier("name")),
-                                                            Token(SyntaxKind.DoubleQuoteToken),
-                                                            IdentifierName("producer"),
-                                                            Token(SyntaxKind.DoubleQuoteToken)))))
-                                            .WithEndTag(
-                                                XmlElementEndTag(
-                                                    XmlName(
-                                                        Identifier("param")))),
-                                            XmlText()
-                                            .WithTextTokens(
-                                                TokenList(
-                                                    new[]
-                                                    {
-                                                        XmlTextNewLine(
-                                                            TriviaList(),
-                                                            Environment.NewLine,
-                                                            Environment.NewLine,
-                                                            TriviaList()),
-                                                        XmlTextLiteral(
-                                                            TriviaList(
-                                                                DocumentationCommentExterior("        ///")),
-                                                            " ",
-                                                            " ",
-                                                            TriviaList()),
-                                                    })),
-                                            XmlExampleElement(
-                                                SingletonList<XmlNodeSyntax>(
-                                                    XmlText()
-                                                    .WithTextTokens(
-                                                        TokenList(
-                                                            XmlTextLiteral(
-                                                                TriviaList(),
-                                                                "The clone provider to use.",
-                                                                "The clone provider to use.",
-                                                                TriviaList())))))
-                                            .WithStartTag(
-                                                XmlElementStartTag(
-                                                    XmlName(
-                                                        Identifier("param")))
-                                                .WithAttributes(
-                                                    SingletonList<XmlAttributeSyntax>(
-                                                        XmlNameAttribute(
-                                                            XmlName(
-                                                                Identifier("name")),
-                                                            Token(SyntaxKind.DoubleQuoteToken),
-                                                            IdentifierName("cloneProvider"),
-                                                            Token(SyntaxKind.DoubleQuoteToken)))))
-                                            .WithEndTag(
-                                                XmlElementEndTag(
-                                                    XmlName(
-                                                        Identifier("param")))),
-                                            XmlText()
-                                            .WithTextTokens(
-                                                TokenList(
-                                                    new[]
-                                                    {
-                                                        XmlTextNewLine(
-                                                            TriviaList(),
-                                                            Environment.NewLine,
-                                                            Environment.NewLine,
-                                                            TriviaList()),
-                                                        XmlTextLiteral(
-                                                            TriviaList(
-                                                                DocumentationCommentExterior("        ///")),
-                                                            " ",
-                                                            " ",
-                                                            TriviaList()),
-                                                    })),
-                                            XmlExampleElement(
-                                                SingletonList<XmlNodeSyntax>(
-                                                    XmlText()
-                                                    .WithTextTokens(
-                                                        TokenList(
-                                                            XmlTextLiteral(
-                                                                TriviaList(),
-                                                                "The next immutable state.",
-                                                                "The next immutable state.",
-                                                                TriviaList())))))
-                                            .WithStartTag(
-                                                XmlElementStartTag(
-                                                    XmlName(
-                                                        Identifier("returns"))))
-                                            .WithEndTag(
-                                                XmlElementEndTag(
-                                                    XmlName(
-                                                        Identifier("returns")))),
-                                            XmlText()
-                                            .WithTextTokens(
-                                                TokenList(
-                                                    XmlTextNewLine(
-                                                        TriviaList(),
-                                                        Environment.NewLine,
-                                                        Environment.NewLine,
-                                                        TriviaList()))),
-                                        }))));
+                        Trivia(
+                            DocumentationCommentTrivia(
+                                SyntaxKind.SingleLineDocumentationCommentTrivia,
+                                List(list))));
         }
 
         /// <summary>

@@ -40,36 +40,5 @@ namespace RedCow.Test
         /// Gets a value indicating whether isAdult is true.
         /// </summary>
         public bool IsAdult { get;  }
-
-        /// <summary>
-        /// Produces the next <see cref="Immutable{T}"/> based on the
-        /// specified producer function.
-        /// </summary>
-        /// <param name="producer">The producer action.</param>
-        /// <param name="cloneProvider">The clone provider to use.</param>
-        /// <returns>The next immutable state.</returns>
-        public ITestPerson Produce(Action<TestPerson> producer, ICloneProvider cloneProvider = null) =>
-            Produce((TestPerson)this, producer, cloneProvider);
-
-        /// <summary>
-        /// Produces the next <see cref="Immutable{T}"/> based on the
-        /// specified producer function.
-        /// </summary>
-        /// <param name="initialState">The initial State.</param>
-        /// <param name="producer">The producer action.</param>
-        /// <param name="cloneProvider">The clone provider to use.</param>
-        /// <returns>The next immutable state.</returns>
-        public static ITestPerson Produce(TestPerson initialState, Action<TestPerson> producer, ICloneProvider cloneProvider = null) =>
-            Producer(producer, cloneProvider)(initialState);
-
-        /// <summary>
-        /// Produces the next <see cref="Immutable{T}"/> based on the
-        /// specified producer function.
-        /// </summary>
-        /// <param name="producer">The producer function.</param>
-        /// <param name="cloneProvider">The clone provider to use.</param>
-        /// <returns>The next immutable state.</returns>
-        public ITestPerson Produce(Func<TestPerson> producer, ICloneProvider cloneProvider = null) =>
-            Produce((TestPerson)this, producer, cloneProvider);
     }
 }
