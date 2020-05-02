@@ -65,5 +65,32 @@
             <param name="sourceClassDeclaration">The source class declaration.</param>
             <returns>A partial class declaration.</returns>
         </member>
+        <member name="T:RedCow.Generators.ProducerInterfaceGenerator">
+            <summary>
+            Generates producer methods on the Immutable interface.
+            </summary>
+        </member>
+        <member name="M:RedCow.Generators.ProducerInterfaceGenerator.#ctor(Microsoft.CodeAnalysis.AttributeData)">
+            <summary>
+            Initializes a new instance of the <see cref="T:RedCow.Generators.ProducerInterfaceGenerator"/> class.
+            </summary>
+            <param name="attributeData">The attribute data to use.</param>
+        </member>
+        <member name="M:RedCow.Generators.ProducerInterfaceGenerator.GenerateAsync(CodeGeneration.Roslyn.TransformationContext,System.IProgress{Microsoft.CodeAnalysis.Diagnostic},System.Threading.CancellationToken)">
+            <summary>
+            Generates the code.
+            </summary>
+            <param name="context">The transformation context.</param>
+            <param name="progress">Progress information.</param>
+            <param name="cancellationToken">The cancellation token.</param>
+            <returns>A <see cref="T:System.Threading.Tasks.Task"/> representing the asynchronous operation.</returns>
+        </member>
+        <member name="M:RedCow.Generators.ProducerInterfaceGenerator.GeneratePartial(Microsoft.CodeAnalysis.CSharp.Syntax.InterfaceDeclarationSyntax)">
+            <summary>
+            Generates a partial for the interface.
+            </summary>
+            <param name="applyToInterface">The interface to apply the partial to.</param>
+            <returns>The interface declaration syntax.</returns>
+        </member>
     </members>
 </doc>

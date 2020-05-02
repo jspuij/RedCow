@@ -1,4 +1,4 @@
-﻿// <copyright file="Immutable{T}.cs" company="Jan-Willem Spuij">
+﻿// <copyright file="GenerateProducerAttribute.cs" company="Jan-Willem Spuij">
 // Copyright 2020 Jan-Willem Spuij
 //
 // Permission is hereby granted, free of charge, to any person obtaining a copy of this software and associated documentation
@@ -18,14 +18,17 @@ namespace RedCow
 {
     using System;
     using System.Collections.Generic;
+    using System.Diagnostics;
     using System.Text;
-    using RedCow.Immutable;
+    using CodeGeneration.Roslyn;
 
     /// <summary>
-    /// Interface for Immutable instances of <typeparamref name="T"/>.
+    /// Attribute to indicate that producer methods should be generated.
     /// </summary>
-    /// <typeparam name="T">The mutable type.</typeparam>
-    public interface Immutable<T>
+    [AttributeUsage(AttributeTargets.Interface, Inherited = false, AllowMultiple = false)]
+    [CodeGenerationAttribute("RedCow.Generators.ProducerInterfaceGenerator, RedCow.Generators")]
+    [Conditional("CodeGeneration")]
+    public class GenerateProducerAttribute : Attribute
     {
     }
 }

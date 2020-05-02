@@ -1,4 +1,4 @@
-﻿// <copyright file="Immutable{T}.cs" company="Jan-Willem Spuij">
+﻿// <copyright file="ImmutableExtensions.cs" company="Jan-Willem Spuij">
 // Copyright 2020 Jan-Willem Spuij
 //
 // Permission is hereby granted, free of charge, to any person obtaining a copy of this software and associated documentation
@@ -22,10 +22,21 @@ namespace RedCow
     using RedCow.Immutable;
 
     /// <summary>
-    /// Interface for Immutable instances of <typeparamref name="T"/>.
+    /// Extension methods for <see cref="Immutable{T}"/>.
     /// </summary>
-    /// <typeparam name="T">The mutable type.</typeparam>
-    public interface Immutable<T>
+    public static class ImmutableExtensions
     {
+        /// <summary>
+        /// Creates a new Draft, based on the <see cref="Immutable{T}"/>.
+        /// </summary>
+        /// <typeparam name="T">The type of the state.</typeparam>
+        /// <param name="state">The immutable.</param>
+        /// <param name="draft">A new draft, based on the immutable.</param>
+        /// <param name="cloneProvider">The clone provider.</param>
+        /// <returns>A scope that is used to either reconcile or dispose of the draft.</returns>
+        public static IDraftScope CreateDraft<T>(this T state, out IDraft<T> draft, ICloneProvider? cloneProvider = null)
+        {
+            throw new NotImplementedException();
+        }
     }
 }

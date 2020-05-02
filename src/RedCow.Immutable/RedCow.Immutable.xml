@@ -4,23 +4,28 @@
         <name>RedCow.Immutable</name>
     </assembly>
     <members>
-        <member name="T:RedCow.GenerateMutable">
+        <member name="T:RedCow.GenerateMutableAttribute">
             <summary>
             Generate Mutable Attribute. Can be applied to a class to automatically generate properties that are mutable for
             the specified immutable interface.
             </summary>
         </member>
-        <member name="M:RedCow.GenerateMutable.#ctor(System.Type)">
+        <member name="M:RedCow.GenerateMutableAttribute.#ctor(System.Type)">
             <summary>
-            Initializes a new instance of the <see cref="T:RedCow.GenerateMutable"/> class.
+            Initializes a new instance of the <see cref="T:RedCow.GenerateMutableAttribute"/> class.
             </summary>
             <param name="immutableInterfaceType">
             The type of the Immutable interface that needs to be implemented.
             </param>
         </member>
-        <member name="P:RedCow.GenerateMutable.ImmutableInterfaceType">
+        <member name="P:RedCow.GenerateMutableAttribute.ImmutableInterfaceType">
             <summary>
             Gets the type of the Immutable Interface.
+            </summary>
+        </member>
+        <member name="T:RedCow.GenerateProducerAttribute">
+            <summary>
+            Attribute to indicate that producer methods should be generated.
             </summary>
         </member>
         <member name="T:RedCow.ICloneProvider">
@@ -38,6 +43,19 @@
             <param name="source">The source.</param>
             <param name="destination">The destination.</param>
         </member>
+        <member name="T:RedCow.Immutable.IDraftScope">
+            <summary>
+            The scope of the draft.
+            </summary>
+        </member>
+        <member name="M:RedCow.Immutable.IDraftScope.FinishDraft``1(``0)">
+            <summary>
+            Finishes a Draft.
+            </summary>
+            <typeparam name="T">The type of the state.</typeparam>
+            <param name="draft">The draft.</param>
+            <returns>An immutable of type T.</returns>
+        </member>
         <member name="T:RedCow.IDraft`1">
             <summary>
             An interface of a Draft object of <typeparamref name="T"/>.
@@ -49,37 +67,26 @@
             Gets the original immutable object.
             </summary>
         </member>
+        <member name="T:RedCow.ImmutableExtensions">
+            <summary>
+            Extension methods for <see cref="T:RedCow.Immutable`1"/>.
+            </summary>
+        </member>
+        <member name="M:RedCow.ImmutableExtensions.CreateDraft``1(``0,RedCow.IDraft{``0}@,RedCow.ICloneProvider)">
+            <summary>
+            Creates a new Draft, based on the <see cref="T:RedCow.Immutable`1"/>.
+            </summary>
+            <typeparam name="T">The type of the state.</typeparam>
+            <param name="state">The immutable.</param>
+            <param name="draft">A new draft, based on the immutable.</param>
+            <param name="cloneProvider">The clone provider.</param>
+            <returns>A scope that is used to either reconcile or dispose of the draft.</returns>
+        </member>
         <member name="T:RedCow.Immutable`1">
             <summary>
             Interface for Immutable instances of <typeparamref name="T"/>.
             </summary>
             <typeparam name="T">The mutable type.</typeparam>
-        </member>
-        <member name="M:RedCow.Immutable`1.Produce(System.Func{`0,`0},RedCow.ICloneProvider)">
-            <summary>
-            Produces the next <see cref="T:RedCow.Immutable`1"/> based on the
-            specified producer function.
-            </summary>
-            <param name="producer">The producer function.</param>
-            <param name="cloneProvider">The clone provider to use.</param>
-            <returns>The next immutable state.</returns>
-        </member>
-        <member name="M:RedCow.Immutable`1.Producer(System.Func{`0,`0},RedCow.ICloneProvider)">
-            <summary>
-            Creates a Producer delegate that can be used to curry on an Immutable State.
-            </summary>
-            <param name="producer">The producer function that operates on objects of type T.</param>
-            <param name="cloneProvider">The clone provider to use.</param>
-            <returns>A producer delegate.</returns>
-        </member>
-        <member name="M:RedCow.Immutable`1.Producer``1(System.Func{`0,``0,`0},RedCow.ICloneProvider)">
-            <summary>
-            Creates a Producer delegate that can be used to curry on an Immutable State.
-            </summary>
-            <param name="producer">The producer function that operates on objects of type T with a single argument.</param>
-            <param name="cloneProvider">The clone provider to use.</param>
-            <typeparam name="TArg">The type of the argument.</typeparam>
-            <returns>A producer delegate.</returns>
         </member>
         <member name="T:RedCow.ReflectionCloneProvider">
             <summary>

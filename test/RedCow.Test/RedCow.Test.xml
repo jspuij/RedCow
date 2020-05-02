@@ -4,6 +4,16 @@
         <name>RedCow.Test</name>
     </assembly>
     <members>
+        <member name="T:RedCow.Test.ImmutableOfTTests">
+            <summary>
+            Unit tests for <see cref="T:RedCow.Immutable`1"/>.
+            </summary>
+        </member>
+        <member name="M:RedCow.Test.ImmutableOfTTests.ProduceTest">
+            <summary>
+            Tests the Produce Method.
+            </summary>
+        </member>
         <member name="T:RedCow.Test.ITestPerson">
             <summary>
             Interface for an Immutable Test Person.
@@ -23,6 +33,59 @@
             <summary>
             Gets a value indicating whether isAdult is true.
             </summary>
+        </member>
+        <member name="M:RedCow.Test.ITestPerson.Produce(System.Action{RedCow.Test.TestPerson},RedCow.ICloneProvider)">
+            <summary>
+            Produces the next <see cref="T:RedCow.Immutable`1"/> based on the
+            specified producer function.
+            </summary>
+            <param name="producer">The producer function.</param>
+            <param name="cloneProvider">The clone provider to use.</param>
+            <returns>The next immutable state.</returns>
+        </member>
+        <member name="M:RedCow.Test.ITestPerson.Produce(RedCow.Test.TestPerson,System.Action{RedCow.Test.TestPerson},RedCow.ICloneProvider)">
+            <summary>
+            Produces the next <see cref="T:RedCow.Immutable`1"/> based on the
+            specified producer function.
+            </summary>
+            <param name="initialState">The initial State.</param>
+            <param name="producer">The producer function.</param>
+            <param name="cloneProvider">The clone provider to use.</param>
+            <returns>The next immutable state.</returns>
+        </member>
+        <member name="M:RedCow.Test.ITestPerson.Producer(System.Action{RedCow.Test.TestPerson},RedCow.ICloneProvider)">
+            <summary>
+            Creates a Producer delegate that can be used to curry on an Immutable State.
+            </summary>
+            <param name="producer">The producer function that operates on objects of type T.</param>
+            <param name="cloneProvider">The clone provider to use.</param>
+            <returns>A producer delegate.</returns>
+        </member>
+        <member name="M:RedCow.Test.ITestPerson.Producer(System.Func{RedCow.Test.TestPerson},RedCow.ICloneProvider)">
+            <summary>
+            Creates a Producer delegate that can be used to curry on an Immutable State.
+            </summary>
+            <param name="producer">The producer function that operates on objects of type T.</param>
+            <param name="cloneProvider">The clone provider to use.</param>
+            <returns>A producer delegate.</returns>
+        </member>
+        <member name="M:RedCow.Test.ITestPerson.Producer``1(System.Action{RedCow.Test.TestPerson,``0},RedCow.ICloneProvider)">
+            <summary>
+            Creates a Producer delegate that can be used to curry on an Immutable State.
+            </summary>
+            <param name="producer">The producer function that operates on objects of type T with a single argument.</param>
+            <param name="cloneProvider">The clone provider to use.</param>
+            <typeparam name="TArg">The type of the argument.</typeparam>
+            <returns>A producer delegate.</returns>
+        </member>
+        <member name="M:RedCow.Test.ITestPerson.Producer``1(System.Func{``0,RedCow.Test.TestPerson},RedCow.ICloneProvider)">
+            <summary>
+            Creates a Producer delegate that can be used to curry on an Immutable State.
+            </summary>
+            <param name="producer">The producer function that operates on objects of type T with a single argument.</param>
+            <param name="cloneProvider">The clone provider to use.</param>
+            <typeparam name="TArg">The type of the argument.</typeparam>
+            <returns>A producer delegate.</returns>
         </member>
         <member name="T:RedCow.Test.ReflectionCloneProviderTests">
             <summary>

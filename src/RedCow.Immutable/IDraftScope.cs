@@ -1,4 +1,4 @@
-﻿// <copyright file="GenerateMutable.cs" company="Jan-Willem Spuij">
+﻿// <copyright file="IDraftScope.cs" company="Jan-Willem Spuij">
 // Copyright 2020 Jan-Willem Spuij
 //
 // Permission is hereby granted, free of charge, to any person obtaining a copy of this software and associated documentation
@@ -14,35 +14,24 @@
 // ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 // </copyright>
 
-namespace RedCow
+namespace RedCow.Immutable
 {
     using System;
-    using System.Diagnostics;
-    using CodeGeneration.Roslyn;
+    using System.Collections.Generic;
+    using System.Text;
 
     /// <summary>
-    /// Generate Mutable Attribute. Can be applied to a class to automatically generate properties that are mutable for
-    /// the specified immutable interface.
+    /// The scope of the draft.
     /// </summary>
-    [AttributeUsage(AttributeTargets.Class, Inherited = false, AllowMultiple = true)]
-    [CodeGenerationAttribute("RedCow.Generators.MutableClassGenerator, RedCow.Generators")]
-    [Conditional("CodeGeneration")]
-    public class GenerateMutable : Attribute
+    public interface IDraftScope
+        : IDisposable
     {
         /// <summary>
-        /// Initializes a new instance of the <see cref="GenerateMutable"/> class.
+        /// Finishes a Draft.
         /// </summary>
-        /// <param name="immutableInterfaceType">
-        /// The type of the Immutable interface that needs to be implemented.
-        /// </param>
-        public GenerateMutable(Type immutableInterfaceType)
-        {
-            this.ImmutableInterfaceType = immutableInterfaceType;
-        }
-
-        /// <summary>
-        /// Gets the type of the Immutable Interface.
-        /// </summary>
-        public Type ImmutableInterfaceType { get; }
+        /// <typeparam name="T">The type of the state.</typeparam>
+        /// <param name="draft">The draft.</param>
+        /// <returns>An immutable of type T.</returns>
+        public Immutable<T> FinishDraft<T>(T draft);
     }
 }

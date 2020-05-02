@@ -1,4 +1,4 @@
-﻿// <copyright file="Immutable{T}.cs" company="Jan-Willem Spuij">
+﻿// <copyright file="ImmutableOfTTests.cs" company="Jan-Willem Spuij">
 // Copyright 2020 Jan-Willem Spuij
 //
 // Permission is hereby granted, free of charge, to any person obtaining a copy of this software and associated documentation
@@ -14,18 +14,48 @@
 // ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 // </copyright>
 
-namespace RedCow
+namespace RedCow.Test
 {
     using System;
     using System.Collections.Generic;
     using System.Text;
-    using RedCow.Immutable;
+    using Xunit;
 
     /// <summary>
-    /// Interface for Immutable instances of <typeparamref name="T"/>.
+    /// Unit tests for <see cref="Immutable{T}"/>.
     /// </summary>
-    /// <typeparam name="T">The mutable type.</typeparam>
-    public interface Immutable<T>
+    public class ImmutableOfTTests
     {
+        /// <summary>
+        /// Tests the Produce Method.
+        /// </summary>
+        [Fact]
+        public void ProduceTest()
+        {
+            TestPerson initial = new TestPerson()
+            {
+                FirstName = "John",
+                LastName = "Doe",
+                IsAdult = true,
+            };
+
+            ITestPerson person = ITestPerson.Produce(initial, p =>
+            {
+                p.FirstName = "Jane";
+                p.IsAdult = false;
+            });
+
+            person = person.Produce(p =>
+            {
+                p.FirstName = "John";
+                p.IsAdult = true;
+            });
+
+            var producer = ITestPerson.Producer(p =>
+            {
+                p.FirstName = "Jane";
+                p.IsAdult = false;
+            });
+        }
     }
 }
