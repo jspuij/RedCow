@@ -148,72 +148,23 @@ namespace RedCow.Generators
         /// <returns>The method declaration.</returns>
         private MemberDeclarationSyntax GenerateStaticProduceAction(InterfaceDeclarationSyntax interfaceDeclaration)
         {
-            return MethodDeclaration(
-                IdentifierName(interfaceDeclaration.Identifier),
-                Identifier("Produce"))
-            .WithModifiers(
-                TokenList(
-                    new[]
-                    {
-                        Token(
-                            this.GenerateProduceDocumentation(interfaceDeclaration, true, false, true),
-                            SyntaxKind.PublicKeyword,
-                            TriviaList()),
-                        Token(SyntaxKind.StaticKeyword),
-                    }))
-            .WithParameterList(
-                ParameterList(
-                    SeparatedList<ParameterSyntax>(
-                        new SyntaxNodeOrToken[]
-                        {
-                            Parameter(
-                                Identifier("initialState"))
-                            .WithType(
-                                IdentifierName(this.mutableType.Name)),
-                            Token(SyntaxKind.CommaToken),
-                            Parameter(
-                                Identifier("producer"))
-                            .WithType(
-                                GenericName(
-                                    Identifier("Action"))
-                                .WithTypeArgumentList(
-                                    TypeArgumentList(
-                                        SingletonSeparatedList<TypeSyntax>(
-                                            IdentifierName(this.mutableType.Name))))),
-                            Token(SyntaxKind.CommaToken),
-                            Parameter(
-                                Identifier("cloneProvider"))
-                            .WithType(
-                                 IdentifierName("ICloneProvider"))
-                            .WithDefault(
-                                EqualsValueClause(
-                                    LiteralExpression(
-                                        SyntaxKind.NullLiteralExpression))),
-                        })))
-            .WithExpressionBody(
-                ArrowExpressionClause(
-                    InvocationExpression(
-                        InvocationExpression(
-                            IdentifierName("Producer"))
-                        .WithArgumentList(
-                            ArgumentList(
-                                SeparatedList<ArgumentSyntax>(
-                                    new SyntaxNodeOrToken[]
-                                    {
-                                        Argument(
-                                            IdentifierName("producer")),
-                                        Token(SyntaxKind.CommaToken),
-                                        Argument(
-                                            IdentifierName("cloneProvider")),
-                                    }))))
-                    .WithArgumentList(
-                        ArgumentList(
-                            SingletonSeparatedList(
-                                Argument(
-                                    IdentifierName("initialState")))))))
-            .WithSemicolonToken(
-                Token(SyntaxKind.SemicolonToken))
-    .NormalizeWhitespace();
+            var interfaceName = interfaceDeclaration.Identifier.Text;
+            var className = this.mutableType.Name;
+
+            var method = $@"
+                /// <summary>
+                /// Produces the next <see cref = ""Immutable{{T}}""/> based on the
+                /// specified producer action.
+                /// </summary>
+                /// <param name = ""initialState"">The initial State.</param>
+                /// <param name = ""producer"">The producer action.</param>
+                /// <param name = ""cloneProvider"">The clone provider to use.</param>
+                /// <returns>The next immutable state.</returns>
+                    public static {interfaceName} Produce({className} initialState, Action<{className}> producer, ICloneProvider cloneProvider = null) =>
+                        Producer(producer, cloneProvider)(initialState);
+            ";
+            return ParseMemberDeclaration(method)
+            .NormalizeWhitespace();
         }
 
         /// <summary>
@@ -247,364 +198,23 @@ namespace RedCow.Generators
         /// <returns>The method declaration.</returns>
         private MemberDeclarationSyntax GenerateStaticProduceFunction(InterfaceDeclarationSyntax interfaceDeclaration)
         {
-            return MethodDeclaration(
-                IdentifierName(interfaceDeclaration.Identifier),
-                Identifier("Produce"))
-            .WithModifiers(
-                TokenList(
-                    new[]
-                    {
-                        Token(
-                            this.GenerateProduceDocumentation(interfaceDeclaration, true, true, true),
-                            SyntaxKind.PublicKeyword,
-                            TriviaList()),
-                        Token(SyntaxKind.StaticKeyword),
-                    }))
-            .WithParameterList(
-                ParameterList(
-                    SeparatedList<ParameterSyntax>(
-                        new SyntaxNodeOrToken[]
-                        {
-                            Parameter(
-                                Identifier("initialState"))
-                            .WithType(
-                                IdentifierName(this.mutableType.Name)),
-                            Token(SyntaxKind.CommaToken),
-                            Parameter(
-                                Identifier("producer"))
-                            .WithType(
-                                GenericName(
-                                    Identifier("Func"))
-                                .WithTypeArgumentList(
-                                    TypeArgumentList(
-                                        SingletonSeparatedList<TypeSyntax>(
-                                            IdentifierName(this.mutableType.Name))))),
-                            Token(SyntaxKind.CommaToken),
-                            Parameter(
-                                Identifier("cloneProvider"))
-                            .WithType(
-                                 IdentifierName("ICloneProvider"))
-                            .WithDefault(
-                                EqualsValueClause(
-                                    LiteralExpression(
-                                        SyntaxKind.NullLiteralExpression))),
-                        })))
-            .WithExpressionBody(
-                ArrowExpressionClause(
-                    InvocationExpression(
-                        InvocationExpression(
-                            IdentifierName("Producer"))
-                        .WithArgumentList(
-                            ArgumentList(
-                                SeparatedList<ArgumentSyntax>(
-                                    new SyntaxNodeOrToken[]
-                                    {
-                                        Argument(
-                                            IdentifierName("producer")),
-                                        Token(SyntaxKind.CommaToken),
-                                        Argument(
-                                            IdentifierName("cloneProvider")),
-                                    }))))
-                    .WithArgumentList(
-                        ArgumentList(
-                            SingletonSeparatedList(
-                                Argument(
-                                    IdentifierName("initialState")))))))
-            .WithSemicolonToken(
-                Token(SyntaxKind.SemicolonToken))
+            var interfaceName = interfaceDeclaration.Identifier.Text;
+            var className = this.mutableType.Name;
+
+            var method = $@"
+                /// <summary>
+                /// Produces the next <see cref = ""Immutable{{T}}""/> based on the
+                /// specified producer function.
+                /// </summary>
+                /// <param name = ""initialState"">The initial State.</param>
+                /// <param name = ""producer"">The producer function.</param>
+                /// <param name = ""cloneProvider"">The clone provider to use.</param>
+                /// <returns>The next immutable state.</returns>
+                public static {interfaceName} Produce({className} initialState, Func<{className}> producer, ICloneProvider cloneProvider = null) =>
+                    Producer(producer, cloneProvider)(initialState);
+            ";
+            return ParseMemberDeclaration(method)
             .NormalizeWhitespace();
-        }
-
-        /// <summary>
-        /// Generate the documentation for the produce method.
-        /// </summary>
-        /// <param name="interfaceDeclaration">The interface declaration.</param>
-        /// <param name="isStatic">Whether this is the static produce method.</param>
-        /// <param name="usesFunction">Whether the producer uses a function or an action.</param>
-        /// <param name="hasProducer">Whether the producer is empty.</param>
-        /// <returns>The documentation.</returns>
-        private SyntaxTriviaList GenerateProduceDocumentation(InterfaceDeclarationSyntax interfaceDeclaration, bool isStatic, bool usesFunction, bool hasProducer)
-        {
-            string functionOrAction = usesFunction ? "function" : "action";
-
-            var list = new List<XmlNodeSyntax>()
-            {
-                XmlText()
-    .WithTextTokens(
-        TokenList(
-            XmlTextLiteral(
-                TriviaList(
-                    DocumentationCommentExterior("///")),
-                " ",
-                " ",
-                TriviaList()))),
-                XmlExampleElement(
-                    XmlText()
-                    .WithTextTokens(
-                        TokenList(
-                            new[]
-                            {
-                                XmlTextNewLine(
-                                    TriviaList(),
-                                    Environment.NewLine,
-                                    Environment.NewLine,
-                                    TriviaList()),
-                                XmlTextLiteral(
-                                    TriviaList(
-                                        DocumentationCommentExterior("        ///")),
-                                    " Produces the next ",
-                                    " Produces the next ",
-                                    TriviaList()),
-                            })),
-                    XmlNullKeywordElement()
-                    .WithAttributes(
-                        SingletonList<XmlAttributeSyntax>(
-                            XmlCrefAttribute(
-                                NameMemberCref(
-                                    GenericName(
-                                        Identifier("Immutable"))
-                                    .WithTypeArgumentList(
-                                        TypeArgumentList(
-                                            SingletonSeparatedList<TypeSyntax>(
-                                                IdentifierName("T")))))))),
-                    XmlText()
-                    .WithTextTokens(
-                        TokenList(
-                            new[]
-                            {
-                                XmlTextLiteral(
-                                    TriviaList(),
-                                    " based on the",
-                                    " based on the",
-                                    TriviaList()),
-                                XmlTextNewLine(
-                                    TriviaList(),
-                                    Environment.NewLine,
-                                    Environment.NewLine,
-                                    TriviaList()),
-                                XmlTextLiteral(
-                                    TriviaList(
-                                        DocumentationCommentExterior("        ///")),
-                                    hasProducer ? $" specified producer {functionOrAction}." : "intial state.",
-                                    hasProducer ? $" specified producer {functionOrAction}." : "intial state.",
-                                    TriviaList()),
-                                XmlTextNewLine(
-                                    TriviaList(),
-                                    Environment.NewLine,
-                                    Environment.NewLine,
-                                    TriviaList()),
-                                XmlTextLiteral(
-                                    TriviaList(
-                                        DocumentationCommentExterior("        ///")),
-                                    " ",
-                                    " ",
-                                    TriviaList()),
-                            })))
-                .WithStartTag(
-                    XmlElementStartTag(
-                        XmlName(
-                            Identifier("summary"))))
-                .WithEndTag(
-                    XmlElementEndTag(
-                        XmlName(
-                            Identifier("summary")))),
-            };
-
-            if (isStatic)
-            {
-                list.Add(
-                XmlText()
-                .WithTextTokens(
-                    TokenList(
-                        new[]
-                        {
-                            XmlTextNewLine(
-                                TriviaList(),
-                                Environment.NewLine,
-                                Environment.NewLine,
-                                TriviaList()),
-                            XmlTextLiteral(
-                                TriviaList(
-                                    DocumentationCommentExterior("        ///")),
-                                " ",
-                                " ",
-                                TriviaList()),
-                        })));
-                list.Add(
-                XmlExampleElement(
-                    SingletonList<XmlNodeSyntax>(
-                        XmlText()
-                        .WithTextTokens(
-                            TokenList(
-                                XmlTextLiteral(
-                                    TriviaList(),
-                                    "The initial State.",
-                                    "The initial State.",
-                                    TriviaList())))))
-                .WithStartTag(
-                    XmlElementStartTag(
-                        XmlName(
-                            Identifier("param")))
-                    .WithAttributes(
-                        SingletonList<XmlAttributeSyntax>(
-                            XmlNameAttribute(
-                                XmlName(
-                                    Identifier("name")),
-                                Token(SyntaxKind.DoubleQuoteToken),
-                                IdentifierName("initialState"),
-                                Token(SyntaxKind.DoubleQuoteToken)))))
-                .WithEndTag(
-                    XmlElementEndTag(
-                        XmlName(
-                            Identifier("param")))));
-            }
-
-            if (hasProducer)
-            {
-                list.Add(
-                XmlText()
-                .WithTextTokens(
-                    TokenList(
-                        new[]
-                        {
-                            XmlTextNewLine(
-                                TriviaList(),
-                                Environment.NewLine,
-                                Environment.NewLine,
-                                TriviaList()),
-                            XmlTextLiteral(
-                                TriviaList(
-                                    DocumentationCommentExterior("        ///")),
-                                " ",
-                                " ",
-                                TriviaList()),
-                        })));
-                list.Add(
-                XmlExampleElement(
-                    SingletonList<XmlNodeSyntax>(
-                        XmlText()
-                        .WithTextTokens(
-                            TokenList(
-                                XmlTextLiteral(
-                                    TriviaList(),
-                                    $"The producer {functionOrAction}.",
-                                    $"The producer {functionOrAction}.",
-                                    TriviaList())))))
-                .WithStartTag(
-                    XmlElementStartTag(
-                        XmlName(
-                            Identifier("param")))
-                    .WithAttributes(
-                        SingletonList<XmlAttributeSyntax>(
-                            XmlNameAttribute(
-                                XmlName(
-                                    Identifier("name")),
-                                Token(SyntaxKind.DoubleQuoteToken),
-                                IdentifierName("producer"),
-                                Token(SyntaxKind.DoubleQuoteToken)))))
-                .WithEndTag(
-                    XmlElementEndTag(
-                        XmlName(
-                            Identifier("param")))));
-            }
-
-            list.Add(
-            XmlText()
-            .WithTextTokens(
-                TokenList(
-                    new[]
-                    {
-                            XmlTextNewLine(
-                                TriviaList(),
-                                Environment.NewLine,
-                                Environment.NewLine,
-                                TriviaList()),
-                            XmlTextLiteral(
-                                TriviaList(
-                                    DocumentationCommentExterior("        ///")),
-                                " ",
-                                " ",
-                                TriviaList()),
-                    })));
-            list.Add(
-            XmlExampleElement(
-                SingletonList<XmlNodeSyntax>(
-                    XmlText()
-                    .WithTextTokens(
-                        TokenList(
-                            XmlTextLiteral(
-                                TriviaList(),
-                                "The clone provider to use.",
-                                "The clone provider to use.",
-                                TriviaList())))))
-            .WithStartTag(
-                XmlElementStartTag(
-                    XmlName(
-                        Identifier("param")))
-                .WithAttributes(
-                    SingletonList<XmlAttributeSyntax>(
-                        XmlNameAttribute(
-                            XmlName(
-                                Identifier("name")),
-                            Token(SyntaxKind.DoubleQuoteToken),
-                            IdentifierName("cloneProvider"),
-                            Token(SyntaxKind.DoubleQuoteToken)))))
-            .WithEndTag(
-                XmlElementEndTag(
-                    XmlName(
-                        Identifier("param")))));
-            list.Add(
-            XmlText()
-            .WithTextTokens(
-                TokenList(
-                    new[]
-                    {
-                            XmlTextNewLine(
-                                TriviaList(),
-                                Environment.NewLine,
-                                Environment.NewLine,
-                                TriviaList()),
-                            XmlTextLiteral(
-                                TriviaList(
-                                    DocumentationCommentExterior("        ///")),
-                                " ",
-                                " ",
-                                TriviaList()),
-                    })));
-            list.Add(
-            XmlExampleElement(
-                SingletonList<XmlNodeSyntax>(
-                    XmlText()
-                    .WithTextTokens(
-                        TokenList(
-                            XmlTextLiteral(
-                                TriviaList(),
-                                "The next immutable state.",
-                                "The next immutable state.",
-                                TriviaList())))))
-            .WithStartTag(
-                XmlElementStartTag(
-                    XmlName(
-                        Identifier("returns"))))
-            .WithEndTag(
-                XmlElementEndTag(
-                    XmlName(
-                        Identifier("returns")))));
-            list.Add(
-        XmlText()
-        .WithTextTokens(
-            TokenList(
-                XmlTextNewLine(
-                    TriviaList(),
-                    Environment.NewLine,
-                    Environment.NewLine,
-                    TriviaList()))));
-
-            return TriviaList(
-                        Trivia(
-                            DocumentationCommentTrivia(
-                                SyntaxKind.SingleLineDocumentationCommentTrivia,
-                                List(list))));
         }
 
         /// <summary>
@@ -614,112 +224,21 @@ namespace RedCow.Generators
         /// <returns>The method declaration.</returns>
         private MemberDeclarationSyntax GenerateProducerAction(InterfaceDeclarationSyntax interfaceDeclaration)
         {
-            return MethodDeclaration(
-            GenericName(
-                Identifier("Func"))
-            .WithTypeArgumentList(
-                TypeArgumentList(
-                    SeparatedList<TypeSyntax>(
-                        new SyntaxNodeOrToken[]
-                        {
-                            IdentifierName(this.mutableType.Name),
-                            Token(SyntaxKind.CommaToken),
-                            IdentifierName(interfaceDeclaration.Identifier),
-                        }))),
-            Identifier("Producer"))
-        .WithModifiers(
-            TokenList(
-                new[]
-                {
-                    Token(
-                        this.GenerateProducerDocumentation(interfaceDeclaration, false, false),
-                        SyntaxKind.PublicKeyword,
-                        TriviaList()),
-                    Token(SyntaxKind.StaticKeyword),
-                }))
-        .WithParameterList(
-            ParameterList(
-                SeparatedList<ParameterSyntax>(
-                    new SyntaxNodeOrToken[]
-                    {
-                        Parameter(
-                            Identifier("producer"))
-                        .WithType(
-                            GenericName(
-                                Identifier("Action"))
-                            .WithTypeArgumentList(
-                                TypeArgumentList(
-                                    SingletonSeparatedList<TypeSyntax>(
-                                        IdentifierName(this.mutableType.Name))))),
-                        Token(SyntaxKind.CommaToken),
-                        Parameter(
-                            Identifier("cloneProvider"))
-                        .WithType(
-                             IdentifierName("ICloneProvider"))
-                        .WithDefault(
-                            EqualsValueClause(
-                                LiteralExpression(
-                                    SyntaxKind.NullLiteralExpression))),
-                    })))
-        .WithExpressionBody(
-            ArrowExpressionClause(
-                ParenthesizedLambdaExpression(
-                    ParameterList(
-                        SingletonSeparatedList(
-                            Parameter(
-                                Identifier("immutable1")))),
-                    InvocationExpression(
-                        InvocationExpression(
-                            GenericName(
-                                Identifier("Producer"))
-                            .WithTypeArgumentList(
-                                TypeArgumentList(
-                                    SingletonSeparatedList<TypeSyntax>(
-                                        PredefinedType(
-                                            Token(SyntaxKind.ObjectKeyword))))))
-                        .WithArgumentList(
-                            ArgumentList(
-                                SeparatedList<ArgumentSyntax>(
-                                    new SyntaxNodeOrToken[]
-                                    {
-                                        Argument(
-                                            ParenthesizedLambdaExpression(
-                                                ParameterList(
-                                                    SeparatedList<ParameterSyntax>(
-                                                        new SyntaxNodeOrToken[]
-                                                        {
-                                                            Parameter(
-                                                                Identifier("argument1")),
-                                                            Token(SyntaxKind.CommaToken),
-                                                            Parameter(
-                                                                Identifier("_")),
-                                                        })),
-                                                InvocationExpression(
-                                                    IdentifierName("producer"))
-                                                .WithArgumentList(
-                                                    ArgumentList(
-                                                        SingletonSeparatedList(
-                                                            Argument(
-                                                                IdentifierName("argument1"))))))),
-                                        Token(SyntaxKind.CommaToken),
-                                        Argument(
-                                            IdentifierName("cloneProvider")),
-                                    }))))
-                    .WithArgumentList(
-                        ArgumentList(
-                            SeparatedList<ArgumentSyntax>(
-                                new SyntaxNodeOrToken[]
-                                {
-                                    Argument(
-                                        IdentifierName("immutable1")),
-                                    Token(SyntaxKind.CommaToken),
-                                    Argument(
-                                        LiteralExpression(
-                                            SyntaxKind.NullLiteralExpression)),
-                                }))))))
-        .WithSemicolonToken(
-            Token(SyntaxKind.SemicolonToken))
-        .NormalizeWhitespace();
+            var interfaceName = interfaceDeclaration.Identifier.Text;
+            var className = this.mutableType.Name;
+
+            var method = $@"
+                /// <summary>
+                /// Creates a Producer delegate that can be used to curry on an Immutable State.
+                /// </summary>
+                /// <param name = ""producer"">The producer action that operates on an object of type T.</param>
+                /// <param name = ""cloneProvider"">The clone provider to use.</param>
+                /// <returns>A producer delegate.</returns>
+                public static Func<{interfaceName}, {interfaceName}> Producer(Action<{className}> producer, ICloneProvider cloneProvider = null) =>
+                    (immutable1) => Producer<object>((argument1, _) => producer(argument1), cloneProvider)(immutable1, null);
+            ";
+            return ParseMemberDeclaration(method)
+            .NormalizeWhitespace();
         }
 
         /// <summary>
@@ -729,99 +248,21 @@ namespace RedCow.Generators
         /// <returns>The method declaration.</returns>
         private MemberDeclarationSyntax GenerateProducerFunction(InterfaceDeclarationSyntax interfaceDeclaration)
         {
-            return MethodDeclaration(
-            GenericName(
-                Identifier("Func"))
-            .WithTypeArgumentList(
-                TypeArgumentList(
-                    SeparatedList<TypeSyntax>(
-                        new SyntaxNodeOrToken[]
-                        {
-                            IdentifierName(this.mutableType.Name),
-                            Token(SyntaxKind.CommaToken),
-                            IdentifierName(interfaceDeclaration.Identifier),
-                        }))),
-            Identifier("Producer"))
-        .WithModifiers(
-            TokenList(
-                new[]
-                {
-                    Token(
-                        this.GenerateProducerDocumentation(interfaceDeclaration, true, false),
-                        SyntaxKind.PublicKeyword,
-                        TriviaList()),
-                    Token(SyntaxKind.StaticKeyword),
-                }))
-        .WithParameterList(
-            ParameterList(
-                SeparatedList<ParameterSyntax>(
-                    new SyntaxNodeOrToken[]
-                    {
-                        Parameter(
-                            Identifier("producer"))
-                        .WithType(
-                            GenericName(
-                                Identifier("Func"))
-                            .WithTypeArgumentList(
-                                TypeArgumentList(
-                                    SingletonSeparatedList<TypeSyntax>(
-                                        IdentifierName(this.mutableType.Name))))),
-                        Token(SyntaxKind.CommaToken),
-                        Parameter(
-                            Identifier("cloneProvider"))
-                        .WithType(
-                             IdentifierName("ICloneProvider"))
-                        .WithDefault(
-                            EqualsValueClause(
-                                LiteralExpression(
-                                    SyntaxKind.NullLiteralExpression))),
-                    })))
-        .WithExpressionBody(
-            ArrowExpressionClause(
-                ParenthesizedLambdaExpression(
-                    ParameterList(
-                        SingletonSeparatedList(
-                            Parameter(
-                                Identifier("immutable1")))),
-                    InvocationExpression(
-                        InvocationExpression(
-                            GenericName(
-                                Identifier("Producer"))
-                            .WithTypeArgumentList(
-                                TypeArgumentList(
-                                    SingletonSeparatedList<TypeSyntax>(
-                                        PredefinedType(
-                                            Token(SyntaxKind.ObjectKeyword))))))
-                        .WithArgumentList(
-                            ArgumentList(
-                                SeparatedList<ArgumentSyntax>(
-                                    new SyntaxNodeOrToken[]
-                                    {
-                                        Argument(
-                                            SimpleLambdaExpression(
-                                                Parameter(
-                                                    Identifier("_")),
-                                                InvocationExpression(
-                                                    IdentifierName("producer")))),
-                                        Token(SyntaxKind.CommaToken),
-                                        Argument(
-                                            IdentifierName("cloneProvider")),
-                                    }))))
-                    .WithArgumentList(
-                        ArgumentList(
-                            SeparatedList<ArgumentSyntax>(
-                                new SyntaxNodeOrToken[]
-                                {
-                                    Argument(
-                                        IdentifierName("immutable1")),
-                                    Token(SyntaxKind.CommaToken),
-                                    Argument(
-                                        LiteralExpression(
-                                            SyntaxKind.NullLiteralExpression)),
-                                }))))))
-        .WithSemicolonToken(
-            Token(SyntaxKind.SemicolonToken))
-        .NormalizeWhitespace();
+            var interfaceName = interfaceDeclaration.Identifier.Text;
+            var className = this.mutableType.Name;
+
+            var method = $@"
+                /// <summary>
+                /// Creates a Producer delegate that can be used to curry on an Immutable State.
+                /// </summary>
+                /// <param name = ""producer"">The producer function that returns an object of type T.</param>
+                /// <param name = ""cloneProvider"">The clone provider to use.</param>
+                /// <returns>A producer delegate.</returns>
+                public static Func<{interfaceName}, {interfaceName}> Producer(Func<{className}> producer, ICloneProvider cloneProvider = null) =>
+                    (immutable1) => Producer<object>(_ => producer(), cloneProvider)(immutable1, null);
+            ";
+            return ParseMemberDeclaration(method)
+            .NormalizeWhitespace();
         }
 
         /// <summary>
@@ -831,145 +272,27 @@ namespace RedCow.Generators
         /// <returns>The method declaration.</returns>
         private MemberDeclarationSyntax GenerateProducerActionWithArgument(InterfaceDeclarationSyntax interfaceDeclaration)
         {
-            return MethodDeclaration(
-            GenericName(
-                Identifier("Func"))
-            .WithTypeArgumentList(
-                TypeArgumentList(
-                    SeparatedList<TypeSyntax>(
-                        new SyntaxNodeOrToken[]
-                        {
-                            IdentifierName(this.mutableType.Name),
-                            Token(SyntaxKind.CommaToken),
-                            IdentifierName("TArg"),
-                            Token(SyntaxKind.CommaToken),
-                            IdentifierName(interfaceDeclaration.Identifier),
-                        }))),
-            Identifier("Producer"))
-        .WithModifiers(
-            TokenList(
-                new[]
-                {
-                    Token(
-                        this.GenerateProducerDocumentation(interfaceDeclaration, false, true),
-                        SyntaxKind.PublicKeyword,
-                        TriviaList()),
-                    Token(SyntaxKind.StaticKeyword),
-                }))
-        .WithTypeParameterList(
-            TypeParameterList(
-                SingletonSeparatedList(
-                    TypeParameter(
-                        Identifier("TArg")))))
-        .WithParameterList(
-            ParameterList(
-                SeparatedList<ParameterSyntax>(
-                    new SyntaxNodeOrToken[]
-                    {
-                        Parameter(
-                            Identifier("producer"))
-                        .WithType(
-                            GenericName(
-                                Identifier("Action"))
-                            .WithTypeArgumentList(
-                                TypeArgumentList(
-                                    SeparatedList<TypeSyntax>(
-                                        new SyntaxNodeOrToken[]
-                                        {
-                                            IdentifierName(this.mutableType.Name),
-                                            Token(SyntaxKind.CommaToken),
-                                            IdentifierName("TArg"),
-                                        })))),
-                        Token(SyntaxKind.CommaToken),
-                        Parameter(
-                            Identifier("cloneProvider"))
-                        .WithType(
-                             IdentifierName("ICloneProvider"))
-                        .WithDefault(
-                            EqualsValueClause(
-                                LiteralExpression(
-                                    SyntaxKind.NullLiteralExpression))),
-                    })))
-        .WithExpressionBody(
-            ArrowExpressionClause(
-                ParenthesizedLambdaExpression(
-                    ParameterList(
-                        SeparatedList<ParameterSyntax>(
-                            new SyntaxNodeOrToken[]
-                            {
-                                Parameter(
-                                    Identifier("immutable1")),
-                                Token(SyntaxKind.CommaToken),
-                                Parameter(
-                                    Identifier("argument1")),
-                            })),
-                    Block(
-                        LocalDeclarationStatement(
-                            VariableDeclaration(
-                                IdentifierName("var"))
-                            .WithVariables(
-                                SingletonSeparatedList(
-                                    VariableDeclarator(
-                                        Identifier("scope"))
-                                    .WithInitializer(
-                                        EqualsValueClause(
-                                            InvocationExpression(
-                                                MemberAccessExpression(
-                                                    SyntaxKind.SimpleMemberAccessExpression,
-                                                    IdentifierName("immutable1"),
-                                                    IdentifierName("CreateDraft")))
-                                            .WithArgumentList(
-                                                ArgumentList(
-                                                    SeparatedList<ArgumentSyntax>(
-                                                        new SyntaxNodeOrToken[]
-                                                        {
-                                                            Argument(
-                                                                DeclarationExpression(
-                                                                    IdentifierName("var"),
-                                                                    SingleVariableDesignation(
-                                                                        Identifier("draft"))))
-                                                            .WithRefKindKeyword(
-                                                                Token(SyntaxKind.OutKeyword)),
-                                                            Token(SyntaxKind.CommaToken),
-                                                            Argument(
-                                                                IdentifierName("cloneProvider")),
-                                                        }))))))))
-                        .WithUsingKeyword(
-                            Token(SyntaxKind.UsingKeyword)),
-                        ExpressionStatement(
-                            InvocationExpression(
-                                IdentifierName("producer"))
-                            .WithArgumentList(
-                                ArgumentList(
-                                    SeparatedList<ArgumentSyntax>(
-                                        new SyntaxNodeOrToken[]
-                                        {
-                                            Argument(
-                                                CastExpression(
-                                                    IdentifierName(this.mutableType.Name),
-                                                    IdentifierName("draft"))),
-                                            Token(SyntaxKind.CommaToken),
-                                            Argument(
-                                                IdentifierName("argument1")),
-                                        })))),
-                        ReturnStatement(
-                            CastExpression(
-                                IdentifierName(interfaceDeclaration.Identifier),
-                                InvocationExpression(
-                                    MemberAccessExpression(
-                                        SyntaxKind.SimpleMemberAccessExpression,
-                                        IdentifierName("scope"),
-                                        IdentifierName("FinishDraft")))
-                                .WithArgumentList(
-                                    ArgumentList(
-                                        SingletonSeparatedList(
-                                            Argument(
-                                                CastExpression(
-                                                    IdentifierName(this.mutableType.Name),
-                                                    IdentifierName("draft"))))))))))))
-        .WithSemicolonToken(
-            Token(SyntaxKind.SemicolonToken))
-.NormalizeWhitespace();
+            var interfaceName = interfaceDeclaration.Identifier.Text;
+            var className = this.mutableType.Name;
+
+            var method = $@"
+                /// <summary>
+                /// Creates a Producer delegate that can be used to curry on an Immutable State.
+                /// </summary>
+                /// <param name = ""producer"">The producer action that operates on an object of type T with a single argument.</param>
+                /// <param name = ""cloneProvider"">The clone provider to use.</param>
+                /// <typeparam name = ""TArg"">The type of the argument.</typeparam>
+                /// <returns>A producer delegate.</returns>
+                    public static Func<{interfaceName}, TArg, {interfaceName}> Producer<TArg>(Action<{className}, TArg> producer, ICloneProvider cloneProvider = null) => 
+                        (immutable1, argument1) =>
+                        {{
+                            using var scope = immutable1.CreateDraft(out var draft, cloneProvider);
+                            producer((TestPerson)draft, argument1);
+                            return (ITestPerson)scope.FinishDraft((TestPerson)draft);
+                        }};
+            ";
+            return ParseMemberDeclaration(method)
+            .NormalizeWhitespace();
         }
 
         /// <summary>
@@ -979,416 +302,27 @@ namespace RedCow.Generators
         /// <returns>The method declaration.</returns>
         private MemberDeclarationSyntax GenerateProducerFunctionWithArgument(InterfaceDeclarationSyntax interfaceDeclaration)
         {
-            return MethodDeclaration(
-            GenericName(
-                Identifier("Func"))
-            .WithTypeArgumentList(
-                TypeArgumentList(
-                    SeparatedList<TypeSyntax>(
-                        new SyntaxNodeOrToken[]
-                        {
-                            IdentifierName(this.mutableType.Name),
-                            Token(SyntaxKind.CommaToken),
-                            IdentifierName("TArg"),
-                            Token(SyntaxKind.CommaToken),
-                            IdentifierName(interfaceDeclaration.Identifier),
-                        }))),
-            Identifier("Producer"))
-        .WithModifiers(
-            TokenList(
-                new[]
-                {
-                    Token(
-                        this.GenerateProducerDocumentation(interfaceDeclaration, true, true),
-                        SyntaxKind.PublicKeyword,
-                        TriviaList()),
-                    Token(SyntaxKind.StaticKeyword),
-                }))
-        .WithTypeParameterList(
-            TypeParameterList(
-                SingletonSeparatedList<TypeParameterSyntax>(
-                    TypeParameter(
-                        Identifier("TArg")))))
-        .WithParameterList(
-            ParameterList(
-                SeparatedList<ParameterSyntax>(
-                    new SyntaxNodeOrToken[]
-                    {
-                        Parameter(
-                            Identifier("producer"))
-                        .WithType(
-                            GenericName(
-                                Identifier("Func"))
-                            .WithTypeArgumentList(
-                                TypeArgumentList(
-                                    SeparatedList<TypeSyntax>(
-                                        new SyntaxNodeOrToken[]
-                                        {
-                                            IdentifierName("TArg"),
-                                            Token(SyntaxKind.CommaToken),
-                                            IdentifierName(this.mutableType.Name),
-                                        })))),
-                        Token(SyntaxKind.CommaToken),
-                        Parameter(
-                            Identifier("cloneProvider"))
-                        .WithType(
-                             IdentifierName("ICloneProvider"))
-                        .WithDefault(
-                            EqualsValueClause(
-                                LiteralExpression(
-                                    SyntaxKind.NullLiteralExpression))),
-                    })))
-         .WithExpressionBody(
-            ArrowExpressionClause(
-                ParenthesizedLambdaExpression(
-                    ParameterList(
-                        SeparatedList<ParameterSyntax>(
-                            new SyntaxNodeOrToken[]
-                            {
-                                Parameter(
-                                    Identifier("immutable1")),
-                                Token(SyntaxKind.CommaToken),
-                                Parameter(
-                                    Identifier("argument1")),
-                            })),
-                    Block(
-                        LocalDeclarationStatement(
-                            VariableDeclaration(
-                                IdentifierName("var"))
-                            .WithVariables(
-                                SingletonSeparatedList(
-                                    VariableDeclarator(
-                                        Identifier("scope"))
-                                    .WithInitializer(
-                                        EqualsValueClause(
-                                            InvocationExpression(
-                                                MemberAccessExpression(
-                                                    SyntaxKind.SimpleMemberAccessExpression,
-                                                    IdentifierName("immutable1"),
-                                                    IdentifierName("CreateDraft")))
-                                            .WithArgumentList(
-                                                ArgumentList(
-                                                    SeparatedList<ArgumentSyntax>(
-                                                        new SyntaxNodeOrToken[]
-                                                        {
-                                                            Argument(
-                                                                DeclarationExpression(
-                                                                    IdentifierName("var"),
-                                                                    DiscardDesignation()))
-                                                            .WithRefKindKeyword(
-                                                                Token(SyntaxKind.OutKeyword)),
-                                                            Token(SyntaxKind.CommaToken),
-                                                            Argument(
-                                                                IdentifierName("cloneProvider")),
-                                                        }))))))))
-                        .WithUsingKeyword(
-                            Token(SyntaxKind.UsingKeyword)),
-                        LocalDeclarationStatement(
-                            VariableDeclaration(
-                                IdentifierName(this.mutableType.Name))
-                            .WithVariables(
-                                SingletonSeparatedList(
-                                    VariableDeclarator(
-                                        Identifier("draft"))
-                                    .WithInitializer(
-                                        EqualsValueClause(
-                                            InvocationExpression(
-                                                IdentifierName("producer"))
-                                            .WithArgumentList(
-                                                ArgumentList(
-                                                    SingletonSeparatedList(
-                                                        Argument(
-                                                            IdentifierName("argument1")))))))))),
-                        ReturnStatement(
-                            CastExpression(
-                                IdentifierName(interfaceDeclaration.Identifier),
-                                InvocationExpression(
-                                    MemberAccessExpression(
-                                        SyntaxKind.SimpleMemberAccessExpression,
-                                        IdentifierName("scope"),
-                                        IdentifierName("FinishDraft")))
-                                .WithArgumentList(
-                                    ArgumentList(
-                                        SingletonSeparatedList(
-                                            Argument(
-                                                IdentifierName("draft")))))))))))
-          .WithSemicolonToken(
-            Token(SyntaxKind.SemicolonToken))
-          .NormalizeWhitespace();
-        }
+            var interfaceName = interfaceDeclaration.Identifier.Text;
+            var className = this.mutableType.Name;
 
-        /// <summary>
-        /// Generates Method Documentation.
-        /// </summary>
-        /// <param name="interfaceDeclaration">The immutable interface declaration.</param>
-        /// <param name="usesFunction">Whether the producer uses a function or an action.</param>
-        /// <param name="hasArgument">Indicates whether the producer has an argument.</param>
-        /// <returns>The documentation.</returns>
-        private SyntaxTriviaList GenerateProducerDocumentation(InterfaceDeclarationSyntax interfaceDeclaration, bool usesFunction, bool hasArgument)
-        {
-            string documentationText;
-
-            if (hasArgument)
-            {
-                if (usesFunction)
-                {
-                    documentationText = "The producer function that returns an object of type T with a single argument.";
-                }
-                else
-                {
-                    documentationText = "The producer action that operates on an object of type T with a single argument.";
-                }
-            }
-            else
-            {
-                if (usesFunction)
-                {
-                    documentationText = "The producer function that returns an object of type T.";
-                }
-                else
-                {
-                    documentationText = "The producer action that operates on an object of type T.";
-                }
-            }
-
-            var xmlText = new List<XmlNodeSyntax>
-            {
-                XmlText()
-                        .WithTextTokens(
-                            TokenList(
-                                XmlTextLiteral(
-                                    TriviaList(
-                                        DocumentationCommentExterior("///")),
-                                    " ",
-                                    " ",
-                                    TriviaList()))),
-                XmlExampleElement(
-                            SingletonList<XmlNodeSyntax>(
-                                XmlText()
-                                .WithTextTokens(
-                                    TokenList(
-                                        new[]
-                                        {
-                                            XmlTextNewLine(
-                                                TriviaList(),
-                                                Environment.NewLine,
-                                                Environment.NewLine,
-                                                TriviaList()),
-                                            XmlTextLiteral(
-                                                TriviaList(
-                                                    DocumentationCommentExterior("        ///")),
-                                                " Creates a Producer delegate that can be used to curry on an Immutable State.",
-                                                " Creates a Producer delegate that can be used to curry on an Immutable State.",
-                                                TriviaList()),
-                                            XmlTextNewLine(
-                                                TriviaList(),
-                                                Environment.NewLine,
-                                                Environment.NewLine,
-                                                TriviaList()),
-                                            XmlTextLiteral(
-                                                TriviaList(
-                                                    DocumentationCommentExterior("        ///")),
-                                                " ",
-                                                " ",
-                                                TriviaList()),
-                                        }))))
-                        .WithStartTag(
-                            XmlElementStartTag(
-                                XmlName(
-                                    Identifier("summary"))))
-                        .WithEndTag(
-                            XmlElementEndTag(
-                                XmlName(
-                                    Identifier("summary")))),
-                XmlText()
-                        .WithTextTokens(
-                            TokenList(
-                                new[]
-                                {
-                                    XmlTextNewLine(
-                                        TriviaList(),
-                                        Environment.NewLine,
-                                        Environment.NewLine,
-                                        TriviaList()),
-                                    XmlTextLiteral(
-                                        TriviaList(
-                                            DocumentationCommentExterior("        ///")),
-                                        " ",
-                                        " ",
-                                        TriviaList()),
-                                })),
-                XmlExampleElement(
-                            SingletonList<XmlNodeSyntax>(
-                                XmlText()
-                                .WithTextTokens(
-                                    TokenList(
-                                        XmlTextLiteral(
-                                            TriviaList(),
-                                            documentationText,
-                                            documentationText,
-                                            TriviaList())))))
-                        .WithStartTag(
-                            XmlElementStartTag(
-                                XmlName(
-                                    Identifier("param")))
-                            .WithAttributes(
-                                SingletonList<XmlAttributeSyntax>(
-                                    XmlNameAttribute(
-                                        XmlName(
-                                            Identifier("name")),
-                                        Token(SyntaxKind.DoubleQuoteToken),
-                                        IdentifierName("producer"),
-                                        Token(SyntaxKind.DoubleQuoteToken)))))
-                        .WithEndTag(
-                            XmlElementEndTag(
-                                XmlName(
-                                    Identifier("param")))),
-                XmlText()
-                        .WithTextTokens(
-                            TokenList(
-                                new[]
-                                {
-                                    XmlTextNewLine(
-                                        TriviaList(),
-                                        Environment.NewLine,
-                                        Environment.NewLine,
-                                        TriviaList()),
-                                    XmlTextLiteral(
-                                        TriviaList(
-                                            DocumentationCommentExterior("        ///")),
-                                        " ",
-                                        " ",
-                                        TriviaList()),
-                                })),
-                XmlExampleElement(
-                            SingletonList<XmlNodeSyntax>(
-                                XmlText()
-                                .WithTextTokens(
-                                    TokenList(
-                                        XmlTextLiteral(
-                                            TriviaList(),
-                                            "The clone provider to use.",
-                                            "The clone provider to use.",
-                                            TriviaList())))))
-                        .WithStartTag(
-                            XmlElementStartTag(
-                                XmlName(
-                                    Identifier("param")))
-                            .WithAttributes(
-                                SingletonList<XmlAttributeSyntax>(
-                                    XmlNameAttribute(
-                                        XmlName(
-                                            Identifier("name")),
-                                        Token(SyntaxKind.DoubleQuoteToken),
-                                        IdentifierName("cloneProvider"),
-                                        Token(SyntaxKind.DoubleQuoteToken)))))
-                        .WithEndTag(
-                            XmlElementEndTag(
-                                XmlName(
-                                    Identifier("param")))),
-            };
-
-            if (hasArgument)
-            {
-                xmlText.Add(
-                            XmlText()
-                            .WithTextTokens(
-                                TokenList(
-                                    new[]
-                                    {
-                                    XmlTextNewLine(
-                                        TriviaList(),
-                                        Environment.NewLine,
-                                        Environment.NewLine,
-                                        TriviaList()),
-                                    XmlTextLiteral(
-                                        TriviaList(
-                                            DocumentationCommentExterior("        ///")),
-                                        " ",
-                                        " ",
-                                        TriviaList()),
-                                    })));
-                xmlText.Add(
-                            XmlExampleElement(
-                                SingletonList<XmlNodeSyntax>(
-                                    XmlText()
-                                    .WithTextTokens(
-                                        TokenList(
-                                            XmlTextLiteral(
-                                                TriviaList(),
-                                                "The type of the argument.",
-                                                "The type of the argument.",
-                                                TriviaList())))))
-                            .WithStartTag(
-                                XmlElementStartTag(
-                                    XmlName(
-                                        Identifier("typeparam")))
-                                .WithAttributes(
-                                    SingletonList<XmlAttributeSyntax>(
-                                        XmlNameAttribute(
-                                            XmlName(
-                                                Identifier("name")),
-                                            Token(SyntaxKind.DoubleQuoteToken),
-                                            IdentifierName("TArg"),
-                                            Token(SyntaxKind.DoubleQuoteToken)))))
-                            .WithEndTag(
-                                XmlElementEndTag(
-                                    XmlName(
-                                        Identifier("typeparam")))));
-            }
-
-            xmlText.Add(
-                        XmlText()
-                        .WithTextTokens(
-                            TokenList(
-                                new[]
-                                {
-                                    XmlTextNewLine(
-                                        TriviaList(),
-                                        Environment.NewLine,
-                                        Environment.NewLine,
-                                        TriviaList()),
-                                    XmlTextLiteral(
-                                        TriviaList(
-                                            DocumentationCommentExterior("        ///")),
-                                        " ",
-                                        " ",
-                                        TriviaList()),
-                                })));
-            xmlText.Add(
-                        XmlExampleElement(
-                            SingletonList<XmlNodeSyntax>(
-                                XmlText()
-                                .WithTextTokens(
-                                    TokenList(
-                                        XmlTextLiteral(
-                                            TriviaList(),
-                                            "A producer delegate.",
-                                            "A producer delegate.",
-                                            TriviaList())))))
-                        .WithStartTag(
-                            XmlElementStartTag(
-                                XmlName(
-                                    Identifier("returns"))))
-                        .WithEndTag(
-                            XmlElementEndTag(
-                                XmlName(
-                                    Identifier("returns")))));
-            xmlText.Add(
-                        XmlText()
-                        .WithTextTokens(
-                            TokenList(
-                                XmlTextNewLine(
-                                    TriviaList(),
-                                    Environment.NewLine,
-                                    Environment.NewLine,
-                                    TriviaList()))));
-
-            return TriviaList(
-                    Trivia(
-                        DocumentationCommentTrivia(
-                            SyntaxKind.SingleLineDocumentationCommentTrivia,
-                            List(xmlText))));
+            var method = $@"
+                /// <summary>
+                /// Creates a Producer delegate that can be used to curry on an Immutable State.
+                /// </summary>
+                /// <param name = ""producer"">The producer function that returns an object of type T with a single argument.</param>
+                /// <param name = ""cloneProvider"">The clone provider to use.</param>
+                /// <typeparam name = ""TArg"">The type of the argument.</typeparam>
+                /// <returns>A producer delegate.</returns>
+                    public static Func<{interfaceName}, TArg, {interfaceName}> Producer<TArg>(Func<TArg, {className}> producer, ICloneProvider cloneProvider = null) =>
+                        (immutable1, argument1) =>
+                        {{
+                            using var scope = immutable1.CreateDraft(out var _, cloneProvider);
+                            TestPerson draft = producer(argument1);
+                            return (ITestPerson)scope.FinishDraft(draft);
+                        }};
+            ";
+            return ParseMemberDeclaration(method)
+            .NormalizeWhitespace();
         }
     }
 }

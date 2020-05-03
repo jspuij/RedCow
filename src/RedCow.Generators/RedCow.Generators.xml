@@ -191,16 +191,6 @@
             <param name="interfaceDeclaration">The interface declaration.</param>
             <returns>The method declaration.</returns>
         </member>
-        <member name="M:RedCow.Generators.ProducerInterfaceGenerator.GenerateProduceDocumentation(Microsoft.CodeAnalysis.CSharp.Syntax.InterfaceDeclarationSyntax,System.Boolean,System.Boolean,System.Boolean)">
-            <summary>
-            Generate the documentation for the produce method.
-            </summary>
-            <param name="interfaceDeclaration">The interface declaration.</param>
-            <param name="isStatic">Whether this is the static produce method.</param>
-            <param name="usesFunction">Whether the producer uses a function or an action.</param>
-            <param name="hasProducer">Whether the producer is empty.</param>
-            <returns>The documentation.</returns>
-        </member>
         <member name="M:RedCow.Generators.ProducerInterfaceGenerator.GenerateProducerAction(Microsoft.CodeAnalysis.CSharp.Syntax.InterfaceDeclarationSyntax)">
             <summary>
             Generates the producer function that accepts a function.
@@ -228,15 +218,6 @@
             </summary>
             <param name="interfaceDeclaration">The interface declaration.</param>
             <returns>The method declaration.</returns>
-        </member>
-        <member name="M:RedCow.Generators.ProducerInterfaceGenerator.GenerateProducerDocumentation(Microsoft.CodeAnalysis.CSharp.Syntax.InterfaceDeclarationSyntax,System.Boolean,System.Boolean)">
-            <summary>
-            Generates Method Documentation.
-            </summary>
-            <param name="interfaceDeclaration">The immutable interface declaration.</param>
-            <param name="usesFunction">Whether the producer uses a function or an action.</param>
-            <param name="hasArgument">Indicates whether the producer has an argument.</param>
-            <returns>The documentation.</returns>
         </member>
     </members>
 </doc>
