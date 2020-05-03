@@ -39,6 +39,6 @@ namespace RedCow.Test
         /// <summary>
         /// Gets a value indicating whether isAdult is true.
         /// </summary>
-        public bool IsAdult { get;  }
+        public bool IsAdult { get; }
     }
 }

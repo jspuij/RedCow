@@ -99,61 +99,21 @@ namespace RedCow.Generators
         /// <returns>The method declaration.</returns>
         private MemberDeclarationSyntax GenerateInitialProduce(InterfaceDeclarationSyntax interfaceDeclaration)
         {
-            return MethodDeclaration(
-                IdentifierName(interfaceDeclaration.Identifier),
-                Identifier("Produce"))
-            .WithModifiers(
-                TokenList(
-                    new[]
-                    {
-                        Token(
-                            this.GenerateProduceDocumentation(interfaceDeclaration, true, false, false),
-                            SyntaxKind.PublicKeyword,
-                            TriviaList()),
-                        Token(SyntaxKind.StaticKeyword),
-                    }))
-            .WithParameterList(
-                ParameterList(
-                    SeparatedList<ParameterSyntax>(
-                        new SyntaxNodeOrToken[]
-                        {
-                            Parameter(
-                                Identifier("initialState"))
-                            .WithType(
-                                IdentifierName(this.mutableType.Name)),
-                            Token(SyntaxKind.CommaToken),
-                            Parameter(
-                                Identifier("cloneProvider"))
-                            .WithType(
-                                IdentifierName("ICloneProvider"))
-                            .WithDefault(
-                                EqualsValueClause(
-                                    LiteralExpression(
-                                        SyntaxKind.NullLiteralExpression))),
-                        })))
-            .WithExpressionBody(
-                ArrowExpressionClause(
-                    InvocationExpression(
-                        IdentifierName("Produce"))
-                    .WithArgumentList(
-                        ArgumentList(
-                            SeparatedList<ArgumentSyntax>(
-                                new SyntaxNodeOrToken[]
-                                {
-                                    Argument(
-                                        IdentifierName("initialState")),
-                                    Token(SyntaxKind.CommaToken),
-                                    Argument(
-                                        SimpleLambdaExpression(
-                                            Parameter(
-                                                Identifier("p")),
-                                            Block())),
-                                    Token(SyntaxKind.CommaToken),
-                                    Argument(
-                                        IdentifierName("cloneProvider")),
-                                })))))
-            .WithSemicolonToken(
-                Token(SyntaxKind.SemicolonToken))
+            var interfaceName = interfaceDeclaration.Identifier.Text;
+            var className = this.mutableType.Name;
+
+            var method = $@"
+                /// <summary>
+                /// Produces the next <see cref = ""Immutable{{T}}""/> based on the
+                ///intial state.
+                /// </summary>
+                /// <param name = ""initialState"">The initial State.</param>
+                /// <param name = ""cloneProvider"">The clone provider to use.</param>
+                /// <returns>The next immutable state.</returns>
+                    public static {interfaceName} Produce({className} initialState, ICloneProvider cloneProvider = null) =>
+                    Produce(initialState, p => {{ }}, cloneProvider);
+            ";
+            return ParseMemberDeclaration(method)
             .NormalizeWhitespace();
         }
 
@@ -164,62 +124,20 @@ namespace RedCow.Generators
         /// <returns>The method declaration.</returns>
         private MemberDeclarationSyntax GenerateProduceAction(InterfaceDeclarationSyntax interfaceDeclaration)
         {
-            return
-            MethodDeclaration(
-                IdentifierName(interfaceDeclaration.Identifier),
-                Identifier("Produce"))
-            .WithModifiers(
-                TokenList(
-                    Token(
-                        this.GenerateProduceDocumentation(interfaceDeclaration, false, false, true),
-                        SyntaxKind.PublicKeyword,
-                        TriviaList())))
-            .WithParameterList(
-                ParameterList(
-                    SeparatedList<ParameterSyntax>(
-                        new SyntaxNodeOrToken[]
-                        {
-                            Parameter(
-                                Identifier("producer"))
-                            .WithType(
-                                GenericName(
-                                    Identifier("Action"))
-                                .WithTypeArgumentList(
-                                    TypeArgumentList(
-                                        SingletonSeparatedList<TypeSyntax>(
-                                            IdentifierName(this.mutableType.Name))))),
-                            Token(SyntaxKind.CommaToken),
-                            Parameter(
-                                Identifier("cloneProvider"))
-                            .WithType(
-                                 IdentifierName("ICloneProvider"))
-                            .WithDefault(
-                                EqualsValueClause(
-                                    LiteralExpression(
-                                        SyntaxKind.NullLiteralExpression))),
-                        })))
-            .WithExpressionBody(
-                ArrowExpressionClause(
-                    InvocationExpression(
-                        IdentifierName("Produce"))
-                    .WithArgumentList(
-                        ArgumentList(
-                            SeparatedList<ArgumentSyntax>(
-                                new SyntaxNodeOrToken[]
-                                {
-                                    Argument(
-                                        CastExpression(
-                                            IdentifierName(this.mutableType.Name),
-                                            ThisExpression())),
-                                    Token(SyntaxKind.CommaToken),
-                                    Argument(
-                                        IdentifierName("producer")),
-                                    Token(SyntaxKind.CommaToken),
-                                    Argument(
-                                        IdentifierName("cloneProvider")),
-                                })))))
-            .WithSemicolonToken(
-                Token(SyntaxKind.SemicolonToken))
+            var interfaceName = interfaceDeclaration.Identifier.Text;
+            var className = this.mutableType.Name;
+
+            var method = $@"
+                /// <summary>
+                /// Produces the next <see cref = ""Immutable{{T}}""/> based on the
+                /// specified producer action.
+                /// </summary>
+                /// <param name = ""producer"">The producer action.</param>
+                /// <param name = ""cloneProvider"">The clone provider to use.</param>
+                /// <returns>The next immutable state.</returns>
+                    public {interfaceName} Produce(Action<{className}> producer, ICloneProvider cloneProvider = null) => Produce(({className})this, producer, cloneProvider);
+            ";
+            return ParseMemberDeclaration(method)
             .NormalizeWhitespace();
         }
 
@@ -305,61 +223,20 @@ namespace RedCow.Generators
         /// <returns>The method declaration.</returns>
         private MemberDeclarationSyntax GenerateProduceFunction(InterfaceDeclarationSyntax interfaceDeclaration)
         {
-            return MethodDeclaration(
-                IdentifierName(interfaceDeclaration.Identifier),
-                Identifier("Produce"))
-            .WithModifiers(
-                TokenList(
-                    Token(
-                        this.GenerateProduceDocumentation(interfaceDeclaration, false, true, true),
-                        SyntaxKind.PublicKeyword,
-                        TriviaList())))
-            .WithParameterList(
-                ParameterList(
-                    SeparatedList<ParameterSyntax>(
-                        new SyntaxNodeOrToken[]
-                        {
-                            Parameter(
-                                Identifier("producer"))
-                            .WithType(
-                                GenericName(
-                                    Identifier("Func"))
-                                .WithTypeArgumentList(
-                                    TypeArgumentList(
-                                        SingletonSeparatedList<TypeSyntax>(
-                                            IdentifierName(this.mutableType.Name))))),
-                            Token(SyntaxKind.CommaToken),
-                            Parameter(
-                                Identifier("cloneProvider"))
-                            .WithType(
-                                 IdentifierName("ICloneProvider"))
-                            .WithDefault(
-                                EqualsValueClause(
-                                    LiteralExpression(
-                                        SyntaxKind.NullLiteralExpression))),
-                        })))
-            .WithExpressionBody(
-                ArrowExpressionClause(
-                    InvocationExpression(
-                        IdentifierName("Produce"))
-                    .WithArgumentList(
-                        ArgumentList(
-                            SeparatedList<ArgumentSyntax>(
-                                new SyntaxNodeOrToken[]
-                                {
-                                    Argument(
-                                        CastExpression(
-                                            IdentifierName(this.mutableType.Name),
-                                            ThisExpression())),
-                                    Token(SyntaxKind.CommaToken),
-                                    Argument(
-                                        IdentifierName("producer")),
-                                    Token(SyntaxKind.CommaToken),
-                                    Argument(
-                                        IdentifierName("cloneProvider")),
-                                })))))
-            .WithSemicolonToken(
-                Token(SyntaxKind.SemicolonToken))
+            var interfaceName = interfaceDeclaration.Identifier.Text;
+            var className = this.mutableType.Name;
+
+            var method = $@"
+                /// <summary>
+                /// Produces the next <see cref = ""Immutable{{T}}""/> based on the
+                /// specified producer function.
+                /// </summary>
+                /// <param name = ""producer"">The producer function.</param>
+                /// <param name = ""cloneProvider"">The clone provider to use.</param>
+                /// <returns>The next immutable state.</returns>
+                public {interfaceName} Produce(Func<{className}> producer, ICloneProvider cloneProvider = null) => Produce(({className})this, producer, cloneProvider);
+            ";
+            return ParseMemberDeclaration(method)
             .NormalizeWhitespace();
         }
 
