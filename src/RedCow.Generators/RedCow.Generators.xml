@@ -29,6 +29,15 @@
             <param name="cancellationToken">The cancellation token.</param>
             <returns>A <see cref="T:System.Threading.Tasks.Task"/> representing the asynchronous operation.</returns>
         </member>
+        <member name="M:RedCow.Generators.MutableClassGenerator.GenerateRichAsync(CodeGeneration.Roslyn.TransformationContext,System.IProgress{Microsoft.CodeAnalysis.Diagnostic},System.Threading.CancellationToken)">
+            <summary>
+            Generates the code.
+            </summary>
+            <param name="context">The transformation context.</param>
+            <param name="progress">Progress information.</param>
+            <param name="cancellationToken">The cancellation token.</param>
+            <returns>A <see cref="T:System.Threading.Tasks.Task"/> representing the asynchronous operation.</returns>
+        </member>
         <member name="M:RedCow.Generators.MutableClassGenerator.CreateProperty(Microsoft.CodeAnalysis.IPropertySymbol)">
             <summary>
             Creates a property with getter and setter based on the readonly interface property.
@@ -51,6 +60,35 @@
             <param name="documentationText">The documentation text.</param>
             <returns>The XML Documentation as <see cref="T:Microsoft.CodeAnalysis.SyntaxTriviaList"/>.</returns>
         </member>
+        <member name="M:RedCow.Generators.MutableClassGenerator.WrapInAncestor(Microsoft.CodeAnalysis.SyntaxList{Microsoft.CodeAnalysis.CSharp.Syntax.MemberDeclarationSyntax},Microsoft.CodeAnalysis.SyntaxNode)">
+            <summary>
+            Wraps these members in their ancestor namespace.
+            </summary>
+            <param name="generatedMembers">The generate members.</param>
+            <param name="ancestor">The ancestor node.</param>
+            <returns>A new syntaxlist.</returns>
+        </member>
+        <member name="M:RedCow.Generators.MutableClassGenerator.CopyAsAncestor(Microsoft.CodeAnalysis.CSharp.Syntax.NamespaceDeclarationSyntax)">
+            <summary>
+            Copy a namespace as ancestor.
+            </summary>
+            <param name="syntax">The declaration syntax.</param>
+            <returns>The copied declaration syntax.</returns>
+        </member>
+        <member name="M:RedCow.Generators.MutableClassGenerator.CopyAsAncestor(Microsoft.CodeAnalysis.CSharp.Syntax.ClassDeclarationSyntax)">
+            <summary>
+            Copy a class as ancestor.
+            </summary>
+            <param name="syntax">The declaration syntax.</param>
+            <returns>The copied declaration syntax.</returns>
+        </member>
+        <member name="M:RedCow.Generators.MutableClassGenerator.CopyAsAncestor(Microsoft.CodeAnalysis.CSharp.Syntax.StructDeclarationSyntax)">
+            <summary>
+            Copy a struct as ancestor.
+            </summary>
+            <param name="syntax">The declaration syntax.</param>
+            <returns>The copied declaration syntax.</returns>
+        </member>
         <member name="M:RedCow.Generators.MutableClassGenerator.GeneratePartial(Microsoft.CodeAnalysis.CSharp.Syntax.ClassDeclarationSyntax)">
             <summary>
             Generates the partial part of the class.
@@ -58,9 +96,16 @@
             <param name="sourceClassDeclaration">The source class declaration.</param>
             <returns>A partial class declaration.</returns>
         </member>
+        <member name="M:RedCow.Generators.MutableClassGenerator.GenerateDraft(Microsoft.CodeAnalysis.CSharp.Syntax.ClassDeclarationSyntax)">
+            <summary>
+            Generates the draft class.
+            </summary>
+            <param name="sourceClassDeclaration">The source class declaration.</param>
+            <returns>A partial class declaration.</returns>
+        </member>
         <member name="M:RedCow.Generators.MutableClassGenerator.GenerateImmutable(Microsoft.CodeAnalysis.CSharp.Syntax.ClassDeclarationSyntax)">
             <summary>
-            Generates the abstract partial part of the class.
+            Generates the immutable derived class.
             </summary>
             <param name="sourceClassDeclaration">The source class declaration.</param>
             <returns>A partial class declaration.</returns>

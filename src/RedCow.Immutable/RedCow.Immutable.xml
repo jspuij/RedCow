@@ -4,23 +4,41 @@
         <name>RedCow.Immutable</name>
     </assembly>
     <members>
-        <member name="T:RedCow.DraftTypeAttribute">
+        <member name="T:RedCow.Immutable.DraftManager">
+            <summary>
+            Manages a <see cref="T:RedCow.IDraft`1"/> implementation.
+            </summary>
+        </member>
+        <member name="T:RedCow.Immutable.DraftTypeAttribute">
             <summary>
             Draft type attribute. Indicates which class is the draft type for this type.
             </summary>
         </member>
-        <member name="M:RedCow.DraftTypeAttribute.#ctor(System.Type)">
+        <member name="M:RedCow.Immutable.DraftTypeAttribute.#ctor(System.Type)">
             <summary>
-            Initializes a new instance of the <see cref="T:RedCow.DraftTypeAttribute"/> class.
+            Initializes a new instance of the <see cref="T:RedCow.Immutable.DraftTypeAttribute"/> class.
             </summary>
             <param name="draftType">
             The draft type.
             </param>
         </member>
-        <member name="P:RedCow.DraftTypeAttribute.DraftType">
+        <member name="P:RedCow.Immutable.DraftTypeAttribute.DraftType">
             <summary>
             Gets the draft type.
             </summary>
+        </member>
+        <member name="T:RedCow.Immutable.IDraftScope">
+            <summary>
+            The scope of the draft.
+            </summary>
+        </member>
+        <member name="M:RedCow.Immutable.IDraftScope.FinishDraft``1(``0)">
+            <summary>
+            Finishes a Draft.
+            </summary>
+            <typeparam name="T">The type of the state.</typeparam>
+            <param name="draft">The draft.</param>
+            <returns>An immutable of type T.</returns>
         </member>
         <member name="T:RedCow.GenerateMutableAttribute">
             <summary>
@@ -73,19 +91,6 @@
             <typeparam name="TDestination">The destination type.</typeparam>
             <param name="source">The source.</param>
             <param name="destination">The destination.</param>
-        </member>
-        <member name="T:RedCow.Immutable.IDraftScope">
-            <summary>
-            The scope of the draft.
-            </summary>
-        </member>
-        <member name="M:RedCow.Immutable.IDraftScope.FinishDraft``1(``0)">
-            <summary>
-            Finishes a Draft.
-            </summary>
-            <typeparam name="T">The type of the state.</typeparam>
-            <param name="draft">The draft.</param>
-            <returns>An immutable of type T.</returns>
         </member>
         <member name="T:RedCow.IDraft`1">
             <summary>

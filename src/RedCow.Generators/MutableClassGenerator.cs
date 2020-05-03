@@ -30,7 +30,7 @@ namespace RedCow.Generators
     /// <summary>
     /// Generates a Mutable class.
     /// </summary>
-    public class MutableClassGenerator : ICodeGenerator
+    public class MutableClassGenerator : IRichCodeGenerator
     {
         /// <summary>
         /// The type of the Immutable Interface.
@@ -48,7 +48,7 @@ namespace RedCow.Generators
             // System.Diagnostics.Debugger.Launch();
             // while (!System.Diagnostics.Debugger.IsAttached)
             // {
-            //    Thread.Sleep(500); // eww, eww, eww
+            //     Thread.Sleep(500); // eww, eww, eww
             // }
         }
 
@@ -67,6 +67,8 @@ namespace RedCow.Generators
             ClassDeclarationSyntax partial = this.GeneratePartial(applyToClass);
 
             ClassDeclarationSyntax immutable = this.GenerateImmutable(applyToClass);
+
+            ClassDeclarationSyntax draft = this.GenerateDraft(applyToClass);
 
             partial = partial.WithAttributeLists(
             List(
@@ -94,7 +96,36 @@ namespace RedCow.Generators
                                                 IdentifierName("DraftTestPerson")))))))),
                 }));
 
-            return Task.FromResult(List<MemberDeclarationSyntax>(new[] { partial, immutable }));
+            return Task.FromResult(List(new MemberDeclarationSyntax[] { partial, immutable, draft }));
+        }
+
+        /// <summary>
+        /// Generates the code.
+        /// </summary>
+        /// <param name="context">The transformation context.</param>
+        /// <param name="progress">Progress information.</param>
+        /// <param name="cancellationToken">The cancellation token.</param>
+        /// <returns>A <see cref="Task"/> representing the asynchronous operation.</returns>
+        public async Task<RichGenerationResult> GenerateRichAsync(TransformationContext context, IProgress<Diagnostic> progress, CancellationToken cancellationToken)
+        {
+            var node = context.ProcessingNode;
+
+            var result = new RichGenerationResult
+            {
+                Members = context.ProcessingNode.Ancestors().Aggregate(await this.GenerateAsync(context, progress, cancellationToken), WrapInAncestor),
+                Usings = List(
+                    new UsingDirectiveSyntax[]
+                    {
+                        UsingDirective(
+                            IdentifierName("RedCow")),
+                        UsingDirective(
+                            QualifiedName(
+                                IdentifierName("RedCow"),
+                                IdentifierName("Immutable"))),
+                    }),
+            };
+
+            return result;
         }
 
         /// <summary>
@@ -257,6 +288,72 @@ namespace RedCow.Generators
         }
 
         /// <summary>
+        /// Wraps these members in their ancestor namespace.
+        /// </summary>
+        /// <param name="generatedMembers">The generate members.</param>
+        /// <param name="ancestor">The ancestor node.</param>
+        /// <returns>A new syntaxlist.</returns>
+        private static SyntaxList<MemberDeclarationSyntax> WrapInAncestor(SyntaxList<MemberDeclarationSyntax> generatedMembers, SyntaxNode ancestor)
+        {
+            switch (ancestor)
+            {
+                case NamespaceDeclarationSyntax ancestorNamespace:
+                    generatedMembers = SyntaxFactory.SingletonList<MemberDeclarationSyntax>(
+                        CopyAsAncestor(ancestorNamespace)
+                        .WithMembers(generatedMembers));
+                    break;
+                case ClassDeclarationSyntax nestingClass:
+                    generatedMembers = SyntaxFactory.SingletonList<MemberDeclarationSyntax>(
+                        CopyAsAncestor(nestingClass)
+                        .WithMembers(generatedMembers));
+                    break;
+                case StructDeclarationSyntax nestingStruct:
+                    generatedMembers = SyntaxFactory.SingletonList<MemberDeclarationSyntax>(
+                        CopyAsAncestor(nestingStruct)
+                        .WithMembers(generatedMembers));
+                    break;
+            }
+
+            return generatedMembers;
+        }
+
+        /// <summary>
+        /// Copy a namespace as ancestor.
+        /// </summary>
+        /// <param name="syntax">The declaration syntax.</param>
+        /// <returns>The copied declaration syntax.</returns>
+        private static NamespaceDeclarationSyntax CopyAsAncestor(NamespaceDeclarationSyntax syntax)
+        {
+            return SyntaxFactory.NamespaceDeclaration(syntax.Name.WithoutTrivia())
+                .WithExterns(SyntaxFactory.List(syntax.Externs.Select(x => x.WithoutTrivia())))
+                .WithUsings(SyntaxFactory.List(syntax.Usings.Select(x => x.WithoutTrivia())));
+        }
+
+        /// <summary>
+        /// Copy a class as ancestor.
+        /// </summary>
+        /// <param name="syntax">The declaration syntax.</param>
+        /// <returns>The copied declaration syntax.</returns>
+        private static ClassDeclarationSyntax CopyAsAncestor(ClassDeclarationSyntax syntax)
+        {
+            return SyntaxFactory.ClassDeclaration(syntax.Identifier.WithoutTrivia())
+                .WithModifiers(SyntaxFactory.TokenList(syntax.Modifiers.Select(x => x.WithoutTrivia())))
+                .WithTypeParameterList(syntax.TypeParameterList);
+        }
+
+        /// <summary>
+        /// Copy a struct as ancestor.
+        /// </summary>
+        /// <param name="syntax">The declaration syntax.</param>
+        /// <returns>The copied declaration syntax.</returns>
+        private static StructDeclarationSyntax CopyAsAncestor(StructDeclarationSyntax syntax)
+        {
+            return SyntaxFactory.StructDeclaration(syntax.Identifier.WithoutTrivia())
+                .WithModifiers(SyntaxFactory.TokenList(syntax.Modifiers.Select(x => x.WithoutTrivia())))
+                .WithTypeParameterList(syntax.TypeParameterList);
+        }
+
+        /// <summary>
         /// Generates the partial part of the class.
         /// </summary>
         /// <param name="sourceClassDeclaration">The source class declaration.</param>
@@ -277,7 +374,27 @@ namespace RedCow.Generators
         }
 
         /// <summary>
-        /// Generates the abstract partial part of the class.
+        /// Generates the draft class.
+        /// </summary>
+        /// <param name="sourceClassDeclaration">The source class declaration.</param>
+        /// <returns>A partial class declaration.</returns>
+        private ClassDeclarationSyntax GenerateDraft(ClassDeclarationSyntax sourceClassDeclaration)
+        {
+            var modifiers = sourceClassDeclaration.Modifiers.ToList();
+            modifiers[0] = Token(
+                GenerateXmlDoc($"Draft Implementation of <see cref=\"{sourceClassDeclaration.Identifier}\"/>."),
+                modifiers[0].Kind(),
+                TriviaList());
+
+            var result = ClassDeclaration($"Draft{sourceClassDeclaration.Identifier}")
+                            .AddModifiers(modifiers.ToArray())
+                            .AddBaseListTypes(SimpleBaseType(ParseTypeName(sourceClassDeclaration.Identifier.Text)), SimpleBaseType(ParseTypeName($"IDraft<{sourceClassDeclaration.Identifier.Text}>")));
+
+            return result;
+        }
+
+        /// <summary>
+        /// Generates the immutable derived class.
         /// </summary>
         /// <param name="sourceClassDeclaration">The source class declaration.</param>
         /// <returns>A partial class declaration.</returns>

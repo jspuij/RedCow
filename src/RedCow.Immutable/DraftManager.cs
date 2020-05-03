@@ -1,4 +1,4 @@
-﻿// <copyright file="DraftTypeAttribute.cs" company="Jan-Willem Spuij">
+﻿// <copyright file="DraftManager.cs" company="Jan-Willem Spuij">
 // Copyright 2020 Jan-Willem Spuij
 //
 // Permission is hereby granted, free of charge, to any person obtaining a copy of this software and associated documentation
@@ -17,28 +17,13 @@
 namespace RedCow.Immutable
 {
     using System;
-    using System.Diagnostics;
-    using CodeGeneration.Roslyn;
+    using System.Collections.Generic;
+    using System.Text;
 
     /// <summary>
-    /// Draft type attribute. Indicates which class is the draft type for this type.
+    /// Manages a <see cref="IDraft{T}"/> implementation.
     /// </summary>
-    public class DraftTypeAttribute : Attribute
+    public class DraftManager
     {
-        /// <summary>
-        /// Initializes a new instance of the <see cref="DraftTypeAttribute"/> class.
-        /// </summary>
-        /// <param name="draftType">
-        /// The draft type.
-        /// </param>
-        public DraftTypeAttribute(Type draftType)
-        {
-            this.DraftType = draftType;
-        }
-
-        /// <summary>
-        /// Gets the draft type.
-        /// </summary>
-        public Type DraftType { get; }
     }
 }
