@@ -80,6 +80,7 @@ namespace RedCow.Generators
                 .AddModifiers(interfaceDeclaration.Modifiers.ToArray());
 
             result = result.AddMembers(
+                this.GenerateInitialProduce(interfaceDeclaration),
                 this.GenerateProduceAction(interfaceDeclaration),
                 this.GenerateStaticProduceAction(interfaceDeclaration),
                 this.GenerateProduceFunction(interfaceDeclaration),
@@ -91,6 +92,78 @@ namespace RedCow.Generators
             return result;
         }
 
+        /// <summary>
+        /// Generates the produce function for initial state.
+        /// </summary>
+        /// <param name="interfaceDeclaration">The interface declaration.</param>
+        /// <returns>The method declaration.</returns>
+        private MemberDeclarationSyntax GenerateInitialProduce(InterfaceDeclarationSyntax interfaceDeclaration)
+        {
+            return MethodDeclaration(
+                IdentifierName(interfaceDeclaration.Identifier),
+                Identifier("Produce"))
+            .WithModifiers(
+                TokenList(
+                    new[]
+                    {
+                        Token(
+                            this.GenerateProduceDocumentation(interfaceDeclaration, true, false, false),
+                            SyntaxKind.PublicKeyword,
+                            TriviaList()),
+                        Token(SyntaxKind.StaticKeyword),
+                    }))
+            .WithParameterList(
+                ParameterList(
+                    SeparatedList<ParameterSyntax>(
+                        new SyntaxNodeOrToken[]
+                        {
+                            Parameter(
+                                Identifier("initialState"))
+                            .WithType(
+                                IdentifierName(this.mutableType.Name)),
+                            Token(SyntaxKind.CommaToken),
+                            Parameter(
+                                Identifier("cloneProvider"))
+                            .WithType(
+                                QualifiedName(
+                                    IdentifierName("RedCow"),
+                                    IdentifierName("ICloneProvider")))
+                            .WithDefault(
+                                EqualsValueClause(
+                                    LiteralExpression(
+                                        SyntaxKind.NullLiteralExpression))),
+                        })))
+            .WithExpressionBody(
+                ArrowExpressionClause(
+                    InvocationExpression(
+                        IdentifierName("Produce"))
+                    .WithArgumentList(
+                        ArgumentList(
+                            SeparatedList<ArgumentSyntax>(
+                                new SyntaxNodeOrToken[]
+                                {
+                                    Argument(
+                                        IdentifierName("initialState")),
+                                    Token(SyntaxKind.CommaToken),
+                                    Argument(
+                                        SimpleLambdaExpression(
+                                            Parameter(
+                                                Identifier("p")),
+                                            Block())),
+                                    Token(SyntaxKind.CommaToken),
+                                    Argument(
+                                        IdentifierName("cloneProvider")),
+                                })))))
+            .WithSemicolonToken(
+                Token(SyntaxKind.SemicolonToken))
+            .NormalizeWhitespace();
+        }
+
+        /// <summary>
+        /// Generates the produce function that accepts an action.
+        /// </summary>
+        /// <param name="interfaceDeclaration">The interface declaration.</param>
+        /// <returns>The method declaration.</returns>
         private MemberDeclarationSyntax GenerateProduceAction(InterfaceDeclarationSyntax interfaceDeclaration)
         {
             return
@@ -100,7 +173,7 @@ namespace RedCow.Generators
             .WithModifiers(
                 TokenList(
                     Token(
-                        this.GenerateProduceDocumentation(interfaceDeclaration, false, false),
+                        this.GenerateProduceDocumentation(interfaceDeclaration, false, false, true),
                         SyntaxKind.PublicKeyword,
                         TriviaList())))
             .WithParameterList(
@@ -121,7 +194,9 @@ namespace RedCow.Generators
                             Parameter(
                                 Identifier("cloneProvider"))
                             .WithType(
-                                IdentifierName("RedCow.ICloneProvider"))
+                                 QualifiedName(
+                                    IdentifierName("RedCow"),
+                                    IdentifierName("ICloneProvider")))
                             .WithDefault(
                                 EqualsValueClause(
                                     LiteralExpression(
@@ -167,7 +242,7 @@ namespace RedCow.Generators
                     new[]
                     {
                         Token(
-                            this.GenerateProduceDocumentation(interfaceDeclaration, true, false),
+                            this.GenerateProduceDocumentation(interfaceDeclaration, true, false, true),
                             SyntaxKind.PublicKeyword,
                             TriviaList()),
                         Token(SyntaxKind.StaticKeyword),
@@ -195,7 +270,9 @@ namespace RedCow.Generators
                             Parameter(
                                 Identifier("cloneProvider"))
                             .WithType(
-                                IdentifierName("RedCow.ICloneProvider"))
+                                 QualifiedName(
+                                    IdentifierName("RedCow"),
+                                    IdentifierName("ICloneProvider")))
                             .WithDefault(
                                 EqualsValueClause(
                                     LiteralExpression(
@@ -240,7 +317,7 @@ namespace RedCow.Generators
             .WithModifiers(
                 TokenList(
                     Token(
-                        this.GenerateProduceDocumentation(interfaceDeclaration, false, true),
+                        this.GenerateProduceDocumentation(interfaceDeclaration, false, true, true),
                         SyntaxKind.PublicKeyword,
                         TriviaList())))
             .WithParameterList(
@@ -261,7 +338,9 @@ namespace RedCow.Generators
                             Parameter(
                                 Identifier("cloneProvider"))
                             .WithType(
-                                IdentifierName("RedCow.ICloneProvider"))
+                                 QualifiedName(
+                                    IdentifierName("RedCow"),
+                                    IdentifierName("ICloneProvider")))
                             .WithDefault(
                                 EqualsValueClause(
                                     LiteralExpression(
@@ -307,7 +386,7 @@ namespace RedCow.Generators
                     new[]
                     {
                         Token(
-                            this.GenerateProduceDocumentation(interfaceDeclaration, true, true),
+                            this.GenerateProduceDocumentation(interfaceDeclaration, true, true, true),
                             SyntaxKind.PublicKeyword,
                             TriviaList()),
                         Token(SyntaxKind.StaticKeyword),
@@ -335,7 +414,9 @@ namespace RedCow.Generators
                             Parameter(
                                 Identifier("cloneProvider"))
                             .WithType(
-                                IdentifierName("RedCow.ICloneProvider"))
+                                 QualifiedName(
+                                    IdentifierName("RedCow"),
+                                    IdentifierName("ICloneProvider")))
                             .WithDefault(
                                 EqualsValueClause(
                                     LiteralExpression(
@@ -373,8 +454,9 @@ namespace RedCow.Generators
         /// <param name="interfaceDeclaration">The interface declaration.</param>
         /// <param name="isStatic">Whether this is the static produce method.</param>
         /// <param name="usesFunction">Whether the producer uses a function or an action.</param>
+        /// <param name="hasProducer">Whether the producer is empty.</param>
         /// <returns>The documentation.</returns>
-        private SyntaxTriviaList GenerateProduceDocumentation(InterfaceDeclarationSyntax interfaceDeclaration, bool isStatic, bool usesFunction)
+        private SyntaxTriviaList GenerateProduceDocumentation(InterfaceDeclarationSyntax interfaceDeclaration, bool isStatic, bool usesFunction, bool hasProducer)
         {
             string functionOrAction = usesFunction ? "function" : "action";
 
@@ -436,8 +518,8 @@ namespace RedCow.Generators
                                 XmlTextLiteral(
                                     TriviaList(
                                         DocumentationCommentExterior("        ///")),
-                                    $" specified producer {functionOrAction}.",
-                                    $" specified producer {functionOrAction}.",
+                                    hasProducer ? $" specified producer {functionOrAction}." : "intial state.",
+                                    hasProducer ? $" specified producer {functionOrAction}." : "intial state.",
                                     TriviaList()),
                                 XmlTextNewLine(
                                     TriviaList(),
@@ -510,12 +592,14 @@ namespace RedCow.Generators
                             Identifier("param")))));
             }
 
-            list.Add(
-            XmlText()
-            .WithTextTokens(
-                TokenList(
-                    new[]
-                    {
+            if (hasProducer)
+            {
+                list.Add(
+                XmlText()
+                .WithTextTokens(
+                    TokenList(
+                        new[]
+                        {
                             XmlTextNewLine(
                                 TriviaList(),
                                 Environment.NewLine,
@@ -527,34 +611,36 @@ namespace RedCow.Generators
                                 " ",
                                 " ",
                                 TriviaList()),
-                    })));
-            list.Add(
-            XmlExampleElement(
-                SingletonList<XmlNodeSyntax>(
-                    XmlText()
-                    .WithTextTokens(
-                        TokenList(
-                            XmlTextLiteral(
-                                TriviaList(),
-                                $"The producer {functionOrAction}.",
-                                $"The producer {functionOrAction}.",
-                                TriviaList())))))
-            .WithStartTag(
-                XmlElementStartTag(
-                    XmlName(
-                        Identifier("param")))
-                .WithAttributes(
-                    SingletonList<XmlAttributeSyntax>(
-                        XmlNameAttribute(
-                            XmlName(
-                                Identifier("name")),
-                            Token(SyntaxKind.DoubleQuoteToken),
-                            IdentifierName("producer"),
-                            Token(SyntaxKind.DoubleQuoteToken)))))
-            .WithEndTag(
-                XmlElementEndTag(
-                    XmlName(
-                        Identifier("param")))));
+                        })));
+                list.Add(
+                XmlExampleElement(
+                    SingletonList<XmlNodeSyntax>(
+                        XmlText()
+                        .WithTextTokens(
+                            TokenList(
+                                XmlTextLiteral(
+                                    TriviaList(),
+                                    $"The producer {functionOrAction}.",
+                                    $"The producer {functionOrAction}.",
+                                    TriviaList())))))
+                .WithStartTag(
+                    XmlElementStartTag(
+                        XmlName(
+                            Identifier("param")))
+                    .WithAttributes(
+                        SingletonList<XmlAttributeSyntax>(
+                            XmlNameAttribute(
+                                XmlName(
+                                    Identifier("name")),
+                                Token(SyntaxKind.DoubleQuoteToken),
+                                IdentifierName("producer"),
+                                Token(SyntaxKind.DoubleQuoteToken)))))
+                .WithEndTag(
+                    XmlElementEndTag(
+                        XmlName(
+                            Identifier("param")))));
+            }
+
             list.Add(
             XmlText()
             .WithTextTokens(
@@ -702,7 +788,9 @@ namespace RedCow.Generators
                         Parameter(
                             Identifier("cloneProvider"))
                         .WithType(
-                            IdentifierName("RedCow.ICloneProvider"))
+                             QualifiedName(
+                                    IdentifierName("RedCow"),
+                                    IdentifierName("ICloneProvider")))
                         .WithDefault(
                             EqualsValueClause(
                                 LiteralExpression(
@@ -817,7 +905,9 @@ namespace RedCow.Generators
                         Parameter(
                             Identifier("cloneProvider"))
                         .WithType(
-                            IdentifierName("RedCow.ICloneProvider"))
+                             QualifiedName(
+                                    IdentifierName("RedCow"),
+                                    IdentifierName("ICloneProvider")))
                         .WithDefault(
                             EqualsValueClause(
                                 LiteralExpression(
@@ -931,7 +1021,9 @@ namespace RedCow.Generators
                         Parameter(
                             Identifier("cloneProvider"))
                         .WithType(
-                            IdentifierName("RedCow.ICloneProvider"))
+                             QualifiedName(
+                                    IdentifierName("RedCow"),
+                                    IdentifierName("ICloneProvider")))
                         .WithDefault(
                             EqualsValueClause(
                                 LiteralExpression(
@@ -1079,7 +1171,9 @@ namespace RedCow.Generators
                         Parameter(
                             Identifier("cloneProvider"))
                         .WithType(
-                            IdentifierName("RedCow.ICloneProvider"))
+                             QualifiedName(
+                                    IdentifierName("RedCow"),
+                                    IdentifierName("ICloneProvider")))
                         .WithDefault(
                             EqualsValueClause(
                                 LiteralExpression(

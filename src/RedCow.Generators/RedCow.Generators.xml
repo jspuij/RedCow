@@ -97,6 +97,20 @@
             <param name="interfaceDeclaration">The interface to apply the partial to.</param>
             <returns>The interface declaration syntax.</returns>
         </member>
+        <member name="M:RedCow.Generators.ProducerInterfaceGenerator.GenerateInitialProduce(Microsoft.CodeAnalysis.CSharp.Syntax.InterfaceDeclarationSyntax)">
+            <summary>
+            Generates the produce function for initial state.
+            </summary>
+            <param name="interfaceDeclaration">The interface declaration.</param>
+            <returns>The method declaration.</returns>
+        </member>
+        <member name="M:RedCow.Generators.ProducerInterfaceGenerator.GenerateProduceAction(Microsoft.CodeAnalysis.CSharp.Syntax.InterfaceDeclarationSyntax)">
+            <summary>
+            Generates the produce function that accepts an action.
+            </summary>
+            <param name="interfaceDeclaration">The interface declaration.</param>
+            <returns>The method declaration.</returns>
+        </member>
         <member name="M:RedCow.Generators.ProducerInterfaceGenerator.GenerateStaticProduceAction(Microsoft.CodeAnalysis.CSharp.Syntax.InterfaceDeclarationSyntax)">
             <summary>
             Generates the static produce function that accepts an action.
@@ -118,13 +132,14 @@
             <param name="interfaceDeclaration">The interface declaration.</param>
             <returns>The method declaration.</returns>
         </member>
-        <member name="M:RedCow.Generators.ProducerInterfaceGenerator.GenerateProduceDocumentation(Microsoft.CodeAnalysis.CSharp.Syntax.InterfaceDeclarationSyntax,System.Boolean,System.Boolean)">
+        <member name="M:RedCow.Generators.ProducerInterfaceGenerator.GenerateProduceDocumentation(Microsoft.CodeAnalysis.CSharp.Syntax.InterfaceDeclarationSyntax,System.Boolean,System.Boolean,System.Boolean)">
             <summary>
             Generate the documentation for the produce method.
             </summary>
             <param name="interfaceDeclaration">The interface declaration.</param>
             <param name="isStatic">Whether this is the static produce method.</param>
             <param name="usesFunction">Whether the producer uses a function or an action.</param>
+            <param name="hasProducer">Whether the producer is empty.</param>
             <returns>The documentation.</returns>
         </member>
         <member name="M:RedCow.Generators.ProducerInterfaceGenerator.GenerateProducerAction(Microsoft.CodeAnalysis.CSharp.Syntax.InterfaceDeclarationSyntax)">

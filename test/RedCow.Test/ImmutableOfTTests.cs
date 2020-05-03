@@ -27,10 +27,31 @@ namespace RedCow.Test
     public class ImmutableOfTTests
     {
         /// <summary>
+        /// Tests the Initial Produce Method.
+        /// </summary>
+        [Fact]
+        public void InitialProduceTest()
+        {
+            var initial = new TestPerson()
+            {
+                FirstName = "John",
+                LastName = "Doe",
+                IsAdult = true,
+            };
+
+            ITestPerson person = ITestPerson.Produce(initial);
+
+            Assert.False(ReferenceEquals(initial, person));
+            Assert.Equal(initial.FirstName, person.FirstName);
+            Assert.Equal(initial.LastName, person.LastName);
+            Assert.Equal(initial.IsAdult, person.IsAdult);
+        }
+
+        /// <summary>
         /// Tests the Produce Method.
         /// </summary>
         [Fact]
-        public void ProduceTest()
+        public void StaticProduceTest()
         {
             TestPerson initial = new TestPerson()
             {
@@ -45,23 +66,36 @@ namespace RedCow.Test
                 p.IsAdult = false;
             });
 
-            person = person.Produce(p =>
+            Assert.False(ReferenceEquals(initial, person));
+            Assert.NotEqual(initial.FirstName, person.FirstName);
+            Assert.Equal(initial.LastName, person.LastName);
+            Assert.NotEqual(initial.IsAdult, person.IsAdult);
+        }
+
+        /// <summary>
+        /// Tests the Produce Method.
+        /// </summary>
+        [Fact]
+        public void ProduceTest()
+        {
+            ITestPerson initial = ITestPerson.Produce(
+                new TestPerson()
             {
-                p.FirstName = "John";
-                p.IsAdult = true;
+                FirstName = "John",
+                LastName = "Doe",
+                IsAdult = true,
             });
 
-            var producer = ITestPerson.Producer(p =>
+            ITestPerson person = initial.Produce(p =>
             {
                 p.FirstName = "Jane";
                 p.IsAdult = false;
             });
 
-            var producer2 = ITestPerson.Producer((TestPerson p, int index) =>
-            {
-                p.FirstName = "Jane";
-                p.IsAdult = false;
-            });
+            Assert.False(ReferenceEquals(initial, person));
+            Assert.NotEqual(initial.FirstName, person.FirstName);
+            Assert.Equal(initial.LastName, person.LastName);
+            Assert.NotEqual(initial.IsAdult, person.IsAdult);
         }
     }
 }
