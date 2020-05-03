@@ -34,7 +34,20 @@ namespace RedCow.Immutable
         /// <param name="draft">A new draft, based on the immutable.</param>
         /// <param name="cloneProvider">The clone provider.</param>
         /// <returns>A scope that is used to either reconcile or dispose of the draft.</returns>
-        public static IDraftScope CreateDraft<T>(this T state, out IDraft<T> draft, ICloneProvider? cloneProvider = null)
+        public static IDraftScope CreateDraft<T>(this T state, out T draft, ICloneProvider? cloneProvider = null)
+        {
+            throw new NotImplementedException();
+        }
+
+        /// <summary>
+        /// Creates a new Draft, based on the <see cref="Immutable{T}"/>.
+        /// </summary>
+        /// <typeparam name="T">The type of the state.</typeparam>
+        /// <param name="state">The immutable.</param>
+        /// <param name="draft">A new draft, based on the immutable.</param>
+        /// <param name="cloneProvider">The clone provider.</param>
+        /// <returns>A scope that is used to either reconcile or dispose of the draft.</returns>
+        public static IDraftScope CreateDraft<T>(this Immutable<T> state, out T draft, ICloneProvider? cloneProvider = null)
         {
             throw new NotImplementedException();
         }

@@ -286,7 +286,7 @@ namespace RedCow.Generators
                     public static Func<{interfaceName}, TArg, {interfaceName}> Producer<TArg>(Action<{className}, TArg> producer, ICloneProvider cloneProvider = null) => 
                         (immutable1, argument1) =>
                         {{
-                            using var scope = immutable1.CreateDraft(out var draft, cloneProvider);
+                            using var scope = immutable1.CreateDraft<{className}>(out var draft, cloneProvider);
                             producer((TestPerson)draft, argument1);
                             return (ITestPerson)scope.FinishDraft((TestPerson)draft);
                         }};
@@ -316,7 +316,7 @@ namespace RedCow.Generators
                     public static Func<{interfaceName}, TArg, {interfaceName}> Producer<TArg>(Func<TArg, {className}> producer, ICloneProvider cloneProvider = null) =>
                         (immutable1, argument1) =>
                         {{
-                            using var scope = immutable1.CreateDraft(out var _, cloneProvider);
+                            using var scope = immutable1.CreateDraft<{className}>(out var _, cloneProvider);
                             TestPerson draft = producer(argument1);
                             return (ITestPerson)scope.FinishDraft(draft);
                         }};
