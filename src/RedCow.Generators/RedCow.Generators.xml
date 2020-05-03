@@ -191,32 +191,36 @@
             <param name="interfaceDeclaration">The interface declaration.</param>
             <returns>The method declaration.</returns>
         </member>
-        <member name="M:RedCow.Generators.ProducerInterfaceGenerator.GenerateProducerAction(Microsoft.CodeAnalysis.CSharp.Syntax.InterfaceDeclarationSyntax)">
+        <member name="M:RedCow.Generators.ProducerInterfaceGenerator.GenerateProducerAction(Microsoft.CodeAnalysis.CSharp.Syntax.InterfaceDeclarationSyntax,System.Boolean)">
             <summary>
             Generates the producer function that accepts a function.
             </summary>
             <param name="interfaceDeclaration">The interface declaration.</param>
+            <param name="useInterface">Whether to use the interface declaration for the initialstate.</param>
             <returns>The method declaration.</returns>
         </member>
-        <member name="M:RedCow.Generators.ProducerInterfaceGenerator.GenerateProducerFunction(Microsoft.CodeAnalysis.CSharp.Syntax.InterfaceDeclarationSyntax)">
+        <member name="M:RedCow.Generators.ProducerInterfaceGenerator.GenerateProducerFunction(Microsoft.CodeAnalysis.CSharp.Syntax.InterfaceDeclarationSyntax,System.Boolean)">
             <summary>
             Generates the producer function that accepts an action.
             </summary>
             <param name="interfaceDeclaration">The interface declaration.</param>
+            <param name="useInterface">Whether to use the interface declaration for the initialstate.</param>
             <returns>The method declaration.</returns>
         </member>
-        <member name="M:RedCow.Generators.ProducerInterfaceGenerator.GenerateProducerActionWithArgument(Microsoft.CodeAnalysis.CSharp.Syntax.InterfaceDeclarationSyntax)">
+        <member name="M:RedCow.Generators.ProducerInterfaceGenerator.GenerateProducerActionWithArgument(Microsoft.CodeAnalysis.CSharp.Syntax.InterfaceDeclarationSyntax,System.Boolean)">
             <summary>
             Generate the producer which accepts an action with a single Argument.
             </summary>
             <param name="interfaceDeclaration">The interface declaration.</param>
+            <param name="useInterface">Whether to use the interface declaration for the initialstate.</param>
             <returns>The method declaration.</returns>
         </member>
-        <member name="M:RedCow.Generators.ProducerInterfaceGenerator.GenerateProducerFunctionWithArgument(Microsoft.CodeAnalysis.CSharp.Syntax.InterfaceDeclarationSyntax)">
+        <member name="M:RedCow.Generators.ProducerInterfaceGenerator.GenerateProducerFunctionWithArgument(Microsoft.CodeAnalysis.CSharp.Syntax.InterfaceDeclarationSyntax,System.Boolean)">
             <summary>
             Generate the producer which accepts a function with a single Argument.
             </summary>
             <param name="interfaceDeclaration">The interface declaration.</param>
+            <param name="useInterface">Whether to use the interface declaration for the initialstate.</param>
             <returns>The method declaration.</returns>
         </member>
     </members>

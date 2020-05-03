@@ -42,11 +42,12 @@
             The scope of the draft.
             </summary>
         </member>
-        <member name="M:RedCow.Immutable.IDraftScope.FinishDraft``1(``0)">
+        <member name="M:RedCow.Immutable.IDraftScope.FinishDraft``2(``0)">
             <summary>
             Finishes a Draft.
             </summary>
             <typeparam name="T">The type of the state.</typeparam>
+            <typeparam name="TInterface">The type of the interface.</typeparam>
             <param name="draft">The draft.</param>
             <returns>An immutable of type T.</returns>
         </member>
@@ -66,7 +67,7 @@
             Extension methods for <see cref="T:RedCow.Immutable`1"/>.
             </summary>
         </member>
-        <member name="M:RedCow.Immutable.ImmutableExtensions.CreateDraft``1(``0,RedCow.Immutable.IDraft{``0}@,RedCow.Immutable.ICloneProvider)">
+        <member name="M:RedCow.Immutable.ImmutableExtensions.CreateDraft``1(``0,``0@,RedCow.Immutable.ICloneProvider)">
             <summary>
             Creates a new Draft, based on the <see cref="T:RedCow.Immutable`1"/>.
             </summary>
@@ -76,7 +77,7 @@
             <param name="cloneProvider">The clone provider.</param>
             <returns>A scope that is used to either reconcile or dispose of the draft.</returns>
         </member>
-        <member name="M:RedCow.Immutable.ImmutableExtensions.CreateDraft``1(RedCow.Immutable{``0},RedCow.Immutable.IDraft{``0}@,RedCow.Immutable.ICloneProvider)">
+        <member name="M:RedCow.Immutable.ImmutableExtensions.CreateDraft``1(RedCow.Immutable{``0},``0@,RedCow.Immutable.ICloneProvider)">
             <summary>
             Creates a new Draft, based on the <see cref="T:RedCow.Immutable`1"/>.
             </summary>
