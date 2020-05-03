@@ -30,7 +30,7 @@ namespace RedCow.Generators
     /// <summary>
     /// Generates producer methods on the Immutable interface.
     /// </summary>
-    public class ProducerInterfaceGenerator : ICodeGenerator
+    public class ProducerInterfaceGenerator : BaseGenerator, ICodeGenerator
     {
         /// <summary>
         /// The type of the Mutable.
@@ -59,7 +59,7 @@ namespace RedCow.Generators
         /// <param name="progress">Progress information.</param>
         /// <param name="cancellationToken">The cancellation token.</param>
         /// <returns>A <see cref="Task"/> representing the asynchronous operation.</returns>
-        public Task<SyntaxList<MemberDeclarationSyntax>> GenerateAsync(TransformationContext context, IProgress<Diagnostic> progress, CancellationToken cancellationToken)
+        public override Task<SyntaxList<MemberDeclarationSyntax>> GenerateAsync(TransformationContext context, IProgress<Diagnostic> progress, CancellationToken cancellationToken)
         {
             // Our generator is applied to any class that our attribute is applied to.
             var applyToInterface = (InterfaceDeclarationSyntax)context.ProcessingNode;

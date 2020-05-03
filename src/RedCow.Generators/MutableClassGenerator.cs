@@ -30,7 +30,7 @@ namespace RedCow.Generators
     /// <summary>
     /// Generates a Mutable class.
     /// </summary>
-    public class MutableClassGenerator : IRichCodeGenerator
+    public class MutableClassGenerator : BaseGenerator, IRichCodeGenerator
     {
         /// <summary>
         /// The type of the Immutable Interface.
@@ -59,7 +59,7 @@ namespace RedCow.Generators
         /// <param name="progress">Progress information.</param>
         /// <param name="cancellationToken">The cancellation token.</param>
         /// <returns>A <see cref="Task"/> representing the asynchronous operation.</returns>
-        public Task<SyntaxList<MemberDeclarationSyntax>> GenerateAsync(TransformationContext context, IProgress<Diagnostic> progress, CancellationToken cancellationToken)
+        public override Task<SyntaxList<MemberDeclarationSyntax>> GenerateAsync(TransformationContext context, IProgress<Diagnostic> progress, CancellationToken cancellationToken)
         {
             // Our generator is applied to any class that our attribute is applied to.
             var applyToClass = (ClassDeclarationSyntax)context.ProcessingNode;
@@ -97,35 +97,6 @@ namespace RedCow.Generators
                 }));
 
             return Task.FromResult(List(new MemberDeclarationSyntax[] { partial, immutable, draft }));
-        }
-
-        /// <summary>
-        /// Generates the code.
-        /// </summary>
-        /// <param name="context">The transformation context.</param>
-        /// <param name="progress">Progress information.</param>
-        /// <param name="cancellationToken">The cancellation token.</param>
-        /// <returns>A <see cref="Task"/> representing the asynchronous operation.</returns>
-        public async Task<RichGenerationResult> GenerateRichAsync(TransformationContext context, IProgress<Diagnostic> progress, CancellationToken cancellationToken)
-        {
-            var node = context.ProcessingNode;
-
-            var result = new RichGenerationResult
-            {
-                Members = context.ProcessingNode.Ancestors().Aggregate(await this.GenerateAsync(context, progress, cancellationToken), WrapInAncestor),
-                Usings = List(
-                    new UsingDirectiveSyntax[]
-                    {
-                        UsingDirective(
-                            IdentifierName("RedCow")),
-                        UsingDirective(
-                            QualifiedName(
-                                IdentifierName("RedCow"),
-                                IdentifierName("Immutable"))),
-                    }),
-            };
-
-            return result;
         }
 
         /// <summary>
@@ -285,72 +256,6 @@ namespace RedCow.Generators
                                 Environment.NewLine,
                                 TriviaList()))),
                             }))));
-        }
-
-        /// <summary>
-        /// Wraps these members in their ancestor namespace.
-        /// </summary>
-        /// <param name="generatedMembers">The generate members.</param>
-        /// <param name="ancestor">The ancestor node.</param>
-        /// <returns>A new syntaxlist.</returns>
-        private static SyntaxList<MemberDeclarationSyntax> WrapInAncestor(SyntaxList<MemberDeclarationSyntax> generatedMembers, SyntaxNode ancestor)
-        {
-            switch (ancestor)
-            {
-                case NamespaceDeclarationSyntax ancestorNamespace:
-                    generatedMembers = SyntaxFactory.SingletonList<MemberDeclarationSyntax>(
-                        CopyAsAncestor(ancestorNamespace)
-                        .WithMembers(generatedMembers));
-                    break;
-                case ClassDeclarationSyntax nestingClass:
-                    generatedMembers = SyntaxFactory.SingletonList<MemberDeclarationSyntax>(
-                        CopyAsAncestor(nestingClass)
-                        .WithMembers(generatedMembers));
-                    break;
-                case StructDeclarationSyntax nestingStruct:
-                    generatedMembers = SyntaxFactory.SingletonList<MemberDeclarationSyntax>(
-                        CopyAsAncestor(nestingStruct)
-                        .WithMembers(generatedMembers));
-                    break;
-            }
-
-            return generatedMembers;
-        }
-
-        /// <summary>
-        /// Copy a namespace as ancestor.
-        /// </summary>
-        /// <param name="syntax">The declaration syntax.</param>
-        /// <returns>The copied declaration syntax.</returns>
-        private static NamespaceDeclarationSyntax CopyAsAncestor(NamespaceDeclarationSyntax syntax)
-        {
-            return SyntaxFactory.NamespaceDeclaration(syntax.Name.WithoutTrivia())
-                .WithExterns(SyntaxFactory.List(syntax.Externs.Select(x => x.WithoutTrivia())))
-                .WithUsings(SyntaxFactory.List(syntax.Usings.Select(x => x.WithoutTrivia())));
-        }
-
-        /// <summary>
-        /// Copy a class as ancestor.
-        /// </summary>
-        /// <param name="syntax">The declaration syntax.</param>
-        /// <returns>The copied declaration syntax.</returns>
-        private static ClassDeclarationSyntax CopyAsAncestor(ClassDeclarationSyntax syntax)
-        {
-            return SyntaxFactory.ClassDeclaration(syntax.Identifier.WithoutTrivia())
-                .WithModifiers(SyntaxFactory.TokenList(syntax.Modifiers.Select(x => x.WithoutTrivia())))
-                .WithTypeParameterList(syntax.TypeParameterList);
-        }
-
-        /// <summary>
-        /// Copy a struct as ancestor.
-        /// </summary>
-        /// <param name="syntax">The declaration syntax.</param>
-        /// <returns>The copied declaration syntax.</returns>
-        private static StructDeclarationSyntax CopyAsAncestor(StructDeclarationSyntax syntax)
-        {
-            return SyntaxFactory.StructDeclaration(syntax.Identifier.WithoutTrivia())
-                .WithModifiers(SyntaxFactory.TokenList(syntax.Modifiers.Select(x => x.WithoutTrivia())))
-                .WithTypeParameterList(syntax.TypeParameterList);
         }
 
         /// <summary>
