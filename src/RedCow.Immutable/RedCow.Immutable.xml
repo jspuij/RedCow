@@ -4,11 +4,6 @@
         <name>RedCow.Immutable</name>
     </assembly>
     <members>
-        <member name="T:RedCow.Immutable.DraftManager">
-            <summary>
-            Manages a <see cref="T:RedCow.IDraft`1"/> implementation.
-            </summary>
-        </member>
         <member name="T:RedCow.Immutable.DraftTypeAttribute">
             <summary>
             Draft type attribute. Indicates which class is the draft type for this type.
@@ -27,6 +22,21 @@
             Gets the draft type.
             </summary>
         </member>
+        <member name="T:RedCow.Immutable.ICloneProvider">
+            <summary>
+            Interface for Clone Providers. Clone Providers can clone the public properties of an object
+            to another object.
+            </summary>
+        </member>
+        <member name="M:RedCow.Immutable.ICloneProvider.Clone``2(``0,``1)">
+            <summary>
+            Clones the public properties of an object to another object.
+            </summary>
+            <typeparam name="TSource">The source type.</typeparam>
+            <typeparam name="TDestination">The destination type.</typeparam>
+            <param name="source">The source.</param>
+            <param name="destination">The destination.</param>
+        </member>
         <member name="T:RedCow.Immutable.IDraftScope">
             <summary>
             The scope of the draft.
@@ -39,6 +49,64 @@
             <typeparam name="T">The type of the state.</typeparam>
             <param name="draft">The draft.</param>
             <returns>An immutable of type T.</returns>
+        </member>
+        <member name="T:RedCow.Immutable.IDraft`1">
+            <summary>
+            An interface of a Draft object of <typeparamref name="T"/>.
+            </summary>
+            <typeparam name="T">The draft Type.</typeparam>
+        </member>
+        <member name="P:RedCow.Immutable.IDraft`1.Original">
+            <summary>
+            Gets the original immutable object.
+            </summary>
+        </member>
+        <member name="T:RedCow.Immutable.ImmutableExtensions">
+            <summary>
+            Extension methods for <see cref="T:RedCow.Immutable`1"/>.
+            </summary>
+        </member>
+        <member name="M:RedCow.Immutable.ImmutableExtensions.CreateDraft``1(``0,RedCow.Immutable.IDraft{``0}@,RedCow.Immutable.ICloneProvider)">
+            <summary>
+            Creates a new Draft, based on the <see cref="T:RedCow.Immutable`1"/>.
+            </summary>
+            <typeparam name="T">The type of the state.</typeparam>
+            <param name="state">The immutable.</param>
+            <param name="draft">A new draft, based on the immutable.</param>
+            <param name="cloneProvider">The clone provider.</param>
+            <returns>A scope that is used to either reconcile or dispose of the draft.</returns>
+        </member>
+        <member name="T:RedCow.Immutable.ImmutableTypeAttribute">
+            <summary>
+            Immutable type attribute. Indicates which class is the immutable type for this type.
+            </summary>
+        </member>
+        <member name="M:RedCow.Immutable.ImmutableTypeAttribute.#ctor(System.Type)">
+            <summary>
+            Initializes a new instance of the <see cref="T:RedCow.Immutable.ImmutableTypeAttribute"/> class.
+            </summary>
+            <param name="immutableType">
+            The immutable type.
+            </param>
+        </member>
+        <member name="P:RedCow.Immutable.ImmutableTypeAttribute.ImmutableType">
+            <summary>
+            Gets the immutable type.
+            </summary>
+        </member>
+        <member name="T:RedCow.Immutable.ReflectionCloneProvider">
+            <summary>
+            Provides cloning using reflection.
+            </summary>
+        </member>
+        <member name="M:RedCow.Immutable.ReflectionCloneProvider.Clone``2(``0,``1)">
+            <summary>
+            Clones the public properties of an object to another object.
+            </summary>
+            <typeparam name="TSource">The source type.</typeparam>
+            <typeparam name="TDestination">The destination type.</typeparam>
+            <param name="source">The source.</param>
+            <param name="destination">The destination.</param>
         </member>
         <member name="T:RedCow.GenerateMutableAttribute">
             <summary>
@@ -77,84 +145,11 @@
             Gets the type of the Immutable Interface.
             </summary>
         </member>
-        <member name="T:RedCow.ICloneProvider">
-            <summary>
-            Interface for Clone Providers. Clone Providers can clone the public properties of an object
-            to another object.
-            </summary>
-        </member>
-        <member name="M:RedCow.ICloneProvider.Clone``2(``0,``1)">
-            <summary>
-            Clones the public properties of an object to another object.
-            </summary>
-            <typeparam name="TSource">The source type.</typeparam>
-            <typeparam name="TDestination">The destination type.</typeparam>
-            <param name="source">The source.</param>
-            <param name="destination">The destination.</param>
-        </member>
-        <member name="T:RedCow.IDraft`1">
-            <summary>
-            An interface of a Draft object of <typeparamref name="T"/>.
-            </summary>
-            <typeparam name="T">The draft Type.</typeparam>
-        </member>
-        <member name="P:RedCow.IDraft`1.Original">
-            <summary>
-            Gets the original immutable object.
-            </summary>
-        </member>
-        <member name="T:RedCow.ImmutableExtensions">
-            <summary>
-            Extension methods for <see cref="T:RedCow.Immutable`1"/>.
-            </summary>
-        </member>
-        <member name="M:RedCow.ImmutableExtensions.CreateDraft``1(``0,RedCow.IDraft{``0}@,RedCow.ICloneProvider)">
-            <summary>
-            Creates a new Draft, based on the <see cref="T:RedCow.Immutable`1"/>.
-            </summary>
-            <typeparam name="T">The type of the state.</typeparam>
-            <param name="state">The immutable.</param>
-            <param name="draft">A new draft, based on the immutable.</param>
-            <param name="cloneProvider">The clone provider.</param>
-            <returns>A scope that is used to either reconcile or dispose of the draft.</returns>
-        </member>
-        <member name="T:RedCow.ImmutableTypeAttribute">
-            <summary>
-            Immutable type attribute. Indicates which class is the immutable type for this type.
-            </summary>
-        </member>
-        <member name="M:RedCow.ImmutableTypeAttribute.#ctor(System.Type)">
-            <summary>
-            Initializes a new instance of the <see cref="T:RedCow.ImmutableTypeAttribute"/> class.
-            </summary>
-            <param name="immutableType">
-            The immutable type.
-            </param>
-        </member>
-        <member name="P:RedCow.ImmutableTypeAttribute.ImmutableType">
-            <summary>
-            Gets the immutable type.
-            </summary>
-        </member>
         <member name="T:RedCow.Immutable`1">
             <summary>
             Interface for Immutable instances of <typeparamref name="T"/>.
             </summary>
             <typeparam name="T">The mutable type.</typeparam>
-        </member>
-        <member name="T:RedCow.ReflectionCloneProvider">
-            <summary>
-            Provides cloning using reflection.
-            </summary>
-        </member>
-        <member name="M:RedCow.ReflectionCloneProvider.Clone``2(``0,``1)">
-            <summary>
-            Clones the public properties of an object to another object.
-            </summary>
-            <typeparam name="TSource">The source type.</typeparam>
-            <typeparam name="TDestination">The destination type.</typeparam>
-            <param name="source">The source.</param>
-            <param name="destination">The destination.</param>
         </member>
     </members>
 </doc>
