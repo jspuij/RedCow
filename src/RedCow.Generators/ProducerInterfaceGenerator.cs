@@ -125,9 +125,7 @@ namespace RedCow.Generators
                             Parameter(
                                 Identifier("cloneProvider"))
                             .WithType(
-                                QualifiedName(
-                                    IdentifierName("RedCow"),
-                                    IdentifierName("ICloneProvider")))
+                                IdentifierName("ICloneProvider"))
                             .WithDefault(
                                 EqualsValueClause(
                                     LiteralExpression(
@@ -194,9 +192,7 @@ namespace RedCow.Generators
                             Parameter(
                                 Identifier("cloneProvider"))
                             .WithType(
-                                 QualifiedName(
-                                    IdentifierName("RedCow"),
-                                    IdentifierName("ICloneProvider")))
+                                 IdentifierName("ICloneProvider"))
                             .WithDefault(
                                 EqualsValueClause(
                                     LiteralExpression(
@@ -270,9 +266,7 @@ namespace RedCow.Generators
                             Parameter(
                                 Identifier("cloneProvider"))
                             .WithType(
-                                 QualifiedName(
-                                    IdentifierName("RedCow"),
-                                    IdentifierName("ICloneProvider")))
+                                 IdentifierName("ICloneProvider"))
                             .WithDefault(
                                 EqualsValueClause(
                                     LiteralExpression(
@@ -338,9 +332,7 @@ namespace RedCow.Generators
                             Parameter(
                                 Identifier("cloneProvider"))
                             .WithType(
-                                 QualifiedName(
-                                    IdentifierName("RedCow"),
-                                    IdentifierName("ICloneProvider")))
+                                 IdentifierName("ICloneProvider"))
                             .WithDefault(
                                 EqualsValueClause(
                                     LiteralExpression(
@@ -414,9 +406,7 @@ namespace RedCow.Generators
                             Parameter(
                                 Identifier("cloneProvider"))
                             .WithType(
-                                 QualifiedName(
-                                    IdentifierName("RedCow"),
-                                    IdentifierName("ICloneProvider")))
+                                 IdentifierName("ICloneProvider"))
                             .WithDefault(
                                 EqualsValueClause(
                                     LiteralExpression(
@@ -788,9 +778,7 @@ namespace RedCow.Generators
                         Parameter(
                             Identifier("cloneProvider"))
                         .WithType(
-                             QualifiedName(
-                                    IdentifierName("RedCow"),
-                                    IdentifierName("ICloneProvider")))
+                             IdentifierName("ICloneProvider"))
                         .WithDefault(
                             EqualsValueClause(
                                 LiteralExpression(
@@ -905,9 +893,7 @@ namespace RedCow.Generators
                         Parameter(
                             Identifier("cloneProvider"))
                         .WithType(
-                             QualifiedName(
-                                    IdentifierName("RedCow"),
-                                    IdentifierName("ICloneProvider")))
+                             IdentifierName("ICloneProvider"))
                         .WithDefault(
                             EqualsValueClause(
                                 LiteralExpression(
@@ -1021,9 +1007,7 @@ namespace RedCow.Generators
                         Parameter(
                             Identifier("cloneProvider"))
                         .WithType(
-                             QualifiedName(
-                                    IdentifierName("RedCow"),
-                                    IdentifierName("ICloneProvider")))
+                             IdentifierName("ICloneProvider"))
                         .WithDefault(
                             EqualsValueClause(
                                 LiteralExpression(
@@ -1171,9 +1155,7 @@ namespace RedCow.Generators
                         Parameter(
                             Identifier("cloneProvider"))
                         .WithType(
-                             QualifiedName(
-                                    IdentifierName("RedCow"),
-                                    IdentifierName("ICloneProvider")))
+                             IdentifierName("ICloneProvider"))
                         .WithDefault(
                             EqualsValueClause(
                                 LiteralExpression(

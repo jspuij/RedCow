@@ -68,6 +68,32 @@ namespace RedCow.Generators
 
             ClassDeclarationSyntax immutable = this.GenerateImmutable(applyToClass);
 
+            partial = partial.WithAttributeLists(
+            List(
+                new AttributeListSyntax[]
+                {
+                    AttributeList(
+                        SingletonSeparatedList(
+                            Attribute(
+                                IdentifierName("ImmutableType"))
+                            .WithArgumentList(
+                                AttributeArgumentList(
+                                    SingletonSeparatedList(
+                                        AttributeArgument(
+                                            TypeOfExpression(
+                                                IdentifierName("ImmutableTestPerson")))))))),
+                    AttributeList(
+                        SingletonSeparatedList(
+                            Attribute(
+                                IdentifierName("DraftType"))
+                            .WithArgumentList(
+                                AttributeArgumentList(
+                                    SingletonSeparatedList(
+                                        AttributeArgument(
+                                            TypeOfExpression(
+                                                IdentifierName("DraftTestPerson")))))))),
+                }));
+
             return Task.FromResult(List<MemberDeclarationSyntax>(new[] { partial, immutable }));
         }
 

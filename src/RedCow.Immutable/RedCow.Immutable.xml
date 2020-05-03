@@ -4,6 +4,24 @@
         <name>RedCow.Immutable</name>
     </assembly>
     <members>
+        <member name="T:RedCow.DraftTypeAttribute">
+            <summary>
+            Draft type attribute. Indicates which class is the draft type for this type.
+            </summary>
+        </member>
+        <member name="M:RedCow.DraftTypeAttribute.#ctor(System.Type)">
+            <summary>
+            Initializes a new instance of the <see cref="T:RedCow.DraftTypeAttribute"/> class.
+            </summary>
+            <param name="draftType">
+            The draft type.
+            </param>
+        </member>
+        <member name="P:RedCow.DraftTypeAttribute.DraftType">
+            <summary>
+            Gets the draft type.
+            </summary>
+        </member>
         <member name="T:RedCow.GenerateMutableAttribute">
             <summary>
             Generate Mutable Attribute. Can be applied to a class to automatically generate properties that are mutable for
@@ -94,6 +112,24 @@
             <param name="draft">A new draft, based on the immutable.</param>
             <param name="cloneProvider">The clone provider.</param>
             <returns>A scope that is used to either reconcile or dispose of the draft.</returns>
+        </member>
+        <member name="T:RedCow.ImmutableTypeAttribute">
+            <summary>
+            Immutable type attribute. Indicates which class is the immutable type for this type.
+            </summary>
+        </member>
+        <member name="M:RedCow.ImmutableTypeAttribute.#ctor(System.Type)">
+            <summary>
+            Initializes a new instance of the <see cref="T:RedCow.ImmutableTypeAttribute"/> class.
+            </summary>
+            <param name="immutableType">
+            The immutable type.
+            </param>
+        </member>
+        <member name="P:RedCow.ImmutableTypeAttribute.ImmutableType">
+            <summary>
+            Gets the immutable type.
+            </summary>
         </member>
         <member name="T:RedCow.Immutable`1">
             <summary>
