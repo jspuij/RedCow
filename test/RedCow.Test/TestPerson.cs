@@ -24,7 +24,7 @@ namespace RedCow.Test
     /// The mutable type.
     /// </summary>
     [GenerateMutable(typeof(ITestPerson))]
-    public partial class TestPerson
+    public partial class TestPerson : ITestPerson
     {
     }
 }

@@ -86,15 +86,22 @@
             Creates a property with getter and setter based on the readonly interface property.
             </summary>
             <param name="p">The property to generate the Getter and Setter for.</param>
-            <returns>An <see cref="T:Microsoft.CodeAnalysis.CSharp.Syntax.PropertyDeclarationSyntax"/>.</returns>
+            <returns>An <see cref="T:Microsoft.CodeAnalysis.CSharp.Syntax.MemberDeclarationSyntax"/>.</returns>
         </member>
         <member name="M:RedCow.Generators.MutableClassGenerator.CreateImmutableProperty(Microsoft.CodeAnalysis.IPropertySymbol)">
             <summary>
-            Creates a property with getter and setter that throws an <see cref="T:System.InvalidOperationException"/>,
+            Creates an immutable property with getter and setter that throws an <see cref="T:System.InvalidOperationException"/>,
             based on the readonly interface property.
             </summary>
             <param name="p">The property to generate the Getter and Setter for.</param>
-            <returns>An <see cref="T:Microsoft.CodeAnalysis.CSharp.Syntax.PropertyDeclarationSyntax"/>.</returns>
+            <returns>An <see cref="T:Microsoft.CodeAnalysis.CSharp.Syntax.MemberDeclarationSyntax"/>.</returns>
+        </member>
+        <member name="M:RedCow.Generators.MutableClassGenerator.CreateDraftProperty(Microsoft.CodeAnalysis.IPropertySymbol)">
+            <summary>
+            Creates a draft property with getter and setter based on the readonly interface property.
+            </summary>
+            <param name="p">The property to generate the Getter and Setter for.</param>
+            <returns>An <see cref="T:Microsoft.CodeAnalysis.CSharp.Syntax.MemberDeclarationSyntax"/>.</returns>
         </member>
         <member name="M:RedCow.Generators.MutableClassGenerator.GenerateXmlDoc(System.String)">
             <summary>
@@ -117,12 +124,67 @@
             <param name="sourceClassDeclaration">The source class declaration.</param>
             <returns>A partial class declaration.</returns>
         </member>
+        <member name="M:RedCow.Generators.MutableClassGenerator.GenerateDraftConstructor(Microsoft.CodeAnalysis.CSharp.Syntax.ClassDeclarationSyntax,Microsoft.CodeAnalysis.CSharp.Syntax.ConstructorDeclarationSyntax)">
+            <summary>
+            Generates a single draft constructor.
+            </summary>
+            <param name="sourceClassDeclaration">The source class declaration.</param>
+            <param name="constructorDeclarationSyntax">An optional existing constructor on the base class.</param>
+            <returns>A member declaration.</returns>
+        </member>
+        <member name="M:RedCow.Generators.MutableClassGenerator.GenerateDraftStateField(Microsoft.CodeAnalysis.CSharp.Syntax.ClassDeclarationSyntax)">
+            <summary>
+            Generates the draft state field.
+            </summary>
+            <param name="sourceClassDeclaration">The source class declaration.</param>
+            <returns>A member declaration.</returns>
+        </member>
+        <member name="M:RedCow.Generators.MutableClassGenerator.GenerateOriginalProperty(Microsoft.CodeAnalysis.CSharp.Syntax.ClassDeclarationSyntax)">
+            <summary>
+            Generates the Original property.
+            </summary>
+            <param name="sourceClassDeclaration">The source class declaration.</param>
+            <returns>A member declaration.</returns>
+        </member>
+        <member name="M:RedCow.Generators.MutableClassGenerator.GenerateImmutableOriginalProperty">
+            <summary>
+            Generates the ImmutableOriginal property.
+            </summary>
+            <returns>A member declaration.</returns>
+        </member>
+        <member name="M:RedCow.Generators.MutableClassGenerator.GenerateDraftStateProperty(Microsoft.CodeAnalysis.CSharp.Syntax.ClassDeclarationSyntax)">
+            <summary>
+            Generates the DraftState property.
+            </summary>
+            <param name="sourceClassDeclaration">The source class declaration.</param>
+            <returns>A member declaration.</returns>
+        </member>
         <member name="M:RedCow.Generators.MutableClassGenerator.GenerateImmutable(Microsoft.CodeAnalysis.CSharp.Syntax.ClassDeclarationSyntax)">
             <summary>
             Generates the immutable derived class.
             </summary>
             <param name="sourceClassDeclaration">The source class declaration.</param>
             <returns>A partial class declaration.</returns>
+        </member>
+        <member name="M:RedCow.Generators.MutableClassGenerator.GenerateImmutableConstructor(Microsoft.CodeAnalysis.CSharp.Syntax.ClassDeclarationSyntax,Microsoft.CodeAnalysis.CSharp.Syntax.ConstructorDeclarationSyntax)">
+            <summary>
+            Generates a single immutable constructor.
+            </summary>
+            <param name="sourceClassDeclaration">The source class declaration.</param>
+            <param name="constructorDeclarationSyntax">An optional existing constructor on the base class.</param>
+            <returns>A member declaration.</returns>
+        </member>
+        <member name="M:RedCow.Generators.MutableClassGenerator.GenerateLockMethod">
+            <summary>
+            Generates the Lock method on the immutable class.
+            </summary>
+            <returns>The method declaration.</returns>
+        </member>
+        <member name="M:RedCow.Generators.MutableClassGenerator.GenerateLockedProperty">
+            <summary>
+            Generates the Locked property on the immutable class.
+            </summary>
+            <returns>The property declaration.</returns>
         </member>
         <member name="T:RedCow.Generators.ProducerInterfaceGenerator">
             <summary>
@@ -191,36 +253,32 @@
             <param name="interfaceDeclaration">The interface declaration.</param>
             <returns>The method declaration.</returns>
         </member>
-        <member name="M:RedCow.Generators.ProducerInterfaceGenerator.GenerateProducerAction(Microsoft.CodeAnalysis.CSharp.Syntax.InterfaceDeclarationSyntax,System.Boolean)">
+        <member name="M:RedCow.Generators.ProducerInterfaceGenerator.GenerateProducerAction(Microsoft.CodeAnalysis.CSharp.Syntax.InterfaceDeclarationSyntax)">
             <summary>
-            Generates the producer function that accepts a function.
+            Generates the producer function that accepts a function recipe.
             </summary>
             <param name="interfaceDeclaration">The interface declaration.</param>
-            <param name="useInterface">Whether to use the interface declaration for the initialstate.</param>
             <returns>The method declaration.</returns>
         </member>
-        <member name="M:RedCow.Generators.ProducerInterfaceGenerator.GenerateProducerFunction(Microsoft.CodeAnalysis.CSharp.Syntax.InterfaceDeclarationSyntax,System.Boolean)">
+        <member name="M:RedCow.Generators.ProducerInterfaceGenerator.GenerateProducerFunction(Microsoft.CodeAnalysis.CSharp.Syntax.InterfaceDeclarationSyntax)">
             <summary>
-            Generates the producer function that accepts an action.
+            Generates the producer function that accepts an action recipe.
             </summary>
             <param name="interfaceDeclaration">The interface declaration.</param>
-            <param name="useInterface">Whether to use the interface declaration for the initialstate.</param>
             <returns>The method declaration.</returns>
         </member>
-        <member name="M:RedCow.Generators.ProducerInterfaceGenerator.GenerateProducerActionWithArgument(Microsoft.CodeAnalysis.CSharp.Syntax.InterfaceDeclarationSyntax,System.Boolean)">
+        <member name="M:RedCow.Generators.ProducerInterfaceGenerator.GenerateProducerActionWithArgument(Microsoft.CodeAnalysis.CSharp.Syntax.InterfaceDeclarationSyntax)">
             <summary>
-            Generate the producer which accepts an action with a single Argument.
+            Generate the producer which accepts an action recipe with a single Argument.
             </summary>
             <param name="interfaceDeclaration">The interface declaration.</param>
-            <param name="useInterface">Whether to use the interface declaration for the initialstate.</param>
             <returns>The method declaration.</returns>
         </member>
-        <member name="M:RedCow.Generators.ProducerInterfaceGenerator.GenerateProducerFunctionWithArgument(Microsoft.CodeAnalysis.CSharp.Syntax.InterfaceDeclarationSyntax,System.Boolean)">
+        <member name="M:RedCow.Generators.ProducerInterfaceGenerator.GenerateProducerFunctionWithArgument(Microsoft.CodeAnalysis.CSharp.Syntax.InterfaceDeclarationSyntax)">
             <summary>
-            Generate the producer which accepts a function with a single Argument.
+            Generate the producer which accepts a function recipe with a single Argument.
             </summary>
             <param name="interfaceDeclaration">The interface declaration.</param>
-            <param name="useInterface">Whether to use the interface declaration for the initialstate.</param>
             <returns>The method declaration.</returns>
         </member>
     </members>

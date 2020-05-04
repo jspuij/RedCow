@@ -1,4 +1,4 @@
-﻿// <copyright file="ITestPerson.cs" company="Jan-Willem Spuij">
+﻿// <copyright file="DraftScope.cs" company="Jan-Willem Spuij">
 // Copyright 2020 Jan-Willem Spuij
 //
 // Permission is hereby granted, free of charge, to any person obtaining a copy of this software and associated documentation
@@ -14,31 +14,50 @@
 // ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 // </copyright>
 
-namespace RedCow.Test
+namespace RedCow.Immutable
 {
     using System;
     using System.Collections.Generic;
     using System.Text;
 
     /// <summary>
-    /// Interface for an Immutable Test Person.
+    /// Represents a draft scope (A scope in which drafts are created).
     /// </summary>
-    [GenerateProducers(typeof(TestPerson))]
-    public partial interface ITestPerson
+    public class DraftScope : IDraftScope
     {
         /// <summary>
-        /// Gets the first name.
+        /// Initializes a new instance of the <see cref="DraftScope"/> class.
         /// </summary>
-        string FirstName { get; }
+        /// <param name="cloneProvider">The clone provider to use for drafts inside the scope.</param>
+        public DraftScope(ICloneProvider cloneProvider)
+        {
+            this.CloneProvider = cloneProvider ?? throw new ArgumentNullException(nameof(cloneProvider));
+        }
 
         /// <summary>
-        /// Gets the last name.
+        /// Gets the Clone Provider for this scope.
         /// </summary>
-        public string LastName { get; }
+        public ICloneProvider CloneProvider { get; }
 
         /// <summary>
-        /// Gets a value indicating whether isAdult is true.
+        /// Cleans up the scope.
         /// </summary>
-        public bool IsAdult { get; }
+        public void Dispose()
+        {
+            // TODO: Implement sane disposal.
+        }
+
+        /// <summary>
+        /// Finishes a draft and returns the next state.
+        /// </summary>
+        /// <typeparam name="T">The type of the draft.</typeparam>
+        /// <typeparam name="TInterface">The immutable type.</typeparam>
+        /// <param name="draft">The draft.</param>
+        /// <returns>The immutable.</returns>
+        public TInterface FinishDraft<T, TInterface>(T draft)
+        {
+            // TODO: Implement finish draft.
+            throw new NotImplementedException();
+        }
     }
 }

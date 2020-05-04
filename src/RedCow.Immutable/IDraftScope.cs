@@ -33,7 +33,6 @@ namespace RedCow.Immutable
         /// <typeparam name="TInterface">The type of the interface.</typeparam>
         /// <param name="draft">The draft.</param>
         /// <returns>An immutable of type T.</returns>
-        public TInterface FinishDraft<T, TInterface>(T draft)
-            where TInterface : Immutable<T>;
+        public TInterface FinishDraft<T, TInterface>(T draft);
     }
 }

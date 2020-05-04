@@ -4,6 +4,135 @@
         <name>RedCow.Immutable</name>
     </assembly>
     <members>
+        <member name="T:RedCow.Immutable.DraftExtensions">
+            <summary>
+            Extension methods for drafts.
+            </summary>
+        </member>
+        <member name="M:RedCow.Immutable.DraftExtensions.CreateDraft``1(``0,``0@,RedCow.Immutable.ICloneProvider)">
+            <summary>
+            Creates a new Draft, based on the type of the state.
+            </summary>
+            <typeparam name="T">The type of the state.</typeparam>
+            <param name="state">The immutable.</param>
+            <param name="draft">A new draft, based on the immutable.</param>
+            <param name="cloneProvider">The clone provider.</param>
+            <returns>A scope that is used to either reconcile or dispose of the draft.</returns>
+        </member>
+        <member name="M:RedCow.Immutable.DraftExtensions.CreateDraft``1(RedCow.Immutable{``0},``0@,RedCow.Immutable.ICloneProvider)">
+            <summary>
+            Creates a new Draft, based on the <see cref="T:RedCow.Immutable`1"/>.
+            </summary>
+            <typeparam name="T">The type of the state.</typeparam>
+            <param name="state">The immutable.</param>
+            <param name="draft">A new draft, based on the immutable.</param>
+            <param name="cloneProvider">The clone provider.</param>
+            <returns>A scope that is used to either reconcile or dispose of the draft.</returns>
+        </member>
+        <member name="M:RedCow.Immutable.DraftExtensions.IsDraft``1(``0)">
+            <summary>
+            Tests whether a class is a draft.
+            </summary>
+            <typeparam name="T">The type to test.</typeparam>
+            <param name="state">The state to test.</param>
+            <returns>A value indicating whether the object is a draft.</returns>
+        </member>
+        <member name="M:RedCow.Immutable.DraftExtensions.InternalCreateDraft``1(System.Object,``0@,RedCow.Immutable.ICloneProvider)">
+            <summary>
+            Creates a new Draft, based on the type of the state.
+            </summary>
+            <typeparam name="T">The type of the state.</typeparam>
+            <param name="state">The immutable.</param>
+            <param name="draft">A new draft, based on the immutable.</param>
+            <param name="cloneProvider">The clone provider.</param>
+            <returns>A scope that is used to either reconcile or dispose of the draft.</returns>
+        </member>
+        <member name="M:RedCow.Immutable.DraftExtensions.InternalIsDraft(System.Object)">
+            <summary>
+            Tests whether a class is a draft.
+            </summary>
+            <param name="state">The state to test.</param>
+            <returns>A value indicating whether the object is a draft.</returns>
+            <exception cref="T:System.ArgumentNullException">when the state is null.</exception>
+        </member>
+        <member name="T:RedCow.Immutable.DraftScope">
+            <summary>
+            Represents a draft scope (A scope in which drafts are created).
+            </summary>
+        </member>
+        <member name="M:RedCow.Immutable.DraftScope.#ctor(RedCow.Immutable.ICloneProvider)">
+            <summary>
+            Initializes a new instance of the <see cref="T:RedCow.Immutable.DraftScope"/> class.
+            </summary>
+            <param name="cloneProvider">The clone provider to use for drafts inside the scope.</param>
+        </member>
+        <member name="P:RedCow.Immutable.DraftScope.CloneProvider">
+            <summary>
+            Gets the Clone Provider for this scope.
+            </summary>
+        </member>
+        <member name="M:RedCow.Immutable.DraftScope.Dispose">
+            <summary>
+            Cleans up the scope.
+            </summary>
+        </member>
+        <member name="M:RedCow.Immutable.DraftScope.FinishDraft``2(``0)">
+            <summary>
+            Finishes a draft and returns the next state.
+            </summary>
+            <typeparam name="T">The type of the draft.</typeparam>
+            <typeparam name="TInterface">The immutable type.</typeparam>
+            <param name="draft">The draft.</param>
+            <returns>The immutable.</returns>
+        </member>
+        <member name="T:RedCow.Immutable.DraftState">
+            <summary>
+            State for drafts.
+            </summary>
+        </member>
+        <member name="M:RedCow.Immutable.DraftState.#ctor(RedCow.Immutable.DraftScope,System.Object)">
+            <summary>
+            Initializes a new instance of the <see cref="T:RedCow.Immutable.DraftState"/> class.
+            </summary>
+            <param name="scope">The scope this draft state belongs to.</param>
+            <param name="original">The original.</param>
+        </member>
+        <member name="P:RedCow.Immutable.DraftState.Revoked">
+            <summary>
+            Gets or sets a value indicating whether or not this draft is revoked.
+            </summary>
+        </member>
+        <member name="P:RedCow.Immutable.DraftState.Scope">
+            <summary>
+            Gets the scope this draft belongs to.
+            </summary>
+        </member>
+        <member name="M:RedCow.Immutable.DraftState.GetOriginal``1">
+            <summary>
+            Gets the original.
+            </summary>
+            <typeparam name="T">The type to cast the original to.</typeparam>
+            <returns>The original.</returns>
+        </member>
+        <member name="M:RedCow.Immutable.DraftState.Get``1(System.String,System.Func{``0})">
+            <summary>
+            Gets a property value, possibly drafting it while getting it.
+            </summary>
+            <typeparam name="T">The type of the Property.</typeparam>
+            <param name="propertyName">The property name.</param>
+            <param name="getter">The getter.</param>
+            <exception cref="T:System.InvalidOperationException">thrown when the draft is revoked.</exception>
+            <returns>The property value.</returns>
+        </member>
+        <member name="M:RedCow.Immutable.DraftState.Set``1(System.String,System.Func{``0})">
+            <summary>
+            Sets a property value.
+            </summary>
+            <typeparam name="T">The type of the Property.</typeparam>
+            <param name="propertyName">The property name.</param>
+            <param name="setter">The setter.</param>
+            <exception cref="T:System.InvalidOperationException">thrown when the draft is revoked.</exception>
+        </member>
         <member name="T:RedCow.Immutable.DraftTypeAttribute">
             <summary>
             Draft type attribute. Indicates which class is the draft type for this type.
@@ -37,6 +166,16 @@
             <param name="source">The source.</param>
             <param name="destination">The destination.</param>
         </member>
+        <member name="T:RedCow.Immutable.IDraft">
+            <summary>
+            Non generic part of the Draft interface.
+            </summary>
+        </member>
+        <member name="P:RedCow.Immutable.IDraft.DraftState">
+            <summary>
+            Gets or the <see cref="P:RedCow.Immutable.IDraft.DraftState"/> for this draft.
+            </summary>
+        </member>
         <member name="T:RedCow.Immutable.IDraftScope">
             <summary>
             The scope of the draft.
@@ -55,37 +194,12 @@
             <summary>
             An interface of a Draft object of <typeparamref name="T"/>.
             </summary>
-            <typeparam name="T">The draft Type.</typeparam>
+            <typeparam name="T">The original type.</typeparam>
         </member>
         <member name="P:RedCow.Immutable.IDraft`1.Original">
             <summary>
             Gets the original immutable object.
             </summary>
-        </member>
-        <member name="T:RedCow.Immutable.ImmutableExtensions">
-            <summary>
-            Extension methods for <see cref="T:RedCow.Immutable`1"/>.
-            </summary>
-        </member>
-        <member name="M:RedCow.Immutable.ImmutableExtensions.CreateDraft``1(``0,``0@,RedCow.Immutable.ICloneProvider)">
-            <summary>
-            Creates a new Draft, based on the <see cref="T:RedCow.Immutable`1"/>.
-            </summary>
-            <typeparam name="T">The type of the state.</typeparam>
-            <param name="state">The immutable.</param>
-            <param name="draft">A new draft, based on the immutable.</param>
-            <param name="cloneProvider">The clone provider.</param>
-            <returns>A scope that is used to either reconcile or dispose of the draft.</returns>
-        </member>
-        <member name="M:RedCow.Immutable.ImmutableExtensions.CreateDraft``1(RedCow.Immutable{``0},``0@,RedCow.Immutable.ICloneProvider)">
-            <summary>
-            Creates a new Draft, based on the <see cref="T:RedCow.Immutable`1"/>.
-            </summary>
-            <typeparam name="T">The type of the state.</typeparam>
-            <param name="state">The immutable.</param>
-            <param name="draft">A new draft, based on the immutable.</param>
-            <param name="cloneProvider">The clone provider.</param>
-            <returns>A scope that is used to either reconcile or dispose of the draft.</returns>
         </member>
         <member name="T:RedCow.Immutable.ImmutableTypeAttribute">
             <summary>
@@ -161,6 +275,16 @@
             Interface for Immutable instances of <typeparamref name="T"/>.
             </summary>
             <typeparam name="T">The mutable type.</typeparam>
+        </member>
+        <member name="P:RedCow.Immutable`1.Locked">
+            <summary>
+            Gets a value indicating whether the immutable is locked.
+            </summary>
+        </member>
+        <member name="M:RedCow.Immutable`1.Lock">
+            <summary>
+            Locks the Immutable.
+            </summary>
         </member>
     </members>
 </doc>

@@ -44,7 +44,7 @@
             Gets a value indicating whether isAdult is true.
             </summary>
         </member>
-        <member name="M:RedCow.Test.ITestPerson.Produce(RedCow.Test.TestPerson,RedCow.ICloneProvider)">
+        <member name="M:RedCow.Test.ITestPerson.Produce(RedCow.Test.TestPerson,RedCow.Immutable.ICloneProvider)">
              <summary>
              Produces the next <see cref = "T:RedCow.Immutable`1"/> based on the
             intial state.
@@ -53,81 +53,81 @@
              <param name = "cloneProvider">The clone provider to use.</param>
              <returns>The next immutable state.</returns>
         </member>
-        <member name="M:RedCow.Test.ITestPerson.Produce(System.Action{RedCow.Test.TestPerson},RedCow.ICloneProvider)">
+        <member name="M:RedCow.Test.ITestPerson.Produce(System.Action{RedCow.Test.TestPerson},RedCow.Immutable.ICloneProvider)">
             <summary>
             Produces the next <see cref = "T:RedCow.Immutable`1"/> based on the
-            specified producer action.
+            specified recipe action.
             </summary>
-            <param name = "producer">The producer action.</param>
+            <param name = "recipe">The recipe action.</param>
             <param name = "cloneProvider">The clone provider to use.</param>
             <returns>The next immutable state.</returns>
         </member>
-        <member name="M:RedCow.Test.ITestPerson.Produce(RedCow.Test.TestPerson,System.Action{RedCow.Test.TestPerson},RedCow.ICloneProvider)">
+        <member name="M:RedCow.Test.ITestPerson.Produce(RedCow.Test.TestPerson,System.Action{RedCow.Test.TestPerson},RedCow.Immutable.ICloneProvider)">
             <summary>
             Produces the next <see cref = "T:RedCow.Immutable`1"/> based on the
-            specified producer action.
-            </summary>
-            <param name = "initialState">The initial State.</param>
-            <param name = "producer">The producer action.</param>
-            <param name = "cloneProvider">The clone provider to use.</param>
-            <returns>The next immutable state.</returns>
-        </member>
-        <member name="M:RedCow.Test.ITestPerson.Produce(System.Func{RedCow.Test.TestPerson},RedCow.ICloneProvider)">
-            <summary>
-            Produces the next <see cref = "T:RedCow.Immutable`1"/> based on the
-            specified producer function.
-            </summary>
-            <param name = "producer">The producer function.</param>
-            <param name = "cloneProvider">The clone provider to use.</param>
-            <returns>The next immutable state.</returns>
-        </member>
-        <member name="M:RedCow.Test.ITestPerson.Produce(RedCow.Test.TestPerson,System.Func{RedCow.Test.TestPerson},RedCow.ICloneProvider)">
-            <summary>
-            Produces the next <see cref = "T:RedCow.Immutable`1"/> based on the
-            specified producer function.
+            specified recipe action.
             </summary>
             <param name = "initialState">The initial State.</param>
-            <param name = "producer">The producer function.</param>
+            <param name = "recipe">The recipe action.</param>
             <param name = "cloneProvider">The clone provider to use.</param>
             <returns>The next immutable state.</returns>
         </member>
-        <member name="M:RedCow.Test.ITestPerson.Producer(System.Action{RedCow.Test.TestPerson},RedCow.ICloneProvider)">
+        <member name="M:RedCow.Test.ITestPerson.Produce(System.Func{RedCow.Test.TestPerson},RedCow.Immutable.ICloneProvider)">
+            <summary>
+            Produces the next <see cref = "T:RedCow.Immutable`1"/> based on the
+            specified recipe function.
+            </summary>
+            <param name = "recipe">The recipe function.</param>
+            <param name = "cloneProvider">The clone provider to use.</param>
+            <returns>The next immutable state.</returns>
+        </member>
+        <member name="M:RedCow.Test.ITestPerson.Produce(RedCow.Test.TestPerson,System.Func{RedCow.Test.TestPerson},RedCow.Immutable.ICloneProvider)">
+            <summary>
+            Produces the next <see cref = "T:RedCow.Immutable`1"/> based on the
+            specified recipe function.
+            </summary>
+            <param name = "initialState">The initial State.</param>
+            <param name = "recipe">The recipe function.</param>
+            <param name = "cloneProvider">The clone provider to use.</param>
+            <returns>The next immutable state.</returns>
+        </member>
+        <member name="M:RedCow.Test.ITestPerson.Producer(System.Action{RedCow.Test.TestPerson},RedCow.Immutable.ICloneProvider)">
             <summary>
             Creates a Producer delegate that can be used to curry on an Immutable State.
             </summary>
-            <param name = "producer">The producer action that operates on an object of type T.</param>
+            <param name = "recipe">The recipe action that operates on an object of type T.</param>
             <param name = "cloneProvider">The clone provider to use.</param>
             <returns>A producer delegate.</returns>
         </member>
-        <member name="M:RedCow.Test.ITestPerson.Producer(System.Func{RedCow.Test.TestPerson},RedCow.ICloneProvider)">
+        <member name="M:RedCow.Test.ITestPerson.Producer(System.Func{RedCow.Test.TestPerson},RedCow.Immutable.ICloneProvider)">
             <summary>
             Creates a Producer delegate that can be used to curry on an Immutable State.
             </summary>
-            <param name = "producer">The producer function that returns an object of type T.</param>
+            <param name = "recipe">The recipe function that returns an object of type T.</param>
             <param name = "cloneProvider">The clone provider to use.</param>
-            <returns>A producer delegate.</returns>
+            <returns>A recipe delegate.</returns>
         </member>
-        <member name="M:RedCow.Test.ITestPerson.Producer``1(System.Action{RedCow.Test.TestPerson,``0},RedCow.ICloneProvider)">
+        <member name="M:RedCow.Test.ITestPerson.Producer``1(System.Action{RedCow.Test.TestPerson,``0},RedCow.Immutable.ICloneProvider)">
             <summary>
             Creates a Producer delegate that can be used to curry on an Immutable State.
             </summary>
-            <param name = "producer">The producer action that operates on an object of type T with a single argument.</param>
+            <param name = "recipe">The recipe action that operates on an object of type T with a single argument.</param>
             <param name = "cloneProvider">The clone provider to use.</param>
             <typeparam name = "TArg">The type of the argument.</typeparam>
             <returns>A producer delegate.</returns>
         </member>
-        <member name="M:RedCow.Test.ITestPerson.Producer``1(System.Func{``0,RedCow.Test.TestPerson},RedCow.ICloneProvider)">
+        <member name="M:RedCow.Test.ITestPerson.Producer``1(System.Func{``0,RedCow.Test.TestPerson},RedCow.Immutable.ICloneProvider)">
             <summary>
             Creates a Producer delegate that can be used to curry on an Immutable State.
             </summary>
-            <param name = "producer">The producer function that returns an object of type T with a single argument.</param>
+            <param name = "recipe">The recipe function that returns an object of type T with a single argument.</param>
             <param name = "cloneProvider">The clone provider to use.</param>
             <typeparam name = "TArg">The type of the argument.</typeparam>
             <returns>A producer delegate.</returns>
         </member>
         <member name="T:RedCow.Test.ReflectionCloneProviderTests">
             <summary>
-            Unit tests for <see cref="T:RedCow.ReflectionCloneProvider"/>.
+            Unit tests for <see cref="T:RedCow.Immutable.ReflectionCloneProvider"/>.
             </summary>
         </member>
         <member name="M:RedCow.Test.ReflectionCloneProviderTests.ClonesAllPublicProperties">
@@ -147,37 +147,92 @@
         </member>
         <member name="P:RedCow.Test.TestPerson.FirstName">
             <summary>
-            Gets or sets FirstName.
+             Gets or sets FirstName.
             </summary>
         </member>
         <member name="P:RedCow.Test.TestPerson.LastName">
             <summary>
-            Gets or sets LastName.
+             Gets or sets LastName.
             </summary>
         </member>
         <member name="P:RedCow.Test.TestPerson.IsAdult">
             <summary>
-            Gets or sets a value indicating whether IsAdult is true.
+             Gets or sets a value indicating whether IsAdult is true.
             </summary>
         </member>
         <member name="T:RedCow.Test.ImmutableTestPerson">
-             <summary>
-            Immutable Implementation of <see cref="T:RedCow.Test.TestPerson"/>.
-             </summary>
+            <summary>
+            Immutable Implementation of <see cref = "T:RedCow.Test.TestPerson"/>.
+            </summary>
         </member>
         <member name="P:RedCow.Test.ImmutableTestPerson.FirstName">
             <summary>
-            Gets or sets FirstName.
+             Gets or sets FirstName.
             </summary>
         </member>
         <member name="P:RedCow.Test.ImmutableTestPerson.LastName">
             <summary>
-            Gets or sets LastName.
+             Gets or sets LastName.
             </summary>
         </member>
         <member name="P:RedCow.Test.ImmutableTestPerson.IsAdult">
             <summary>
-            Gets or sets a value indicating whether IsAdult is true.
+             Gets or sets a value indicating whether IsAdult is true.
+            </summary>
+        </member>
+        <member name="P:RedCow.Test.ImmutableTestPerson.Locked">
+            <summary>
+            Gets a value indicating whether the immutable is locked.
+            </summary>
+        </member>
+        <member name="M:RedCow.Test.ImmutableTestPerson.Lock">
+            <summary>
+            Locks the immutable.
+            </summary>
+        </member>
+        <member name="T:RedCow.Test.DraftTestPerson">
+            <summary>
+            Draft Implementation of <see cref = "T:RedCow.Test.TestPerson"/>.
+            </summary>
+        </member>
+        <member name="P:RedCow.Test.DraftTestPerson.FirstName">
+            <summary>
+              Gets or sets FirstName.
+            </summary>
+        </member>
+        <member name="P:RedCow.Test.DraftTestPerson.LastName">
+            <summary>
+              Gets or sets LastName.
+            </summary>
+        </member>
+        <member name="P:RedCow.Test.DraftTestPerson.IsAdult">
+            <summary>
+              Gets or sets a value indicating whether IsAdult is true.
+            </summary>
+        </member>
+        <member name="M:RedCow.Test.DraftTestPerson.#ctor(RedCow.Immutable.DraftState)">
+            <summary>
+            Initializes a new instance of the <see cref = "T:RedCow.Test.DraftTestPerson"/> class.
+            </summary>
+        </member>
+        <member name="F:RedCow.Test.DraftTestPerson.draftState">
+            <summary>
+            the draftState field.
+            </summary>
+        </member>
+        <member name="P:RedCow.Test.DraftTestPerson.RedCow#Immutable#IDraft#DraftState">
+            <summary>
+            Gets or sets the DraftState.
+            </summary>
+        </member>
+        <member name="P:RedCow.Test.DraftTestPerson.Original">
+            <summary>
+            Gets the original.
+            </summary>
+        </member>
+        <member name="P:RedCow.Test.DraftTestPerson.ImmutableOriginal">
+            <summary>
+            Gets the original as Immutable.
             </summary>
         </member>
     </members>

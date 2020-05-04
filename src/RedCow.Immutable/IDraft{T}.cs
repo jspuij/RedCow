@@ -23,12 +23,12 @@ namespace RedCow.Immutable
     /// <summary>
     /// An interface of a Draft object of <typeparamref name="T"/>.
     /// </summary>
-    /// <typeparam name="T">The draft Type.</typeparam>
-    public interface IDraft<T>
+    /// <typeparam name="T">The original type.</typeparam>
+    public interface IDraft<T> : IDraft
     {
         /// <summary>
         /// Gets the original immutable object.
         /// </summary>
-        public Immutable<T> Original { get; }
+        public T Original { get; }
     }
 }

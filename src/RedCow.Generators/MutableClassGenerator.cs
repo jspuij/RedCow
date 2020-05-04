@@ -103,87 +103,81 @@ namespace RedCow.Generators
         /// Creates a property with getter and setter based on the readonly interface property.
         /// </summary>
         /// <param name="p">The property to generate the Getter and Setter for.</param>
-        /// <returns>An <see cref="PropertyDeclarationSyntax"/>.</returns>
-        private static PropertyDeclarationSyntax CreateProperty(IPropertySymbol p)
+        /// <returns>An <see cref="MemberDeclarationSyntax"/>.</returns>
+        private static MemberDeclarationSyntax CreateProperty(IPropertySymbol p)
         {
             string documentationText = p.Type.SpecialType == SpecialType.System_Boolean ? $" Gets or sets a value indicating whether {p.Name} is true." : $" Gets or sets {p.Name}.";
 
-            return PropertyDeclaration(ParseTypeName(p.Type.Name), p.Name)
-                    .WithModifiers(
-                        TokenList(
-                            new[]
-                            {
-                Token(
-                    GenerateXmlDoc(documentationText),
-                    SyntaxKind.PublicKeyword,
-                    TriviaList()),
-                Token(SyntaxKind.VirtualKeyword),
-                            }))
-                .WithAccessorList(
-                        AccessorList(
-                            List(
-                                new AccessorDeclarationSyntax[]
-                                {
-                    AccessorDeclaration(
-                        SyntaxKind.GetAccessorDeclaration)
-                    .WithSemicolonToken(
-                        Token(SyntaxKind.SemicolonToken)),
-                    AccessorDeclaration(
-                        SyntaxKind.SetAccessorDeclaration)
-                    .WithSemicolonToken(
-                        Token(SyntaxKind.SemicolonToken)),
-                                })))
+            var method = $@"
+                /// <summary>
+                /// {documentationText}
+                /// </summary>
+                public virtual {p.Type.Name} {p.Name}
+                {{
+                    get;
+                    set;
+                }}
+            ";
+
+            return ParseMemberDeclaration(method)
                 .NormalizeWhitespace();
         }
 
         /// <summary>
-        /// Creates a property with getter and setter that throws an <see cref="InvalidOperationException"/>,
+        /// Creates an immutable property with getter and setter that throws an <see cref="InvalidOperationException"/>,
         /// based on the readonly interface property.
         /// </summary>
         /// <param name="p">The property to generate the Getter and Setter for.</param>
-        /// <returns>An <see cref="PropertyDeclarationSyntax"/>.</returns>
-        private static PropertyDeclarationSyntax CreateImmutableProperty(IPropertySymbol p)
+        /// <returns>An <see cref="MemberDeclarationSyntax"/>.</returns>
+        private static MemberDeclarationSyntax CreateImmutableProperty(IPropertySymbol p)
         {
             string documentationText = p.Type.SpecialType == SpecialType.System_Boolean ? $" Gets or sets a value indicating whether {p.Name} is true." : $" Gets or sets {p.Name}.";
 
-            return PropertyDeclaration(ParseTypeName(p.Type.Name), p.Name)
-                    .WithModifiers(
-                        TokenList(
-                            new[]
-                            {
-                Token(
-                    GenerateXmlDoc(documentationText),
-                    SyntaxKind.PublicKeyword,
-                    TriviaList()),
-                Token(SyntaxKind.OverrideKeyword),
-                            }))
-        .WithAccessorList(
-            AccessorList(
-                List(
-                    new AccessorDeclarationSyntax[]
-                    {
-                        AccessorDeclaration(
-                            SyntaxKind.GetAccessorDeclaration)
-                        .WithExpressionBody(
-                            ArrowExpressionClause(
-                                MemberAccessExpression(
-                                    SyntaxKind.SimpleMemberAccessExpression,
-                                    BaseExpression(),
-                                    IdentifierName(p.Name))))
-                        .WithSemicolonToken(
-                            Token(SyntaxKind.SemicolonToken)),
-                        AccessorDeclaration(
-                            SyntaxKind.SetAccessorDeclaration)
-                        .WithExpressionBody(
-                            ArrowExpressionClause(
-                                ThrowExpression(
-                                    ObjectCreationExpression(
-                                        IdentifierName("InvalidOperationException"))
-                                    .WithArgumentList(
-                                        ArgumentList()))))
-                        .WithSemicolonToken(
-                            Token(SyntaxKind.SemicolonToken)),
-                    }))).NormalizeWhitespace();
+            var method = $@"
+                /// <summary>
+                /// {documentationText}
+                /// </summary>
+                public override {p.Type.Name} {p.Name}
+                {{
+                    get => base.{p.Name};
+                    set
+                    {{
+                        if (this.Locked)
+                        {{
+                            throw new InvalidOperationException();
+                        }}
+                        
+                        base.{p.Name} = value;
+                    }}
+                }}
+            ";
+
+            return ParseMemberDeclaration(method)
+                .NormalizeWhitespace();
+        }
+
+        /// <summary>
+        /// Creates a draft property with getter and setter based on the readonly interface property.
+        /// </summary>
+        /// <param name="p">The property to generate the Getter and Setter for.</param>
+        /// <returns>An <see cref="MemberDeclarationSyntax"/>.</returns>
+        private static MemberDeclarationSyntax CreateDraftProperty(IPropertySymbol p)
+        {
+            string documentationText = p.Type.SpecialType == SpecialType.System_Boolean ? $" Gets or sets a value indicating whether {p.Name} is true." : $" Gets or sets {p.Name}.";
+
+            var method = $@"
+                /// <summary>
+                ///  {documentationText}
+                /// </summary>
+                public override {p.Type.Name} {p.Name}
+                {{
+                    get => this.draftState.Get<{p.Type.Name}>(nameof({p.Name}), () => base.{p.Name});
+                    set => this.draftState.Set<{p.Type.Name}>(nameof({p.Name}), () => base.{p.Name} = value);
+                }}
+            ";
+
+            return ParseMemberDeclaration(method)
+                .NormalizeWhitespace();
         }
 
         /// <summary>
@@ -193,69 +187,12 @@ namespace RedCow.Generators
         /// <returns>The XML Documentation as <see cref="SyntaxTriviaList"/>.</returns>
         private static SyntaxTriviaList GenerateXmlDoc(string documentationText)
         {
-            return TriviaList(
-                    Trivia(
-                        DocumentationCommentTrivia(
-                        SyntaxKind.SingleLineDocumentationCommentTrivia,
-                        List(
-                            new XmlNodeSyntax[]
-                            {
-                    XmlText()
-                    .WithTextTokens(
-                        TokenList(
-                            XmlTextLiteral(
-                                TriviaList(
-                                    DocumentationCommentExterior("///")),
-                                " ",
-                                " ",
-                                TriviaList()))),
-                    XmlExampleElement(
-                        SingletonList(
-                            (XmlNodeSyntax)XmlText()
-                            .WithTextTokens(
-                                TokenList(
-                                    new[]
-                                    {
-                                        XmlTextNewLine(
-                                            TriviaList(),
-                                            Environment.NewLine,
-                                            Environment.NewLine,
-                                            TriviaList()),
-                                        XmlTextLiteral(
-                                            TriviaList(
-                                                DocumentationCommentExterior("///")),
-                                            documentationText,
-                                            documentationText,
-                                            TriviaList()),
-                                        XmlTextNewLine(
-                                            TriviaList(),
-                                            Environment.NewLine,
-                                            Environment.NewLine,
-                                            TriviaList()),
-                                        XmlTextLiteral(
-                                            TriviaList(
-                                                DocumentationCommentExterior("///")),
-                                            " ",
-                                            " ",
-                                            TriviaList()),
-                                    }))))
-                    .WithStartTag(
-                        XmlElementStartTag(
-                            XmlName(
-                                Identifier("summary"))))
-                    .WithEndTag(
-                        XmlElementEndTag(
-                            XmlName(
-                                Identifier("summary")))),
-                    XmlText()
-                    .WithTextTokens(
-                        TokenList(
-                            XmlTextNewLine(
-                                TriviaList(),
-                                Environment.NewLine,
-                                Environment.NewLine,
-                                TriviaList()))),
-                            }))));
+            var trivia = $@"
+                /// <summary>
+                /// {documentationText}
+                /// </summary>
+            ";
+            return ParseLeadingTrivia(trivia);
         }
 
         /// <summary>
@@ -293,9 +230,141 @@ namespace RedCow.Generators
 
             var result = ClassDeclaration($"Draft{sourceClassDeclaration.Identifier}")
                             .AddModifiers(modifiers.ToArray())
-                            .AddBaseListTypes(SimpleBaseType(ParseTypeName(sourceClassDeclaration.Identifier.Text)), SimpleBaseType(ParseTypeName($"IDraft<{sourceClassDeclaration.Identifier.Text}>")));
+                            .AddBaseListTypes(
+                                SimpleBaseType(ParseTypeName(sourceClassDeclaration.Identifier.Text)),
+                                SimpleBaseType(ParseTypeName($"IDraft<{sourceClassDeclaration.Identifier.Text}>")));
+
+            result = result.AddMembers(
+                this.interfaceType.GetMembers().
+                Where(x => x is IPropertySymbol).
+                Cast<IPropertySymbol>().Select(p =>
+                {
+                    return CreateDraftProperty(p);
+                }).ToArray());
+
+            if (sourceClassDeclaration.Members.Any(x => x is ConstructorDeclarationSyntax))
+            {
+                result = result.WithMembers(List(
+                    sourceClassDeclaration.Members.
+                    Where(x => x is ConstructorDeclarationSyntax).
+                    Cast<ConstructorDeclarationSyntax>().
+                    Select(c => this.GenerateDraftConstructor(sourceClassDeclaration, c))));
+            }
+            else
+            {
+                result = result.AddMembers(this.GenerateDraftConstructor(sourceClassDeclaration));
+            }
+
+            result = result.AddMembers(
+              this.GenerateDraftStateField(sourceClassDeclaration),
+              this.GenerateDraftStateProperty(sourceClassDeclaration),
+              this.GenerateOriginalProperty(sourceClassDeclaration),
+              this.GenerateImmutableOriginalProperty());
 
             return result;
+        }
+
+        /// <summary>
+        /// Generates a single draft constructor.
+        /// </summary>
+        /// <param name="sourceClassDeclaration">The source class declaration.</param>
+        /// <param name="constructorDeclarationSyntax">An optional existing constructor on the base class.</param>
+        /// <returns>A member declaration.</returns>
+        private MemberDeclarationSyntax GenerateDraftConstructor(
+            ClassDeclarationSyntax sourceClassDeclaration,
+            ConstructorDeclarationSyntax constructorDeclarationSyntax = null)
+        {
+            SeparatedSyntaxList<ParameterSyntax> parameters =
+                constructorDeclarationSyntax?.ParameterList?.Parameters
+                ?? default(SeparatedSyntaxList<ParameterSyntax>);
+
+            string arguments = parameters.Any() ? $", {parameters.ToFullString()}" : string.Empty;
+            var constructor = $@"
+                /// <summary>
+                /// Initializes a new instance of the <see cref=""Draft{sourceClassDeclaration.Identifier}""/> class.
+                /// </summary>
+                public Draft{sourceClassDeclaration.Identifier}(DraftState draftState{arguments}) : base({string.Join(",", parameters.Select(x => x.Identifier))})
+                {{
+                    this.draftState = draftState ?? throw new ArgumentNullException(nameof(draftState));
+                }}
+            ";
+
+            return ParseMemberDeclaration(constructor)
+                .NormalizeWhitespace();
+        }
+
+        /// <summary>
+        /// Generates the draft state field.
+        /// </summary>
+        /// <param name="sourceClassDeclaration">The source class declaration.</param>
+        /// <returns>A member declaration.</returns>
+        private MemberDeclarationSyntax GenerateDraftStateField(ClassDeclarationSyntax sourceClassDeclaration)
+        {
+            var field = $@"
+                /// <summary>
+                /// the draftState field.
+                /// </summary>
+                private DraftState draftState;
+            ";
+
+            return ParseMemberDeclaration(field)
+                .NormalizeWhitespace();
+        }
+
+        /// <summary>
+        /// Generates the Original property.
+        /// </summary>
+        /// <param name="sourceClassDeclaration">The source class declaration.</param>
+        /// <returns>A member declaration.</returns>
+        private MemberDeclarationSyntax GenerateOriginalProperty(ClassDeclarationSyntax sourceClassDeclaration)
+        {
+            var property = $@"
+                /// <summary>
+                /// Gets the original.
+                /// </summary>
+                public {sourceClassDeclaration.Identifier} Original => this.draftState.GetOriginal<{sourceClassDeclaration.Identifier}>();
+            ";
+
+            return ParseMemberDeclaration(property)
+                .NormalizeWhitespace();
+        }
+
+        /// <summary>
+        /// Generates the ImmutableOriginal property.
+        /// </summary>
+        /// <returns>A member declaration.</returns>
+        private MemberDeclarationSyntax GenerateImmutableOriginalProperty()
+        {
+            var property = $@"
+                /// <summary>
+                /// Gets the original as Immutable.
+                /// </summary>
+                public {this.interfaceType.Name} ImmutableOriginal => this.draftState.GetOriginal<{this.interfaceType.Name}>();
+            ";
+
+            return ParseMemberDeclaration(property)
+                .NormalizeWhitespace();
+        }
+
+        /// <summary>
+        /// Generates the DraftState property.
+        /// </summary>
+        /// <param name="sourceClassDeclaration">The source class declaration.</param>
+        /// <returns>A member declaration.</returns>
+        private MemberDeclarationSyntax GenerateDraftStateProperty(ClassDeclarationSyntax sourceClassDeclaration)
+        {
+            var property = $@"
+                /// <summary>
+                /// Gets or sets the DraftState.
+                /// </summary>
+                DraftState IDraft.DraftState
+                {{
+                    get => this.draftState;
+                }}
+            ";
+
+            return ParseMemberDeclaration(property)
+                .NormalizeWhitespace();
         }
 
         /// <summary>
@@ -313,7 +382,15 @@ namespace RedCow.Generators
 
             var result = ClassDeclaration($"Immutable{sourceClassDeclaration.Identifier}")
                             .AddModifiers(modifiers.ToArray())
-                            .AddBaseListTypes(SimpleBaseType(ParseTypeName(sourceClassDeclaration.Identifier.Text)), SimpleBaseType(ParseTypeName(this.interfaceType.Name)));
+                            .AddBaseListTypes(
+                                SimpleBaseType(ParseTypeName(sourceClassDeclaration.Identifier.Text)),
+                                SimpleBaseType(ParseTypeName($"Immutable<{sourceClassDeclaration.Identifier.Text}>")));
+
+            result = result.WithMembers(List(
+                   sourceClassDeclaration.Members.
+                   Where(x => x is ConstructorDeclarationSyntax).
+                   Cast<ConstructorDeclarationSyntax>().
+                   Select(c => this.GenerateImmutableConstructor(sourceClassDeclaration, c))));
 
             result = result.AddMembers(
                 this.interfaceType.GetMembers().
@@ -322,7 +399,74 @@ namespace RedCow.Generators
                 {
                     return CreateImmutableProperty(p);
                 }).ToArray());
+
+            result = result.AddMembers(
+                this.GenerateLockedProperty(),
+                this.GenerateLockMethod());
+
             return result;
+        }
+
+        /// <summary>
+        /// Generates a single immutable constructor.
+        /// </summary>
+        /// <param name="sourceClassDeclaration">The source class declaration.</param>
+        /// <param name="constructorDeclarationSyntax">An optional existing constructor on the base class.</param>
+        /// <returns>A member declaration.</returns>
+        private MemberDeclarationSyntax GenerateImmutableConstructor(ClassDeclarationSyntax sourceClassDeclaration, ConstructorDeclarationSyntax constructorDeclarationSyntax)
+        {
+            SeparatedSyntaxList<ParameterSyntax> parameters =
+                            constructorDeclarationSyntax?.ParameterList?.Parameters
+                            ?? default(SeparatedSyntaxList<ParameterSyntax>);
+
+            var constructor = $@"
+                /// <summary>
+                /// Initializes a new instance of the <see cref=""Immutable{sourceClassDeclaration.Identifier}""/> class.
+                /// </summary>
+                public Immutable{sourceClassDeclaration.Identifier}({parameters.ToFullString()}) : base({string.Join(",", parameters.Select(x => x.Identifier))})
+                {{
+                }}
+            ";
+
+            return ParseMemberDeclaration(constructor)
+                .NormalizeWhitespace();
+        }
+
+        /// <summary>
+        /// Generates the Lock method on the immutable class.
+        /// </summary>
+        /// <returns>The method declaration.</returns>
+        private MemberDeclarationSyntax GenerateLockMethod()
+        {
+            var method = $@"
+                /// <summary>
+                /// Locks the immutable.
+                /// </summary>
+                public void Lock()
+                {{
+                    this.Locked = true;
+                }}
+            ";
+
+            return ParseMemberDeclaration(method)
+                .NormalizeWhitespace();
+        }
+
+        /// <summary>
+        /// Generates the Locked property on the immutable class.
+        /// </summary>
+        /// <returns>The property declaration.</returns>
+        private MemberDeclarationSyntax GenerateLockedProperty()
+        {
+            var property = $@"
+                /// <summary>
+                /// Gets a value indicating whether the immutable is locked.
+                /// </summary>
+                public bool Locked {{ get; private set; }} = false;
+            ";
+
+            return ParseMemberDeclaration(property)
+                .NormalizeWhitespace();
         }
     }
 }

@@ -1,4 +1,4 @@
-﻿// <copyright file="Immutable{T}.cs" company="Jan-Willem Spuij">
+﻿// <copyright file="IDraft.cs" company="Jan-Willem Spuij">
 // Copyright 2020 Jan-Willem Spuij
 //
 // Permission is hereby granted, free of charge, to any person obtaining a copy of this software and associated documentation
@@ -14,27 +14,20 @@
 // ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 // </copyright>
 
-namespace RedCow
+namespace RedCow.Immutable
 {
     using System;
     using System.Collections.Generic;
     using System.Text;
-    using RedCow.Immutable;
 
     /// <summary>
-    /// Interface for Immutable instances of <typeparamref name="T"/>.
+    /// Non generic part of the Draft interface.
     /// </summary>
-    /// <typeparam name="T">The mutable type.</typeparam>
-    public interface Immutable<T>
+    public interface IDraft
     {
         /// <summary>
-        /// Gets a value indicating whether the immutable is locked.
+        /// Gets or the <see cref="DraftState"/> for this draft.
         /// </summary>
-        public bool Locked { get; }
-
-        /// <summary>
-        /// Locks the Immutable.
-        /// </summary>
-        public void Lock();
+        public DraftState DraftState { get; }
     }
 }
