@@ -19,6 +19,7 @@ namespace RedCow.Immutable
     using System;
     using System.Collections.Generic;
     using System.Linq;
+    using System.Reflection;
     using System.Text;
     using RedCow.Immutable;
 
@@ -56,7 +57,7 @@ namespace RedCow.Immutable
         }
 
         /// <summary>
-        /// Tests whether a class is a draft.
+        /// Tests whether an object is a draft.
         /// </summary>
         /// <typeparam name="T">The type to test.</typeparam>
         /// <param name="state">The state to test.</param>
@@ -66,6 +67,19 @@ namespace RedCow.Immutable
         {
             return InternalIsDraft(state);
         }
+
+        /// <summary>
+        /// Tests whether an object is a draftable.
+        /// </summary>
+        /// <typeparam name="T">The type to test.</typeparam>
+        /// <param name="state">The state to test.</param>
+        /// <returns>A value indicating whether the object is draftable.</returns>
+        public static bool IsDraftable<T>(this T state)
+            where T : class
+        {
+            return InternalIsDraftable(state);
+        }
+
 
         /// <summary>
         /// Creates a new Draft, based on the type of the state.
@@ -78,15 +92,34 @@ namespace RedCow.Immutable
         private static IDraftScope InternalCreateDraft<T>(object state, out T draft, ICloneProvider? cloneProvider = null)
             where T : class
         {
-            if (InternalIsDraft(state))
-            {
-            }
 
-            throw new InvalidOperationException();
+            // TODO: Add clone provider detection.
+            var scope = new DraftScope(cloneProvider ?? new ReflectionCloneProvider());
+
+            try
+            {
+                if (InternalIsDraft(state))
+                {
+                    scope.Parent = ((IDraft)state).DraftState.Scope;
+                }
+
+                if (!InternalIsDraft(state))
+                {
+                    throw new InvalidOperationException();
+                }
+
+                draft = scope.CreateProxy();
+                return scope;
+            }
+            catch
+            {
+                scope.Dispose();
+                throw;
+            }
         }
 
         /// <summary>
-        /// Tests whether a class is a draft.
+        /// Tests whether an object is a draft.
         /// </summary>
         /// <param name="state">The state to test.</param>
         /// <returns>A value indicating whether the object is a draft.</returns>
@@ -99,6 +132,34 @@ namespace RedCow.Immutable
             }
 
             return state is IDraft;
+        }
+
+        /// <summary>
+        /// Tests whether an object is a draftable.
+        /// </summary>
+        /// <param name="state">The state to test.</param>
+        /// <returns>A value indicating whether the object is draftable.</returns>
+        /// <exception cref="ArgumentNullException">when the state is null.</exception>
+        private static bool InternalIsDraftable(object state)
+        {
+            if (state is null)
+            {
+                throw new ArgumentNullException(nameof(state));
+            }
+
+            var type = state.GetType();
+
+            while (type != null)
+            {
+                if (type.GetCustomAttributes().Any(x => x is DraftTypeAttribute))
+                {
+                    return true;
+                }
+
+                type = type.BaseType;
+            }
+
+            return false;
         }
     }
 }

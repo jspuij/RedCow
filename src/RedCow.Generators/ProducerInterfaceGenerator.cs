@@ -18,6 +18,7 @@ namespace RedCow.Generators
 {
     using System;
     using System.Collections.Generic;
+    using System.Diagnostics.CodeAnalysis;
     using System.Linq;
     using System.Threading;
     using System.Threading.Tasks;
@@ -30,6 +31,7 @@ namespace RedCow.Generators
     /// <summary>
     /// Generates producer methods on the Immutable interface.
     /// </summary>
+    [ExcludeFromCodeCoverage]
     public class ProducerInterfaceGenerator : BaseGenerator, ICodeGenerator
     {
         /// <summary>
@@ -105,13 +107,14 @@ namespace RedCow.Generators
             var method = $@"
                 /// <summary>
                 /// Produces the next <see cref = ""Immutable{{T}}""/> based on the
-                ///intial state.
+                /// intial state.
                 /// </summary>
                 /// <param name = ""initialState"">The initial State.</param>
                 /// <param name = ""cloneProvider"">The clone provider to use.</param>
                 /// <returns>The next immutable state.</returns>
-                    public static {interfaceName} Produce({className} initialState, ICloneProvider cloneProvider = null) =>
-                    Produce(initialState, p => {{ }}, cloneProvider);
+                [ExcludeFromCodeCoverage]
+                public static {interfaceName} Produce({className} initialState, ICloneProvider cloneProvider = null) =>
+                Produce(initialState, p => {{ }}, cloneProvider);
             ";
             return ParseMemberDeclaration(method)
             .NormalizeWhitespace();
@@ -135,7 +138,8 @@ namespace RedCow.Generators
                 /// <param name = ""recipe"">The recipe action.</param>
                 /// <param name = ""cloneProvider"">The clone provider to use.</param>
                 /// <returns>The next immutable state.</returns>
-                    public {interfaceName} Produce(Action<{className}> recipe, ICloneProvider cloneProvider = null) => Produce(({className})this, recipe, cloneProvider);
+                [ExcludeFromCodeCoverage]
+                public {interfaceName} Produce(Action<{className}> recipe, ICloneProvider cloneProvider = null) => Produce(({className})this, recipe, cloneProvider);
             ";
             return ParseMemberDeclaration(method)
             .NormalizeWhitespace();
@@ -160,8 +164,9 @@ namespace RedCow.Generators
                 /// <param name = ""recipe"">The recipe action.</param>
                 /// <param name = ""cloneProvider"">The clone provider to use.</param>
                 /// <returns>The next immutable state.</returns>
-                    public static {interfaceName} Produce({className} initialState, Action<{className}> recipe, ICloneProvider cloneProvider = null) =>
-                        Producer(recipe, cloneProvider)(initialState);
+                [ExcludeFromCodeCoverage]
+                public static {interfaceName} Produce({className} initialState, Action<{className}> recipe, ICloneProvider cloneProvider = null) =>
+                    Producer(recipe, cloneProvider)(initialState);
             ";
             return ParseMemberDeclaration(method)
             .NormalizeWhitespace();
@@ -185,6 +190,7 @@ namespace RedCow.Generators
                 /// <param name = ""recipe"">The recipe function.</param>
                 /// <param name = ""cloneProvider"">The clone provider to use.</param>
                 /// <returns>The next immutable state.</returns>
+                [ExcludeFromCodeCoverage]
                 public {interfaceName} Produce(Func<{className}> recipe, ICloneProvider cloneProvider = null) => Produce(({className})this, recipe, cloneProvider);
             ";
             return ParseMemberDeclaration(method)
@@ -210,6 +216,7 @@ namespace RedCow.Generators
                 /// <param name = ""recipe"">The recipe function.</param>
                 /// <param name = ""cloneProvider"">The clone provider to use.</param>
                 /// <returns>The next immutable state.</returns>
+                [ExcludeFromCodeCoverage]
                 public static {interfaceName} Produce({className} initialState, Func<{className}> recipe, ICloneProvider cloneProvider = null) =>
                     Producer(recipe, cloneProvider)(initialState);
             ";
@@ -234,6 +241,7 @@ namespace RedCow.Generators
                 /// <param name = ""recipe"">The recipe action that operates on an object of type T.</param>
                 /// <param name = ""cloneProvider"">The clone provider to use.</param>
                 /// <returns>A producer delegate.</returns>
+                [ExcludeFromCodeCoverage]
                 public static Func<{className}, {interfaceName}> Producer(Action<{className}> recipe, ICloneProvider cloneProvider = null) =>
                     (immutable1) => Producer<object>((argument1, _) => recipe(argument1), cloneProvider)(immutable1, null);
             ";
@@ -258,6 +266,7 @@ namespace RedCow.Generators
                 /// <param name = ""recipe"">The recipe function that returns an object of type T.</param>
                 /// <param name = ""cloneProvider"">The clone provider to use.</param>
                 /// <returns>A recipe delegate.</returns>
+                [ExcludeFromCodeCoverage]
                 public static Func<{className}, {interfaceName}> Producer(Func<{className}> recipe, ICloneProvider cloneProvider = null) =>
                     (immutable1) => Producer<object>(_ => recipe(), cloneProvider)(immutable1, null);
             ";
@@ -283,13 +292,14 @@ namespace RedCow.Generators
                 /// <param name = ""cloneProvider"">The clone provider to use.</param>
                 /// <typeparam name = ""TArg"">The type of the argument.</typeparam>
                 /// <returns>A producer delegate.</returns>
-                    public static Func<{className}, TArg, {interfaceName}> Producer<TArg>(Action<{className}, TArg> recipe, ICloneProvider cloneProvider = null) => 
-                        (immutable1, argument1) =>
-                        {{
-                            using var scope = immutable1.CreateDraft<{className}>(out var draft, cloneProvider);
-                            recipe(draft, argument1);
-                            return scope.FinishDraft<{className},{interfaceName}>(draft);
-                        }};
+                [ExcludeFromCodeCoverage]
+                public static Func<{className}, TArg, {interfaceName}> Producer<TArg>(Action<{className}, TArg> recipe, ICloneProvider cloneProvider = null) => 
+                    (immutable1, argument1) =>
+                    {{
+                        using var scope = immutable1.CreateDraft<{className}>(out var draft, cloneProvider);
+                        recipe(draft, argument1);
+                        return scope.FinishDraft<{className},{interfaceName}>(draft);
+                    }};
             ";
             return ParseMemberDeclaration(method)
             .NormalizeWhitespace();
@@ -313,13 +323,14 @@ namespace RedCow.Generators
                 /// <param name = ""cloneProvider"">The clone provider to use.</param>
                 /// <typeparam name = ""TArg"">The type of the argument.</typeparam>
                 /// <returns>A producer delegate.</returns>
-                    public static Func<{className}, TArg, {interfaceName}> Producer<TArg>(Func<TArg, {className}> recipe, ICloneProvider cloneProvider = null) =>
-                        (immutable1, argument1) =>
-                        {{
-                            using var scope = immutable1.CreateDraft<{className}>(out var _, cloneProvider);
-                            {className} draft = recipe(argument1);
-                            return scope.FinishDraft<{className},{interfaceName}>(draft);
-                        }};
+                [ExcludeFromCodeCoverage]
+                public static Func<{className}, TArg, {interfaceName}> Producer<TArg>(Func<TArg, {className}> recipe, ICloneProvider cloneProvider = null) =>
+                    (immutable1, argument1) =>
+                    {{
+                        using var scope = immutable1.CreateDraft<{className}>(out var _, cloneProvider);
+                        {className} draft = recipe(argument1);
+                        return scope.FinishDraft<{className},{interfaceName}>(draft);
+                    }};
             ";
             return ParseMemberDeclaration(method)
             .NormalizeWhitespace();

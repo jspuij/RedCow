@@ -18,6 +18,7 @@ namespace RedCow.Generators
 {
     using System;
     using System.Collections.Generic;
+    using System.Diagnostics.CodeAnalysis;
     using System.Linq;
     using System.Text;
     using System.Threading;
@@ -31,6 +32,7 @@ namespace RedCow.Generators
     /// <summary>
     /// Base class for RedCow Generators.
     /// </summary>
+    [ExcludeFromCodeCoverage]
     public abstract class BaseGenerator : IRichCodeGenerator
     {
         /// <summary>
@@ -65,6 +67,12 @@ namespace RedCow.Generators
                             QualifiedName(
                                 IdentifierName("RedCow"),
                                 IdentifierName("Immutable"))),
+                        UsingDirective(
+                            QualifiedName(
+                                QualifiedName(
+                                IdentifierName("System"),
+                                IdentifierName("Diagnostics")),
+                                IdentifierName("CodeAnalysis"))),
                     }),
             };
 

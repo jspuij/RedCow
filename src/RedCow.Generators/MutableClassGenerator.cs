@@ -18,6 +18,7 @@ namespace RedCow.Generators
 {
     using System;
     using System.Collections.Generic;
+    using System.Diagnostics.CodeAnalysis;
     using System.Linq;
     using System.Threading;
     using System.Threading.Tasks;
@@ -30,6 +31,7 @@ namespace RedCow.Generators
     /// <summary>
     /// Generates a Mutable class.
     /// </summary>
+    [ExcludeFromCodeCoverage]
     public class MutableClassGenerator : BaseGenerator, IRichCodeGenerator
     {
         /// <summary>
@@ -222,14 +224,19 @@ namespace RedCow.Generators
         /// <returns>A partial class declaration.</returns>
         private ClassDeclarationSyntax GenerateDraft(ClassDeclarationSyntax sourceClassDeclaration)
         {
-            var modifiers = sourceClassDeclaration.Modifiers.ToList();
-            modifiers[0] = Token(
-                GenerateXmlDoc($"Draft Implementation of <see cref=\"{sourceClassDeclaration.Identifier}\"/>."),
-                modifiers[0].Kind(),
-                TriviaList());
-
             var result = ClassDeclaration($"Draft{sourceClassDeclaration.Identifier}")
-                            .AddModifiers(modifiers.ToArray())
+                            .WithModifiers(sourceClassDeclaration.Modifiers)
+                             .WithAttributeLists(
+                                SingletonList<AttributeListSyntax>(
+                                    AttributeList(
+                                        SingletonSeparatedList<AttributeSyntax>(
+                                            Attribute(
+                                                IdentifierName("ExcludeFromCodeCoverage"))))
+                                    .WithOpenBracketToken(
+                                        Token(
+                                            GenerateXmlDoc($"Draft Implementation of <see cref=\"{sourceClassDeclaration.Identifier}\"/>."),
+                                            SyntaxKind.OpenBracketToken,
+                                            TriviaList()))))
                             .AddBaseListTypes(
                                 SimpleBaseType(ParseTypeName(sourceClassDeclaration.Identifier.Text)),
                                 SimpleBaseType(ParseTypeName($"IDraft<{sourceClassDeclaration.Identifier.Text}>")));
@@ -374,14 +381,19 @@ namespace RedCow.Generators
         /// <returns>A partial class declaration.</returns>
         private ClassDeclarationSyntax GenerateImmutable(ClassDeclarationSyntax sourceClassDeclaration)
         {
-            var modifiers = sourceClassDeclaration.Modifiers.ToList();
-            modifiers[0] = Token(
-                GenerateXmlDoc($"Immutable Implementation of <see cref=\"{sourceClassDeclaration.Identifier}\"/>."),
-                modifiers[0].Kind(),
-                TriviaList());
-
             var result = ClassDeclaration($"Immutable{sourceClassDeclaration.Identifier}")
-                            .AddModifiers(modifiers.ToArray())
+                            .WithModifiers(sourceClassDeclaration.Modifiers)
+                             .WithAttributeLists(
+                                SingletonList<AttributeListSyntax>(
+                                    AttributeList(
+                                        SingletonSeparatedList<AttributeSyntax>(
+                                            Attribute(
+                                                IdentifierName("ExcludeFromCodeCoverage"))))
+                                    .WithOpenBracketToken(
+                                        Token(
+                                            GenerateXmlDoc($"Immutable Implementation of <see cref=\"{sourceClassDeclaration.Identifier}\"/>."),
+                                            SyntaxKind.OpenBracketToken,
+                                            TriviaList()))))
                             .AddBaseListTypes(
                                 SimpleBaseType(ParseTypeName(sourceClassDeclaration.Identifier.Text)),
                                 SimpleBaseType(ParseTypeName($"Immutable<{sourceClassDeclaration.Identifier.Text}>")));

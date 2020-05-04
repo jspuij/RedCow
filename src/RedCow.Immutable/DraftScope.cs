@@ -40,6 +40,11 @@ namespace RedCow.Immutable
         public ICloneProvider CloneProvider { get; }
 
         /// <summary>
+        /// Gets or sets the parent <see cref="DraftScope"/>.
+        /// </summary>
+        public DraftScope? Parent { get; set; }
+
+        /// <summary>
         /// Cleans up the scope.
         /// </summary>
         public void Dispose()
@@ -58,6 +63,15 @@ namespace RedCow.Immutable
         {
             // TODO: Implement finish draft.
             throw new NotImplementedException();
+        }
+
+        /// <summary>
+        /// Creates a draft proxy using the current scope and clone provider.
+        /// </summary>
+        /// <typeparam name="T">The type of the object.</typeparam>
+        /// <returns>An instance of type T.</returns>
+        internal T CreateProxy<T>()
+        {
         }
     }
 }

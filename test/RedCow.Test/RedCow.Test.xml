@@ -45,13 +45,13 @@
             </summary>
         </member>
         <member name="M:RedCow.Test.ITestPerson.Produce(RedCow.Test.TestPerson,RedCow.Immutable.ICloneProvider)">
-             <summary>
-             Produces the next <see cref = "T:RedCow.Immutable`1"/> based on the
+            <summary>
+            Produces the next <see cref = "T:RedCow.Immutable`1"/> based on the
             intial state.
-             </summary>
-             <param name = "initialState">The initial State.</param>
-             <param name = "cloneProvider">The clone provider to use.</param>
-             <returns>The next immutable state.</returns>
+            </summary>
+            <param name = "initialState">The initial State.</param>
+            <param name = "cloneProvider">The clone provider to use.</param>
+            <returns>The next immutable state.</returns>
         </member>
         <member name="M:RedCow.Test.ITestPerson.Produce(System.Action{RedCow.Test.TestPerson},RedCow.Immutable.ICloneProvider)">
             <summary>
