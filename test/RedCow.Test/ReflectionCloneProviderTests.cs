@@ -18,6 +18,7 @@ namespace RedCow.Test
 {
     using System;
     using System.Collections.Generic;
+    using System.Diagnostics.CodeAnalysis;
     using System.Text;
     using RedCow.Immutable;
     using Xunit;
@@ -25,6 +26,7 @@ namespace RedCow.Test
     /// <summary>
     /// Unit tests for <see cref="ReflectionCloneProvider"/>.
     /// </summary>
+    [ExcludeFromCodeCoverage]
     public class ReflectionCloneProviderTests
     {
 #pragma warning disable CS1591 // Missing XML comment for publicly visible type or member

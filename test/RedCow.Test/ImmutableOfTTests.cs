@@ -18,12 +18,14 @@ namespace RedCow.Test
 {
     using System;
     using System.Collections.Generic;
+    using System.Diagnostics.CodeAnalysis;
     using System.Text;
     using Xunit;
 
     /// <summary>
     /// Unit tests for <see cref="Immutable{T}"/>.
     /// </summary>
+    [ExcludeFromCodeCoverage]
     public class ImmutableOfTTests
     {
         /// <summary>

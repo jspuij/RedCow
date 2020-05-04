@@ -18,12 +18,14 @@ namespace RedCow.Test
 {
     using System;
     using System.Collections.Generic;
+    using System.Diagnostics.CodeAnalysis;
     using System.Text;
 
     /// <summary>
     /// The mutable type.
     /// </summary>
     [GenerateMutable(typeof(ITestPerson))]
+    [ExcludeFromCodeCoverage]
     public partial class TestPerson : ITestPerson
     {
     }
