@@ -68,8 +68,35 @@ namespace RedCow.Immutable
         /// <returns>The immutable.</returns>
         public TInterface FinishDraft<T, TInterface>(T draft)
         {
+            if (draft == null)
+            {
+                throw new ArgumentNullException(nameof(draft));
+            }
+
+            Type? type = typeof(T);
+
+            Type? immutableType = null;
+
+            while (type != null)
+            {
+                if (type.GetCustomAttributes().SingleOrDefault(x => x is ImmutableTypeAttribute) is ImmutableTypeAttribute immutableTypeAttribute)
+                {
+                    immutableType = immutableTypeAttribute.ImmutableType;
+                    break;
+                }
+
+                type = type.BaseType;
+            }
+
+            if (immutableType == null)
+            {
+                throw new InvalidOperationException();
+            }
+
             // TODO: Implement finish draft.
-            throw new NotImplementedException();
+            var result = (TInterface)Activator.CreateInstance(immutableType);
+            this.CloneProvider.Clone(draft, result);
+            return result;
         }
 
         /// <summary>
