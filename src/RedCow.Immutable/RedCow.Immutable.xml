@@ -31,11 +31,19 @@
         </member>
         <member name="M:RedCow.Immutable.DraftExtensions.IsDraft``1(``0)">
             <summary>
-            Tests whether a class is a draft.
+            Tests whether an object is a draft.
             </summary>
             <typeparam name="T">The type to test.</typeparam>
             <param name="state">The state to test.</param>
             <returns>A value indicating whether the object is a draft.</returns>
+        </member>
+        <member name="M:RedCow.Immutable.DraftExtensions.IsDraftable``1(``0)">
+            <summary>
+            Tests whether an object is a draftable.
+            </summary>
+            <typeparam name="T">The type to test.</typeparam>
+            <param name="state">The state to test.</param>
+            <returns>A value indicating whether the object is draftable.</returns>
         </member>
         <member name="M:RedCow.Immutable.DraftExtensions.InternalCreateDraft``1(System.Object,``0@,RedCow.Immutable.ICloneProvider)">
             <summary>
@@ -49,15 +57,28 @@
         </member>
         <member name="M:RedCow.Immutable.DraftExtensions.InternalIsDraft(System.Object)">
             <summary>
-            Tests whether a class is a draft.
+            Tests whether an object is a draft.
             </summary>
             <param name="state">The state to test.</param>
             <returns>A value indicating whether the object is a draft.</returns>
             <exception cref="T:System.ArgumentNullException">when the state is null.</exception>
         </member>
+        <member name="M:RedCow.Immutable.DraftExtensions.InternalIsDraftable(System.Object)">
+            <summary>
+            Tests whether an object is a draftable.
+            </summary>
+            <param name="state">The state to test.</param>
+            <returns>A value indicating whether the object is draftable.</returns>
+            <exception cref="T:System.ArgumentNullException">when the state is null.</exception>
+        </member>
         <member name="T:RedCow.Immutable.DraftScope">
             <summary>
             Represents a draft scope (A scope in which drafts are created).
+            </summary>
+        </member>
+        <member name="F:RedCow.Immutable.DraftScope.drafts">
+            <summary>
+            A list of drafts.
             </summary>
         </member>
         <member name="M:RedCow.Immutable.DraftScope.#ctor(RedCow.Immutable.ICloneProvider)">
@@ -69,6 +90,11 @@
         <member name="P:RedCow.Immutable.DraftScope.CloneProvider">
             <summary>
             Gets the Clone Provider for this scope.
+            </summary>
+        </member>
+        <member name="P:RedCow.Immutable.DraftScope.Parent">
+            <summary>
+            Gets or sets the parent <see cref="T:RedCow.Immutable.DraftScope"/>.
             </summary>
         </member>
         <member name="M:RedCow.Immutable.DraftScope.Dispose">
@@ -84,6 +110,15 @@
             <typeparam name="TInterface">The immutable type.</typeparam>
             <param name="draft">The draft.</param>
             <returns>The immutable.</returns>
+        </member>
+        <member name="M:RedCow.Immutable.DraftScope.CreateProxy``1(System.Object)">
+            <summary>
+            Creates a draft proxy using the current scope and clone provider.
+            </summary>
+            <param name="source">The source object to create the proxy for.</param>
+            <typeparam name="T">The type of the object.</typeparam>
+            <exception cref="T:System.InvalidOperationException">When the source object is not draftable.</exception>
+            <returns>An instance of type T.</returns>
         </member>
         <member name="T:RedCow.Immutable.DraftState">
             <summary>
@@ -157,12 +192,10 @@
             to another object.
             </summary>
         </member>
-        <member name="M:RedCow.Immutable.ICloneProvider.Clone``2(``0,``1)">
+        <member name="M:RedCow.Immutable.ICloneProvider.Clone(System.Object,System.Object)">
             <summary>
             Clones the public properties of an object to another object.
             </summary>
-            <typeparam name="TSource">The source type.</typeparam>
-            <typeparam name="TDestination">The destination type.</typeparam>
             <param name="source">The source.</param>
             <param name="destination">The destination.</param>
         </member>
@@ -224,12 +257,10 @@
             Provides cloning using reflection.
             </summary>
         </member>
-        <member name="M:RedCow.Immutable.ReflectionCloneProvider.Clone``2(``0,``1)">
+        <member name="M:RedCow.Immutable.ReflectionCloneProvider.Clone(System.Object,System.Object)">
             <summary>
             Clones the public properties of an object to another object.
             </summary>
-            <typeparam name="TSource">The source type.</typeparam>
-            <typeparam name="TDestination">The destination type.</typeparam>
             <param name="source">The source.</param>
             <param name="destination">The destination.</param>
         </member>

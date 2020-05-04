@@ -18,6 +18,8 @@ namespace RedCow.Immutable
 {
     using System;
     using System.Collections.Generic;
+    using System.Linq;
+    using System.Reflection;
     using System.Text;
 
     /// <summary>
@@ -25,6 +27,11 @@ namespace RedCow.Immutable
     /// </summary>
     public class DraftScope : IDraftScope
     {
+        /// <summary>
+        /// A list of drafts.
+        /// </summary>
+        private readonly List<IDraft> drafts = new List<IDraft>();
+
         /// <summary>
         /// Initializes a new instance of the <see cref="DraftScope"/> class.
         /// </summary>
@@ -68,10 +75,39 @@ namespace RedCow.Immutable
         /// <summary>
         /// Creates a draft proxy using the current scope and clone provider.
         /// </summary>
+        /// <param name="source">The source object to create the proxy for.</param>
         /// <typeparam name="T">The type of the object.</typeparam>
+        /// <exception cref="InvalidOperationException">When the source object is not draftable.</exception>
         /// <returns>An instance of type T.</returns>
-        internal T CreateProxy<T>()
+        internal T CreateProxy<T>(object source)
         {
+            Type? type = typeof(T);
+
+            Type? draftType = null;
+
+            while (type != null)
+            {
+                if (type.GetCustomAttributes().SingleOrDefault(x => x is DraftTypeAttribute) is DraftTypeAttribute draftTypeAttribute)
+                {
+                    draftType = draftTypeAttribute.DraftType;
+                    break;
+                }
+
+                type = type.BaseType;
+            }
+
+            if (draftType == null)
+            {
+                throw new InvalidOperationException();
+            }
+
+            var draftState = new DraftState(this, source);
+
+            // TODO: pluggable object creation.
+            T result = (T)Activator.CreateInstance(draftType, draftState);
+            this.CloneProvider.Clone(source, result);
+            this.drafts.Add((IDraft)result);
+            return result;
         }
     }
 }

@@ -80,7 +80,6 @@ namespace RedCow.Immutable
             return InternalIsDraftable(state);
         }
 
-
         /// <summary>
         /// Creates a new Draft, based on the type of the state.
         /// </summary>
@@ -92,7 +91,6 @@ namespace RedCow.Immutable
         private static IDraftScope InternalCreateDraft<T>(object state, out T draft, ICloneProvider? cloneProvider = null)
             where T : class
         {
-
             // TODO: Add clone provider detection.
             var scope = new DraftScope(cloneProvider ?? new ReflectionCloneProvider());
 
@@ -103,12 +101,7 @@ namespace RedCow.Immutable
                     scope.Parent = ((IDraft)state).DraftState.Scope;
                 }
 
-                if (!InternalIsDraft(state))
-                {
-                    throw new InvalidOperationException();
-                }
-
-                draft = scope.CreateProxy();
+                draft = scope.CreateProxy<T>(state);
                 return scope;
             }
             catch

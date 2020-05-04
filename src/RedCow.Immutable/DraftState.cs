@@ -65,7 +65,15 @@ namespace RedCow.Immutable
         /// <returns>The property value.</returns>
         public T Get<T>(string propertyName, Func<T> getter)
         {
-            throw new NotImplementedException();
+            if (this.Revoked)
+            {
+                throw new InvalidOperationException();
+            }
+
+            var result = getter();
+
+            // TODO: propagate drafting.
+            return result;
         }
 
         /// <summary>
@@ -77,7 +85,12 @@ namespace RedCow.Immutable
         /// <exception cref="InvalidOperationException">thrown when the draft is revoked.</exception>
         public void Set<T>(string propertyName, Func<T> setter)
         {
-            throw new NotImplementedException();
+            if (this.Revoked)
+            {
+                throw new InvalidOperationException();
+            }
+
+            var result = setter();
         }
     }
 }

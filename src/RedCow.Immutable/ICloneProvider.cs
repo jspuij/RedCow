@@ -30,10 +30,8 @@ namespace RedCow.Immutable
         /// <summary>
         /// Clones the public properties of an object to another object.
         /// </summary>
-        /// <typeparam name="TSource">The source type.</typeparam>
-        /// <typeparam name="TDestination">The destination type.</typeparam>
         /// <param name="source">The source.</param>
         /// <param name="destination">The destination.</param>
-        public void Clone<TSource, TDestination>(TSource source, TDestination destination);
+        public void Clone(object source, object destination);
     }
 }
