@@ -101,12 +101,11 @@
             <param name="draft">The draft.</param>
             <returns>The immutable.</returns>
         </member>
-        <member name="M:RedCow.Immutable.DraftScope.CreateProxy``1(System.Object)">
+        <member name="M:RedCow.Immutable.DraftScope.CreateProxy(System.Object)">
             <summary>
             Creates a draft proxy using the current scope and clone provider.
             </summary>
             <param name="source">The source object to create the proxy for.</param>
-            <typeparam name="T">The type of the object.</typeparam>
             <exception cref="T:System.InvalidOperationException">When the source object is not draftable.</exception>
             <returns>An instance of type T.</returns>
         </member>

@@ -87,7 +87,7 @@ namespace RedCow.Immutable
                     scope.Parent = ((IDraft)state).DraftState.Scope;
                 }
 
-                draft = scope.CreateProxy<T>(state);
+                draft = (T)scope.CreateProxy(state);
                 return scope;
             }
             catch

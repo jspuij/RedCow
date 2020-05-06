@@ -103,12 +103,11 @@ namespace RedCow.Immutable
         /// Creates a draft proxy using the current scope and clone provider.
         /// </summary>
         /// <param name="source">The source object to create the proxy for.</param>
-        /// <typeparam name="T">The type of the object.</typeparam>
         /// <exception cref="InvalidOperationException">When the source object is not draftable.</exception>
         /// <returns>An instance of type T.</returns>
-        internal T CreateProxy<T>(object source)
+        internal object CreateProxy(object source)
         {
-            Type? type = typeof(T);
+            Type? type = source.GetType();
 
             Type? draftType = null;
 
@@ -131,7 +130,7 @@ namespace RedCow.Immutable
             var draftState = new DraftState(this, source);
 
             // TODO: pluggable object creation.
-            T result = (T)Activator.CreateInstance(draftType, draftState);
+            object result = Activator.CreateInstance(draftType, draftState);
             this.CloneProvider.Clone(source, result);
             this.drafts.Add((IDraft)result);
             return result;
