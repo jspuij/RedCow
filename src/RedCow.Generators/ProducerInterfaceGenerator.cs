@@ -242,7 +242,7 @@ namespace RedCow.Generators
                 /// <param name = ""cloneProvider"">The clone provider to use.</param>
                 /// <returns>A producer delegate.</returns>
                 [ExcludeFromCodeCoverage]
-                public static Func<{className}, {interfaceName}> Producer(Action<{className}> recipe, ICloneProvider cloneProvider = null) =>
+                public static Func<{interfaceName}, {interfaceName}> Producer(Action<{className}> recipe, ICloneProvider cloneProvider = null) =>
                     (immutable1) => Producer<object>((argument1, _) => recipe(argument1), cloneProvider)(immutable1, null);
             ";
             return ParseMemberDeclaration(method)
@@ -267,7 +267,7 @@ namespace RedCow.Generators
                 /// <param name = ""cloneProvider"">The clone provider to use.</param>
                 /// <returns>A recipe delegate.</returns>
                 [ExcludeFromCodeCoverage]
-                public static Func<{className}, {interfaceName}> Producer(Func<{className}> recipe, ICloneProvider cloneProvider = null) =>
+                public static Func<{interfaceName}, {interfaceName}> Producer(Func<{className}> recipe, ICloneProvider cloneProvider = null) =>
                     (immutable1) => Producer<object>(_ => recipe(), cloneProvider)(immutable1, null);
             ";
             return ParseMemberDeclaration(method)
@@ -293,10 +293,10 @@ namespace RedCow.Generators
                 /// <typeparam name = ""TArg"">The type of the argument.</typeparam>
                 /// <returns>A producer delegate.</returns>
                 [ExcludeFromCodeCoverage]
-                public static Func<{className}, TArg, {interfaceName}> Producer<TArg>(Action<{className}, TArg> recipe, ICloneProvider cloneProvider = null) => 
+                public static Func<{interfaceName}, TArg, {interfaceName}> Producer<TArg>(Action<{className}, TArg> recipe, ICloneProvider cloneProvider = null) => 
                     (immutable1, argument1) =>
                     {{
-                        using var scope = immutable1.CreateDraft<{className}>(out var draft, cloneProvider);
+                        using var scope = (({className})immutable1).CreateDraft<{className}>(out var draft, cloneProvider);
                         recipe(draft, argument1);
                         return scope.FinishDraft<{className},{interfaceName}>(draft);
                     }};
@@ -324,10 +324,10 @@ namespace RedCow.Generators
                 /// <typeparam name = ""TArg"">The type of the argument.</typeparam>
                 /// <returns>A producer delegate.</returns>
                 [ExcludeFromCodeCoverage]
-                public static Func<{className}, TArg, {interfaceName}> Producer<TArg>(Func<TArg, {className}> recipe, ICloneProvider cloneProvider = null) =>
+                public static Func<{interfaceName}, TArg, {interfaceName}> Producer<TArg>(Func<TArg, {className}> recipe, ICloneProvider cloneProvider = null) =>
                     (immutable1, argument1) =>
                     {{
-                        using var scope = immutable1.CreateDraft<{className}>(out var _, cloneProvider);
+                        using var scope = (({className})immutable1).CreateDraft<{className}>(out var _, cloneProvider);
                         {className} draft = recipe(argument1);
                         return scope.FinishDraft<{className},{interfaceName}>(draft);
                     }};

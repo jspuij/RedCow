@@ -18,6 +18,7 @@ namespace RedCow
 {
     using System;
     using System.Diagnostics;
+    using System.Diagnostics.CodeAnalysis;
     using CodeGeneration.Roslyn;
 
     /// <summary>
@@ -27,6 +28,7 @@ namespace RedCow
     [AttributeUsage(AttributeTargets.Class, Inherited = false, AllowMultiple = false)]
     [CodeGenerationAttribute("RedCow.Generators.MutableClassGenerator, RedCow.Generators")]
     [Conditional("CodeGeneration")]
+    [ExcludeFromCodeCoverage]
     public class GenerateMutableAttribute : Attribute
     {
         /// <summary>

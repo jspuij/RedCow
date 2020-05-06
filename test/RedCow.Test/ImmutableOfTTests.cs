@@ -19,6 +19,7 @@ namespace RedCow.Test
     using System;
     using System.Collections.Generic;
     using System.Diagnostics.CodeAnalysis;
+    using System.Linq;
     using System.Text;
     using Xunit;
 
@@ -53,7 +54,7 @@ namespace RedCow.Test
         /// Tests the Produce Method.
         /// </summary>
         [Fact]
-        public void StaticProduceTest()
+        public void StaticProduceActionTest()
         {
             TestPerson initial = new TestPerson()
             {
@@ -78,7 +79,7 @@ namespace RedCow.Test
         /// Tests the Produce Method.
         /// </summary>
         [Fact]
-        public void ProduceTest()
+        public void ProduceActionTest()
         {
             ITestPerson initial = ITestPerson.Produce(
                 new TestPerson()
@@ -98,6 +99,158 @@ namespace RedCow.Test
             Assert.NotEqual(initial.FirstName, person.FirstName);
             Assert.Equal(initial.LastName, person.LastName);
             Assert.NotEqual(initial.IsAdult, person.IsAdult);
+        }
+
+        /// <summary>
+        /// Tests the Produce Method.
+        /// </summary>
+        [Fact]
+        public void StaticProduceFunctionTest()
+        {
+            TestPerson initial = new TestPerson()
+            {
+                FirstName = "John",
+                LastName = "Doe",
+                IsAdult = true,
+            };
+
+            ITestPerson person = ITestPerson.Produce(initial, () =>
+                new TestPerson()
+                {
+                    FirstName = "Jane",
+                    LastName = "Doe",
+                    IsAdult = false,
+                });
+
+            Assert.False(ReferenceEquals(initial, person));
+            Assert.NotEqual(initial.FirstName, person.FirstName);
+            Assert.Equal(initial.LastName, person.LastName);
+            Assert.NotEqual(initial.IsAdult, person.IsAdult);
+        }
+
+        /// <summary>
+        /// Tests the Produce Method.
+        /// </summary>
+        [Fact]
+        public void ProduceFunctionTest()
+        {
+            ITestPerson initial = ITestPerson.Produce(
+                new TestPerson()
+                {
+                    FirstName = "John",
+                    LastName = "Doe",
+                    IsAdult = true,
+                });
+
+            ITestPerson person = initial.Produce(() =>
+                new TestPerson()
+                {
+                    FirstName = "Jane",
+                    LastName = "Doe",
+                    IsAdult = false,
+                });
+
+            Assert.False(ReferenceEquals(initial, person));
+            Assert.NotEqual(initial.FirstName, person.FirstName);
+            Assert.Equal(initial.LastName, person.LastName);
+            Assert.NotEqual(initial.IsAdult, person.IsAdult);
+        }
+
+        /// <summary>
+        /// Tests the Producer Method.
+        /// </summary>
+        [Fact]
+        public void ProducerActionTest()
+        {
+            var initial = new TestPerson()
+            {
+                FirstName = "John",
+                LastName = "Doe",
+                IsAdult = true,
+            };
+
+            var producer = ITestPerson.Producer(p =>
+            {
+                p.FirstName = "Jane";
+                p.IsAdult = false;
+            });
+
+            var person = producer(initial);
+
+            Assert.False(ReferenceEquals(initial, person));
+            Assert.NotEqual(initial.FirstName, person.FirstName);
+            Assert.Equal(initial.LastName, person.LastName);
+            Assert.NotEqual(initial.IsAdult, person.IsAdult);
+        }
+
+        /// <summary>
+        /// Tests the Produce Method.
+        /// </summary>
+        [Fact]
+        public void ProducerFunctionTest()
+        {
+            var initial = new TestPerson()
+            {
+                FirstName = "John",
+                LastName = "Doe",
+                IsAdult = true,
+            };
+
+            var producer = ITestPerson.Producer(() =>
+                new TestPerson()
+                {
+                    FirstName = "Jane",
+                    LastName = "Doe",
+                    IsAdult = false,
+                });
+
+            var person = producer(initial);
+
+            Assert.False(ReferenceEquals(initial, person));
+            Assert.NotEqual(initial.FirstName, person.FirstName);
+            Assert.Equal(initial.LastName, person.LastName);
+            Assert.NotEqual(initial.IsAdult, person.IsAdult);
+        }
+
+        /// <summary>
+        /// Tests the Producer Method with argument.
+        /// </summary>
+        [Fact]
+        public void ProducerActionWithArgumentTest()
+        {
+            var initial = new[]
+            {
+                new TestPerson
+                {
+                    FirstName = "John",
+                    LastName = "Doe",
+                    IsAdult = true,
+                },
+                new TestPerson
+                {
+                    FirstName = "Jane",
+                    LastName = "Doe",
+                    IsAdult = false,
+                },
+            };
+
+            var anonimizer = ITestPerson.Producer<int>((p, i) =>
+            {
+                p.LastName = $"Anonimized nr. {i + 1}";
+            });
+
+            var result = initial.Select((p, i) => anonimizer(p, i));
+
+            int index = 0;
+
+            Assert.All(initial.Zip(result, (first, second) => new { Expected = first, Actual = second, Index = ++index }), r =>
+            {
+                Assert.False(ReferenceEquals(r.Expected, r.Actual));
+                Assert.Equal(r.Expected.FirstName, r.Actual.FirstName);
+                Assert.NotEqual(r.Expected.LastName, r.Actual.LastName);
+                Assert.Equal(r.Expected.IsAdult, r.Actual.IsAdult);
+                Assert.Equal($"Anonimized nr. {r.Index}", r.Actual.LastName);
+            });
         }
     }
 }

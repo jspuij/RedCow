@@ -19,16 +19,6 @@
             <param name="cloneProvider">The clone provider.</param>
             <returns>A scope that is used to either reconcile or dispose of the draft.</returns>
         </member>
-        <member name="M:RedCow.Immutable.DraftExtensions.CreateDraft``1(RedCow.Immutable{``0},``0@,RedCow.Immutable.ICloneProvider)">
-            <summary>
-            Creates a new Draft, based on the <see cref="T:RedCow.Immutable`1"/>.
-            </summary>
-            <typeparam name="T">The type of the state.</typeparam>
-            <param name="state">The immutable.</param>
-            <param name="draft">A new draft, based on the immutable.</param>
-            <param name="cloneProvider">The clone provider.</param>
-            <returns>A scope that is used to either reconcile or dispose of the draft.</returns>
-        </member>
         <member name="M:RedCow.Immutable.DraftExtensions.IsDraft``1(``0)">
             <summary>
             Tests whether an object is a draft.

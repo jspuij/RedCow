@@ -19,6 +19,7 @@ namespace RedCow
     using System;
     using System.Collections.Generic;
     using System.Diagnostics;
+    using System.Diagnostics.CodeAnalysis;
     using System.Text;
     using CodeGeneration.Roslyn;
 
@@ -28,6 +29,7 @@ namespace RedCow
     [AttributeUsage(AttributeTargets.Interface, Inherited = false, AllowMultiple = false)]
     [CodeGenerationAttribute("RedCow.Generators.ProducerInterfaceGenerator, RedCow.Generators")]
     [Conditional("CodeGeneration")]
+    [ExcludeFromCodeCoverage]
     public class GenerateProducersAttribute : Attribute
     {
         /// <summary>

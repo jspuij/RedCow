@@ -14,14 +14,39 @@
             Tests the Initial Produce Method.
             </summary>
         </member>
-        <member name="M:RedCow.Test.ImmutableOfTTests.StaticProduceTest">
+        <member name="M:RedCow.Test.ImmutableOfTTests.StaticProduceActionTest">
             <summary>
             Tests the Produce Method.
             </summary>
         </member>
-        <member name="M:RedCow.Test.ImmutableOfTTests.ProduceTest">
+        <member name="M:RedCow.Test.ImmutableOfTTests.ProduceActionTest">
             <summary>
             Tests the Produce Method.
+            </summary>
+        </member>
+        <member name="M:RedCow.Test.ImmutableOfTTests.StaticProduceFunctionTest">
+            <summary>
+            Tests the Produce Method.
+            </summary>
+        </member>
+        <member name="M:RedCow.Test.ImmutableOfTTests.ProduceFunctionTest">
+            <summary>
+            Tests the Produce Method.
+            </summary>
+        </member>
+        <member name="M:RedCow.Test.ImmutableOfTTests.ProducerActionTest">
+            <summary>
+            Tests the Producer Method.
+            </summary>
+        </member>
+        <member name="M:RedCow.Test.ImmutableOfTTests.ProducerFunctionTest">
+            <summary>
+            Tests the Produce Method.
+            </summary>
+        </member>
+        <member name="M:RedCow.Test.ImmutableOfTTests.ProducerActionWithArgumentTest">
+            <summary>
+            Tests the Producer Method with argument.
             </summary>
         </member>
         <member name="T:RedCow.Test.ITestPerson">
