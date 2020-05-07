@@ -1,4 +1,4 @@
-﻿// <copyright file="Immutable{T}.cs" company="Jan-Willem Spuij">
+﻿// <copyright file="IProducerOptions.cs" company="Jan-Willem Spuij">
 // Copyright 2020 Jan-Willem Spuij
 //
 // Permission is hereby granted, free of charge, to any person obtaining a copy of this software and associated documentation
@@ -16,20 +16,23 @@
 
 namespace RedCow
 {
+    using System;
+    using System.Collections.Generic;
+    using RedCow.Immutable;
+
     /// <summary>
-    /// Interface for Immutable instances of <typeparamref name="T"/>.
+    /// The options used by the producer.
     /// </summary>
-    /// <typeparam name="T">The mutable type.</typeparam>
-    public interface Immutable<T>
+    public interface IProducerOptions
     {
         /// <summary>
-        /// Gets a value indicating whether the immutable is locked.
+        /// Gets the clone provider to use.
         /// </summary>
-        public bool Locked { get; }
+        public ICloneProvider CloneProvider { get; }
 
         /// <summary>
-        /// Locks the Immutable.
+        /// Gets the immutable reference types that are allowed as Properties.
         /// </summary>
-        public void Lock();
+        public ISet<Type> AllowedImmutableReferenceTypes { get; }
     }
 }

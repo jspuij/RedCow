@@ -132,11 +132,10 @@
             <param name="constructorDeclarationSyntax">An optional existing constructor on the base class.</param>
             <returns>A member declaration.</returns>
         </member>
-        <member name="M:RedCow.Generators.MutableClassGenerator.GenerateDraftStateField(Microsoft.CodeAnalysis.CSharp.Syntax.ClassDeclarationSyntax)">
+        <member name="M:RedCow.Generators.MutableClassGenerator.GenerateDraftStateField">
             <summary>
             Generates the draft state field.
             </summary>
-            <param name="sourceClassDeclaration">The source class declaration.</param>
             <returns>A member declaration.</returns>
         </member>
         <member name="M:RedCow.Generators.MutableClassGenerator.GenerateOriginalProperty(Microsoft.CodeAnalysis.CSharp.Syntax.ClassDeclarationSyntax)">
@@ -152,11 +151,10 @@
             </summary>
             <returns>A member declaration.</returns>
         </member>
-        <member name="M:RedCow.Generators.MutableClassGenerator.GenerateDraftStateProperty(Microsoft.CodeAnalysis.CSharp.Syntax.ClassDeclarationSyntax)">
+        <member name="M:RedCow.Generators.MutableClassGenerator.GenerateDraftStateProperty">
             <summary>
             Generates the DraftState property.
             </summary>
-            <param name="sourceClassDeclaration">The source class declaration.</param>
             <returns>A member declaration.</returns>
         </member>
         <member name="M:RedCow.Generators.MutableClassGenerator.GenerateImmutable(Microsoft.CodeAnalysis.CSharp.Syntax.ClassDeclarationSyntax)">

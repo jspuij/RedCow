@@ -69,84 +69,84 @@
             Gets a value indicating whether isAdult is true.
             </summary>
         </member>
-        <member name="M:RedCow.Test.ITestPerson.Produce(RedCow.Test.TestPerson,RedCow.Immutable.ICloneProvider)">
+        <member name="M:RedCow.Test.ITestPerson.Produce(RedCow.Test.TestPerson,RedCow.IProducerOptions)">
             <summary>
             Produces the next <see cref = "T:RedCow.Immutable`1"/> based on the
             intial state.
             </summary>
             <param name = "initialState">The initial State.</param>
-            <param name = "cloneProvider">The clone provider to use.</param>
+            <param name = "producerOptions">The producer options to use. If you leave them null, the default options will be used.</param>
             <returns>The next immutable state.</returns>
         </member>
-        <member name="M:RedCow.Test.ITestPerson.Produce(System.Action{RedCow.Test.TestPerson},RedCow.Immutable.ICloneProvider)">
+        <member name="M:RedCow.Test.ITestPerson.Produce(System.Action{RedCow.Test.TestPerson},RedCow.IProducerOptions)">
             <summary>
             Produces the next <see cref = "T:RedCow.Immutable`1"/> based on the
             specified recipe action.
             </summary>
             <param name = "recipe">The recipe action.</param>
-            <param name = "cloneProvider">The clone provider to use.</param>
+            <param name = "producerOptions">The producer options to use. If you leave them null, the default options will be used.</param>
             <returns>The next immutable state.</returns>
         </member>
-        <member name="M:RedCow.Test.ITestPerson.Produce(RedCow.Test.TestPerson,System.Action{RedCow.Test.TestPerson},RedCow.Immutable.ICloneProvider)">
+        <member name="M:RedCow.Test.ITestPerson.Produce(RedCow.Test.TestPerson,System.Action{RedCow.Test.TestPerson},RedCow.IProducerOptions)">
             <summary>
             Produces the next <see cref = "T:RedCow.Immutable`1"/> based on the
             specified recipe action.
             </summary>
             <param name = "initialState">The initial State.</param>
             <param name = "recipe">The recipe action.</param>
-            <param name = "cloneProvider">The clone provider to use.</param>
+            <param name = "producerOptions">The producer options to use. If you leave them null, the default options will be used.</param>
             <returns>The next immutable state.</returns>
         </member>
-        <member name="M:RedCow.Test.ITestPerson.Produce(System.Func{RedCow.Test.TestPerson},RedCow.Immutable.ICloneProvider)">
+        <member name="M:RedCow.Test.ITestPerson.Produce(System.Func{RedCow.Test.TestPerson},RedCow.IProducerOptions)">
             <summary>
             Produces the next <see cref = "T:RedCow.Immutable`1"/> based on the
             specified recipe function.
             </summary>
             <param name = "recipe">The recipe function.</param>
-            <param name = "cloneProvider">The clone provider to use.</param>
+            <param name = "producerOptions">The producer options to use. If you leave them null, the default options will be used.</param>
             <returns>The next immutable state.</returns>
         </member>
-        <member name="M:RedCow.Test.ITestPerson.Produce(RedCow.Test.TestPerson,System.Func{RedCow.Test.TestPerson},RedCow.Immutable.ICloneProvider)">
+        <member name="M:RedCow.Test.ITestPerson.Produce(RedCow.Test.TestPerson,System.Func{RedCow.Test.TestPerson},RedCow.IProducerOptions)">
             <summary>
             Produces the next <see cref = "T:RedCow.Immutable`1"/> based on the
             specified recipe function.
             </summary>
             <param name = "initialState">The initial State.</param>
             <param name = "recipe">The recipe function.</param>
-            <param name = "cloneProvider">The clone provider to use.</param>
+            <param name = "producerOptions">The producer options to use. If you leave them null, the default options will be used.</param>
             <returns>The next immutable state.</returns>
         </member>
-        <member name="M:RedCow.Test.ITestPerson.Producer(System.Action{RedCow.Test.TestPerson},RedCow.Immutable.ICloneProvider)">
+        <member name="M:RedCow.Test.ITestPerson.Producer(System.Action{RedCow.Test.TestPerson},RedCow.IProducerOptions)">
             <summary>
             Creates a Producer delegate that can be used to curry on an Immutable State.
             </summary>
             <param name = "recipe">The recipe action that operates on an object of type T.</param>
-            <param name = "cloneProvider">The clone provider to use.</param>
+            <param name = "producerOptions">The producer options to use. If you leave them null, the default options will be used.</param>
             <returns>A producer delegate.</returns>
         </member>
-        <member name="M:RedCow.Test.ITestPerson.Producer(System.Func{RedCow.Test.TestPerson},RedCow.Immutable.ICloneProvider)">
+        <member name="M:RedCow.Test.ITestPerson.Producer(System.Func{RedCow.Test.TestPerson},RedCow.IProducerOptions)">
             <summary>
             Creates a Producer delegate that can be used to curry on an Immutable State.
             </summary>
             <param name = "recipe">The recipe function that returns an object of type T.</param>
-            <param name = "cloneProvider">The clone provider to use.</param>
+            <param name = "producerOptions">The producer options to use. If you leave them null, the default options will be used.</param>
             <returns>A recipe delegate.</returns>
         </member>
-        <member name="M:RedCow.Test.ITestPerson.Producer``1(System.Action{RedCow.Test.TestPerson,``0},RedCow.Immutable.ICloneProvider)">
+        <member name="M:RedCow.Test.ITestPerson.Producer``1(System.Action{RedCow.Test.TestPerson,``0},RedCow.IProducerOptions)">
             <summary>
             Creates a Producer delegate that can be used to curry on an Immutable State.
             </summary>
             <param name = "recipe">The recipe action that operates on an object of type T with a single argument.</param>
-            <param name = "cloneProvider">The clone provider to use.</param>
+            <param name = "producerOptions">The producer options to use. If you leave them null, the default options will be used.</param>
             <typeparam name = "TArg">The type of the argument.</typeparam>
             <returns>A producer delegate.</returns>
         </member>
-        <member name="M:RedCow.Test.ITestPerson.Producer``1(System.Func{``0,RedCow.Test.TestPerson},RedCow.Immutable.ICloneProvider)">
+        <member name="M:RedCow.Test.ITestPerson.Producer``1(System.Func{``0,RedCow.Test.TestPerson},RedCow.IProducerOptions)">
             <summary>
             Creates a Producer delegate that can be used to curry on an Immutable State.
             </summary>
             <param name = "recipe">The recipe function that returns an object of type T with a single argument.</param>
-            <param name = "cloneProvider">The clone provider to use.</param>
+            <param name = "producerOptions">The producer options to use. If you leave them null, the default options will be used.</param>
             <typeparam name = "TArg">The type of the argument.</typeparam>
             <returns>A producer delegate.</returns>
         </member>

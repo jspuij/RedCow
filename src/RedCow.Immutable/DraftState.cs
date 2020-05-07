@@ -18,14 +18,22 @@ namespace RedCow.Immutable
 {
     using System;
     using System.Collections.Generic;
-    using System.Text;
+    using static DraftExtensions;
 
     /// <summary>
     /// State for drafts.
     /// </summary>
     public class DraftState
     {
+        /// <summary>
+        /// The original object.
+        /// </summary>
         private readonly object original;
+
+        /// <summary>
+        /// The list of changed properties.
+        /// </summary>
+        private readonly ISet<string> changedProperties = new HashSet<string>();
 
         /// <summary>
         /// Initializes a new instance of the <see cref="DraftState"/> class.
@@ -49,6 +57,11 @@ namespace RedCow.Immutable
         public DraftScope Scope { get; }
 
         /// <summary>
+        /// Gets the changed properties for this draft.
+        /// </summary>
+        public IEnumerable<string> ChangedProperties => this.changedProperties;
+
+        /// <summary>
         /// Gets the original.
         /// </summary>
         /// <typeparam name="T">The type to cast the original to.</typeparam>
@@ -61,18 +74,33 @@ namespace RedCow.Immutable
         /// <typeparam name="T">The type of the Property.</typeparam>
         /// <param name="propertyName">The property name.</param>
         /// <param name="getter">The getter.</param>
+        /// <param name="setter">The setter.</param>
         /// <exception cref="InvalidOperationException">thrown when the draft is revoked.</exception>
         /// <returns>The property value.</returns>
-        public T Get<T>(string propertyName, Func<T> getter)
+        public T Get<T>(string propertyName, Func<T> getter, Action<T> setter)
         {
             if (this.Revoked)
             {
-                throw new InvalidOperationException();
+                throw new InvalidOperationException("The draft is out of scope and has been revoked.");
             }
 
             var result = getter();
 
-            // TODO: propagate drafting.
+            if (result == null)
+            {
+                return result;
+            }
+
+            var resultType = result.GetType();
+
+            if (resultType.IsValueType || this.Scope.AllowedImmutableReferenceTypes.Contains(resultType) || InternalIsDraft(result))
+            {
+                return result;
+            }
+
+            result = (T)this.Scope.CreateProxy(result);
+            setter(result);
+
             return result;
         }
 
@@ -83,14 +111,15 @@ namespace RedCow.Immutable
         /// <param name="propertyName">The property name.</param>
         /// <param name="setter">The setter.</param>
         /// <exception cref="InvalidOperationException">thrown when the draft is revoked.</exception>
-        public void Set<T>(string propertyName, Func<T> setter)
+        public void Set<T>(string propertyName, Action setter)
         {
             if (this.Revoked)
             {
-                throw new InvalidOperationException();
+                throw new InvalidOperationException("The draft is out of scope and has been revoked.");
             }
 
-            var result = setter();
+            setter();
+            this.changedProperties.Add(propertyName);
         }
     }
 }

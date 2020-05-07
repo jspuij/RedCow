@@ -16,11 +16,8 @@
 
 namespace RedCow.Test
 {
-    using System;
-    using System.Collections.Generic;
     using System.Diagnostics.CodeAnalysis;
     using System.Linq;
-    using System.Text;
     using Xunit;
 
     /// <summary>
@@ -44,7 +41,7 @@ namespace RedCow.Test
 
             ITestPerson person = ITestPerson.Produce(initial);
 
-            Assert.False(ReferenceEquals(initial, person));
+            Assert.NotSame(initial, person);
             Assert.Equal(initial.FirstName, person.FirstName);
             Assert.Equal(initial.LastName, person.LastName);
             Assert.Equal(initial.IsAdult, person.IsAdult);
@@ -69,7 +66,7 @@ namespace RedCow.Test
                 p.IsAdult = false;
             });
 
-            Assert.False(ReferenceEquals(initial, person));
+            Assert.NotSame(initial, person);
             Assert.NotEqual(initial.FirstName, person.FirstName);
             Assert.Equal(initial.LastName, person.LastName);
             Assert.NotEqual(initial.IsAdult, person.IsAdult);
@@ -95,7 +92,7 @@ namespace RedCow.Test
                 p.IsAdult = false;
             });
 
-            Assert.False(ReferenceEquals(initial, person));
+            Assert.NotSame(initial, person);
             Assert.NotEqual(initial.FirstName, person.FirstName);
             Assert.Equal(initial.LastName, person.LastName);
             Assert.NotEqual(initial.IsAdult, person.IsAdult);
@@ -122,7 +119,7 @@ namespace RedCow.Test
                     IsAdult = false,
                 });
 
-            Assert.False(ReferenceEquals(initial, person));
+            Assert.NotSame(initial, person);
             Assert.NotEqual(initial.FirstName, person.FirstName);
             Assert.Equal(initial.LastName, person.LastName);
             Assert.NotEqual(initial.IsAdult, person.IsAdult);
@@ -150,7 +147,7 @@ namespace RedCow.Test
                     IsAdult = false,
                 });
 
-            Assert.False(ReferenceEquals(initial, person));
+            Assert.NotSame(initial, person);
             Assert.NotEqual(initial.FirstName, person.FirstName);
             Assert.Equal(initial.LastName, person.LastName);
             Assert.NotEqual(initial.IsAdult, person.IsAdult);
@@ -177,7 +174,7 @@ namespace RedCow.Test
 
             var person = producer(initial);
 
-            Assert.False(ReferenceEquals(initial, person));
+            Assert.NotSame(initial, person);
             Assert.NotEqual(initial.FirstName, person.FirstName);
             Assert.Equal(initial.LastName, person.LastName);
             Assert.NotEqual(initial.IsAdult, person.IsAdult);
@@ -206,7 +203,7 @@ namespace RedCow.Test
 
             var person = producer(initial);
 
-            Assert.False(ReferenceEquals(initial, person));
+            Assert.NotSame(initial, person);
             Assert.NotEqual(initial.FirstName, person.FirstName);
             Assert.Equal(initial.LastName, person.LastName);
             Assert.NotEqual(initial.IsAdult, person.IsAdult);
@@ -245,7 +242,7 @@ namespace RedCow.Test
 
             Assert.All(initial.Zip(result, (first, second) => new { Expected = first, Actual = second, Index = ++index }), r =>
             {
-                Assert.False(ReferenceEquals(r.Expected, r.Actual));
+                Assert.NotSame(r.Expected, r.Actual);
                 Assert.Equal(r.Expected.FirstName, r.Actual.FirstName);
                 Assert.NotEqual(r.Expected.LastName, r.Actual.LastName);
                 Assert.Equal(r.Expected.IsAdult, r.Actual.IsAdult);

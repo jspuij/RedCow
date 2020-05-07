@@ -17,8 +17,6 @@
 namespace RedCow.Immutable
 {
     using System;
-    using System.Diagnostics;
-    using CodeGeneration.Roslyn;
 
     /// <summary>
     /// Draft type attribute. Indicates which class is the draft type for this type.

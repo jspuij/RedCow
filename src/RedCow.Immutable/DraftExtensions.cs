@@ -17,11 +17,8 @@
 namespace RedCow.Immutable
 {
     using System;
-    using System.Collections.Generic;
     using System.Linq;
     using System.Reflection;
-    using System.Text;
-    using RedCow.Immutable;
 
     /// <summary>
     /// Extension methods for drafts.
@@ -34,12 +31,12 @@ namespace RedCow.Immutable
         /// <typeparam name="T">The type of the state.</typeparam>
         /// <param name="state">The immutable.</param>
         /// <param name="draft">A new draft, based on the immutable.</param>
-        /// <param name="cloneProvider">The clone provider.</param>
+        /// <param name="producerOptions">The producer options to use. If you leave them null, the default options will be used.</param>
         /// <returns>A scope that is used to either reconcile or dispose of the draft.</returns>
-        public static IDraftScope CreateDraft<T>(this T state, out T draft, ICloneProvider? cloneProvider = null)
+        public static IDraftScope CreateDraft<T>(this T state, out T draft, IProducerOptions? producerOptions = null)
             where T : class
         {
-            return InternalCreateDraft<T>(state, out draft, cloneProvider);
+            return InternalCreateDraft<T>(state, out draft, producerOptions);
         }
 
         /// <summary>
@@ -72,19 +69,20 @@ namespace RedCow.Immutable
         /// <typeparam name="T">The type of the state.</typeparam>
         /// <param name="state">The immutable.</param>
         /// <param name="draft">A new draft, based on the immutable.</param>
-        /// <param name="cloneProvider">The clone provider.</param>
+        /// <param name="producerOptions">The producer options to use. If you leave them null, the default options will be used.</param>
         /// <returns>A scope that is used to either reconcile or dispose of the draft.</returns>
-        private static IDraftScope InternalCreateDraft<T>(object state, out T draft, ICloneProvider? cloneProvider = null)
+        internal static IDraftScope InternalCreateDraft<T>(object state, out T draft, IProducerOptions? producerOptions = null)
             where T : class
         {
-            // TODO: Add clone provider detection.
-            var scope = new DraftScope(cloneProvider ?? new ReflectionCloneProvider());
+            var scope = new DraftScope(producerOptions ?? ProducerOptions.Default);
 
             try
             {
                 if (InternalIsDraft(state))
                 {
                     scope.Parent = ((IDraft)state).DraftState.Scope;
+                    draft = (T)state;
+                    return scope;
                 }
 
                 draft = (T)scope.CreateProxy(state);
@@ -103,7 +101,7 @@ namespace RedCow.Immutable
         /// <param name="state">The state to test.</param>
         /// <returns>A value indicating whether the object is a draft.</returns>
         /// <exception cref="ArgumentNullException">when the state is null.</exception>
-        private static bool InternalIsDraft(object state)
+        internal static bool InternalIsDraft(object state)
         {
             if (state is null)
             {
@@ -119,26 +117,64 @@ namespace RedCow.Immutable
         /// <param name="state">The state to test.</param>
         /// <returns>A value indicating whether the object is draftable.</returns>
         /// <exception cref="ArgumentNullException">when the state is null.</exception>
-        private static bool InternalIsDraftable(object state)
+        internal static bool InternalIsDraftable(object state)
         {
             if (state is null)
             {
                 throw new ArgumentNullException(nameof(state));
             }
 
-            var type = state.GetType();
+            return GetDraftType(state) != null;
+        }
+
+        /// <summary>
+        /// Gets the draft Type for this object.
+        /// </summary>
+        /// <param name="source">The source object.</param>
+        /// <returns>The draft type if found, otherwise null.</returns>
+        internal static Type? GetDraftType(object source)
+        {
+            Type? type = source.GetType();
+
+            Type? draftType = null;
 
             while (type != null)
             {
-                if (type.GetCustomAttributes().Any(x => x is DraftTypeAttribute))
+                if (type.GetCustomAttributes().SingleOrDefault(x => x is DraftTypeAttribute) is DraftTypeAttribute draftTypeAttribute)
                 {
-                    return true;
+                    draftType = draftTypeAttribute.DraftType;
+                    break;
                 }
 
                 type = type.BaseType;
             }
 
-            return false;
+            return draftType;
+        }
+
+        /// <summary>
+        /// Gets the immutable Type for this object.
+        /// </summary>
+        /// <param name="source">The source object.</param>
+        /// <returns>The immutable type if found, otherwise null.</returns>
+        internal static Type? GetImmutableType(object source)
+        {
+            Type? type = source.GetType();
+
+            Type? immutableType = null;
+
+            while (type != null)
+            {
+                if (type.GetCustomAttributes().SingleOrDefault(x => x is ImmutableTypeAttribute) is ImmutableTypeAttribute immutableTypeAttribute)
+                {
+                    immutableType = immutableTypeAttribute.ImmutableType;
+                    break;
+                }
+
+                type = type.BaseType;
+            }
+
+            return immutableType;
         }
     }
 }

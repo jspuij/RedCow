@@ -16,10 +16,6 @@
 
 namespace RedCow.Immutable
 {
-    using System;
-    using System.Collections.Generic;
-    using System.Text;
-
     /// <summary>
     /// Non generic part of the Draft interface.
     /// </summary>

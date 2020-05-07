@@ -9,14 +9,14 @@
             Extension methods for drafts.
             </summary>
         </member>
-        <member name="M:RedCow.Immutable.DraftExtensions.CreateDraft``1(``0,``0@,RedCow.Immutable.ICloneProvider)">
+        <member name="M:RedCow.Immutable.DraftExtensions.CreateDraft``1(``0,``0@,RedCow.IProducerOptions)">
             <summary>
             Creates a new Draft, based on the type of the state.
             </summary>
             <typeparam name="T">The type of the state.</typeparam>
             <param name="state">The immutable.</param>
             <param name="draft">A new draft, based on the immutable.</param>
-            <param name="cloneProvider">The clone provider.</param>
+            <param name="producerOptions">The producer options to use. If you leave them null, the default options will be used.</param>
             <returns>A scope that is used to either reconcile or dispose of the draft.</returns>
         </member>
         <member name="M:RedCow.Immutable.DraftExtensions.IsDraft``1(``0)">
@@ -35,14 +35,14 @@
             <param name="state">The state to test.</param>
             <returns>A value indicating whether the object is draftable.</returns>
         </member>
-        <member name="M:RedCow.Immutable.DraftExtensions.InternalCreateDraft``1(System.Object,``0@,RedCow.Immutable.ICloneProvider)">
+        <member name="M:RedCow.Immutable.DraftExtensions.InternalCreateDraft``1(System.Object,``0@,RedCow.IProducerOptions)">
             <summary>
             Creates a new Draft, based on the type of the state.
             </summary>
             <typeparam name="T">The type of the state.</typeparam>
             <param name="state">The immutable.</param>
             <param name="draft">A new draft, based on the immutable.</param>
-            <param name="cloneProvider">The clone provider.</param>
+            <param name="producerOptions">The producer options to use. If you leave them null, the default options will be used.</param>
             <returns>A scope that is used to either reconcile or dispose of the draft.</returns>
         </member>
         <member name="M:RedCow.Immutable.DraftExtensions.InternalIsDraft(System.Object)">
@@ -61,6 +61,20 @@
             <returns>A value indicating whether the object is draftable.</returns>
             <exception cref="T:System.ArgumentNullException">when the state is null.</exception>
         </member>
+        <member name="M:RedCow.Immutable.DraftExtensions.GetDraftType(System.Object)">
+            <summary>
+            Gets the draft Type for this object.
+            </summary>
+            <param name="source">The source object.</param>
+            <returns>The draft type if found, otherwise null.</returns>
+        </member>
+        <member name="M:RedCow.Immutable.DraftExtensions.GetImmutableType(System.Object)">
+            <summary>
+            Gets the immutable Type for this object.
+            </summary>
+            <param name="source">The source object.</param>
+            <returns>The immutable type if found, otherwise null.</returns>
+        </member>
         <member name="T:RedCow.Immutable.DraftScope">
             <summary>
             Represents a draft scope (A scope in which drafts are created).
@@ -71,11 +85,11 @@
             A list of drafts.
             </summary>
         </member>
-        <member name="M:RedCow.Immutable.DraftScope.#ctor(RedCow.Immutable.ICloneProvider)">
+        <member name="M:RedCow.Immutable.DraftScope.#ctor(RedCow.IProducerOptions)">
             <summary>
             Initializes a new instance of the <see cref="T:RedCow.Immutable.DraftScope"/> class.
             </summary>
-            <param name="cloneProvider">The clone provider to use for drafts inside the scope.</param>
+            <param name = "producerOptions">The producer options to use. If you leave them null, the default options will be used.</param>
         </member>
         <member name="P:RedCow.Immutable.DraftScope.CloneProvider">
             <summary>
@@ -85,6 +99,11 @@
         <member name="P:RedCow.Immutable.DraftScope.Parent">
             <summary>
             Gets or sets the parent <see cref="T:RedCow.Immutable.DraftScope"/>.
+            </summary>
+        </member>
+        <member name="P:RedCow.Immutable.DraftScope.AllowedImmutableReferenceTypes">
+            <summary>
+            Gets the allowed immutable reference types.
             </summary>
         </member>
         <member name="M:RedCow.Immutable.DraftScope.Dispose">
@@ -114,6 +133,11 @@
             State for drafts.
             </summary>
         </member>
+        <member name="F:RedCow.Immutable.DraftState.original">
+            <summary>
+            The original object.
+            </summary>
+        </member>
         <member name="M:RedCow.Immutable.DraftState.#ctor(RedCow.Immutable.DraftScope,System.Object)">
             <summary>
             Initializes a new instance of the <see cref="T:RedCow.Immutable.DraftState"/> class.
@@ -138,17 +162,18 @@
             <typeparam name="T">The type to cast the original to.</typeparam>
             <returns>The original.</returns>
         </member>
-        <member name="M:RedCow.Immutable.DraftState.Get``1(System.String,System.Func{``0})">
+        <member name="M:RedCow.Immutable.DraftState.Get``1(System.String,System.Func{``0},System.Action{``0})">
             <summary>
             Gets a property value, possibly drafting it while getting it.
             </summary>
             <typeparam name="T">The type of the Property.</typeparam>
             <param name="propertyName">The property name.</param>
             <param name="getter">The getter.</param>
+            <param name="setter">The setter.</param>
             <exception cref="T:System.InvalidOperationException">thrown when the draft is revoked.</exception>
             <returns>The property value.</returns>
         </member>
-        <member name="M:RedCow.Immutable.DraftState.Set``1(System.String,System.Func{``0})">
+        <member name="M:RedCow.Immutable.DraftState.Set``1(System.String,System.Action)">
             <summary>
             Sets a property value.
             </summary>
@@ -304,6 +329,41 @@
         <member name="M:RedCow.Immutable`1.Lock">
             <summary>
             Locks the Immutable.
+            </summary>
+        </member>
+        <member name="T:RedCow.IProducerOptions">
+            <summary>
+            The options used by the producer.
+            </summary>
+        </member>
+        <member name="P:RedCow.IProducerOptions.CloneProvider">
+            <summary>
+            Gets the clone provider to use.
+            </summary>
+        </member>
+        <member name="P:RedCow.IProducerOptions.AllowedImmutableReferenceTypes">
+            <summary>
+            Gets the immutable reference types that are allowed as Properties.
+            </summary>
+        </member>
+        <member name="T:RedCow.ProducerOptions">
+            <summary>
+            The producer options to use.
+            </summary>
+        </member>
+        <member name="P:RedCow.ProducerOptions.Default">
+            <summary>
+            Gets the default Producer options.
+            </summary>
+        </member>
+        <member name="P:RedCow.ProducerOptions.CloneProvider">
+            <summary>
+            Gets or sets the Clone Provider.
+            </summary>
+        </member>
+        <member name="P:RedCow.ProducerOptions.AllowedImmutableReferenceTypes">
+            <summary>
+            Gets the set of allowed immutable reference types.
             </summary>
         </member>
     </members>

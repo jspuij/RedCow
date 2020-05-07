@@ -16,10 +16,6 @@
 
 namespace RedCow.Immutable
 {
-    using System;
-    using System.Collections.Generic;
-    using System.Text;
-
     /// <summary>
     /// An interface of a Draft object of <typeparamref name="T"/>.
     /// </summary>

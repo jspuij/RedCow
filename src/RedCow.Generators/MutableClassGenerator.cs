@@ -17,7 +17,6 @@
 namespace RedCow.Generators
 {
     using System;
-    using System.Collections.Generic;
     using System.Diagnostics.CodeAnalysis;
     using System.Linq;
     using System.Threading;
@@ -146,7 +145,7 @@ namespace RedCow.Generators
                     {{
                         if (this.Locked)
                         {{
-                            throw new InvalidOperationException();
+                            throw new InvalidOperationException(""This is an immutable object, and cannot be changed."");
                         }}
                         
                         base.{p.Name} = value;
@@ -173,7 +172,7 @@ namespace RedCow.Generators
                 /// </summary>
                 public override {p.Type.Name} {p.Name}
                 {{
-                    get => this.draftState.Get<{p.Type.Name}>(nameof({p.Name}), () => base.{p.Name});
+                    get => this.draftState.Get<{p.Type.Name}>(nameof({p.Name}), () => base.{p.Name}, value => base.{p.Name} = value);
                     set => this.draftState.Set<{p.Type.Name}>(nameof({p.Name}), () => base.{p.Name} = value);
                 }}
             ";
@@ -263,8 +262,8 @@ namespace RedCow.Generators
             }
 
             result = result.AddMembers(
-              this.GenerateDraftStateField(sourceClassDeclaration),
-              this.GenerateDraftStateProperty(sourceClassDeclaration),
+              this.GenerateDraftStateField(),
+              this.GenerateDraftStateProperty(),
               this.GenerateOriginalProperty(sourceClassDeclaration),
               this.GenerateImmutableOriginalProperty());
 
@@ -303,9 +302,8 @@ namespace RedCow.Generators
         /// <summary>
         /// Generates the draft state field.
         /// </summary>
-        /// <param name="sourceClassDeclaration">The source class declaration.</param>
         /// <returns>A member declaration.</returns>
-        private MemberDeclarationSyntax GenerateDraftStateField(ClassDeclarationSyntax sourceClassDeclaration)
+        private MemberDeclarationSyntax GenerateDraftStateField()
         {
             var field = $@"
                 /// <summary>
@@ -356,9 +354,8 @@ namespace RedCow.Generators
         /// <summary>
         /// Generates the DraftState property.
         /// </summary>
-        /// <param name="sourceClassDeclaration">The source class declaration.</param>
         /// <returns>A member declaration.</returns>
-        private MemberDeclarationSyntax GenerateDraftStateProperty(ClassDeclarationSyntax sourceClassDeclaration)
+        private MemberDeclarationSyntax GenerateDraftStateProperty()
         {
             var property = $@"
                 /// <summary>

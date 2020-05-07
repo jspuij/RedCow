@@ -17,8 +17,6 @@
 namespace RedCow.Immutable
 {
     using System;
-    using System.Diagnostics;
-    using CodeGeneration.Roslyn;
 
     /// <summary>
     /// Immutable type attribute. Indicates which class is the immutable type for this type.

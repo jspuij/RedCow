@@ -16,11 +16,6 @@
 
 namespace RedCow.Immutable
 {
-    using System;
-    using System.Collections.Generic;
-    using System.Diagnostics;
-    using System.Text;
-
     /// <summary>
     /// Interface for Clone Providers. Clone Providers can clone the public properties of an object
     /// to another object.

@@ -18,38 +18,43 @@ namespace RedCow.Immutable
 {
     using System;
     using System.Collections.Generic;
-    using System.Linq;
-    using System.Reflection;
-    using System.Text;
+    using static DraftExtensions;
 
     /// <summary>
     /// Represents a draft scope (A scope in which drafts are created).
     /// </summary>
-    public class DraftScope : IDraftScope
+    public class DraftScope : IDraftScope, IProducerOptions
     {
         /// <summary>
         /// A list of drafts.
         /// </summary>
         private readonly List<IDraft> drafts = new List<IDraft>();
+        private readonly IProducerOptions producerOptions;
 
         /// <summary>
         /// Initializes a new instance of the <see cref="DraftScope"/> class.
         /// </summary>
-        /// <param name="cloneProvider">The clone provider to use for drafts inside the scope.</param>
-        public DraftScope(ICloneProvider cloneProvider)
+        /// <param name = "producerOptions">The producer options to use. If you leave them null, the default options will be used.</param>
+        public DraftScope(IProducerOptions producerOptions)
         {
-            this.CloneProvider = cloneProvider ?? throw new ArgumentNullException(nameof(cloneProvider));
+            this.producerOptions = producerOptions ?? throw new ArgumentNullException(nameof(producerOptions));
         }
 
         /// <summary>
         /// Gets the Clone Provider for this scope.
         /// </summary>
-        public ICloneProvider CloneProvider { get; }
+        public ICloneProvider CloneProvider => this.producerOptions.CloneProvider;
 
         /// <summary>
         /// Gets or sets the parent <see cref="DraftScope"/>.
         /// </summary>
         public DraftScope? Parent { get; set; }
+
+        /// <summary>
+        /// Gets the allowed immutable reference types.
+        /// </summary>
+        public ISet<Type> AllowedImmutableReferenceTypes => 
+            this.producerOptions.AllowedImmutableReferenceTypes;
 
         /// <summary>
         /// Cleans up the scope.
@@ -73,24 +78,11 @@ namespace RedCow.Immutable
                 throw new ArgumentNullException(nameof(draft));
             }
 
-            Type? type = typeof(T);
-
-            Type? immutableType = null;
-
-            while (type != null)
-            {
-                if (type.GetCustomAttributes().SingleOrDefault(x => x is ImmutableTypeAttribute) is ImmutableTypeAttribute immutableTypeAttribute)
-                {
-                    immutableType = immutableTypeAttribute.ImmutableType;
-                    break;
-                }
-
-                type = type.BaseType;
-            }
+            var immutableType = GetImmutableType(draft);
 
             if (immutableType == null)
             {
-                throw new InvalidOperationException();
+                throw new InvalidOperationException("The object cannot be made immutable.");
             }
 
             // TODO: Implement finish draft.
@@ -107,27 +99,19 @@ namespace RedCow.Immutable
         /// <returns>An instance of type T.</returns>
         internal object CreateProxy(object source)
         {
-            Type? type = source.GetType();
-
-            Type? draftType = null;
-
-            while (type != null)
+            if (InternalIsDraft(source))
             {
-                if (type.GetCustomAttributes().SingleOrDefault(x => x is DraftTypeAttribute) is DraftTypeAttribute draftTypeAttribute)
-                {
-                    draftType = draftTypeAttribute.DraftType;
-                    break;
-                }
-
-                type = type.BaseType;
+                throw new InvalidOperationException("The object is already a draft.");
             }
+
+            Type? draftType = GetDraftType(source);
+
+            var draftState = new DraftState(this, source);
 
             if (draftType == null)
             {
-                throw new InvalidOperationException();
+                throw new InvalidOperationException("The object is not draftable.");
             }
-
-            var draftState = new DraftState(this, source);
 
             // TODO: pluggable object creation.
             object result = Activator.CreateInstance(draftType, draftState);

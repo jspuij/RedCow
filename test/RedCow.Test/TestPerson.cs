@@ -16,10 +16,6 @@
 
 namespace RedCow.Test
 {
-    using System;
-    using System.Collections.Generic;
-    using System.Text;
-
     /// <summary>
     /// The mutable type.
     /// </summary>

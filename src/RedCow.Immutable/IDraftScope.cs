@@ -17,8 +17,6 @@
 namespace RedCow.Immutable
 {
     using System;
-    using System.Collections.Generic;
-    using System.Text;
 
     /// <summary>
     /// The scope of the draft.
