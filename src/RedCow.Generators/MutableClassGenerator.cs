@@ -84,7 +84,7 @@ namespace RedCow.Generators
                                     SingletonSeparatedList(
                                         AttributeArgument(
                                             TypeOfExpression(
-                                                IdentifierName("ImmutableTestPerson")))))))),
+                                                IdentifierName($"Immutable{applyToClass.Identifier}")))))))),
                     AttributeList(
                         SingletonSeparatedList(
                             Attribute(
@@ -94,7 +94,7 @@ namespace RedCow.Generators
                                     SingletonSeparatedList(
                                         AttributeArgument(
                                             TypeOfExpression(
-                                                IdentifierName("DraftTestPerson")))))))),
+                                                IdentifierName($"Draft{applyToClass.Identifier}")))))))),
                 }));
 
             return Task.FromResult(List(new MemberDeclarationSyntax[] { partial, immutable, draft }));
