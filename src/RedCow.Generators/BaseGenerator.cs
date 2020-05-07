@@ -60,17 +60,25 @@ namespace RedCow.Generators
                     new UsingDirectiveSyntax[]
                     {
                         UsingDirective(
-                            IdentifierName("RedCow")),
+                            IdentifierName("System")),
                         UsingDirective(
                             QualifiedName(
-                                IdentifierName("RedCow"),
-                                IdentifierName("Immutable"))),
+                                QualifiedName(
+                                IdentifierName("System"),
+                                IdentifierName("Collections")),
+                                IdentifierName("Generic"))),
                         UsingDirective(
                             QualifiedName(
                                 QualifiedName(
                                 IdentifierName("System"),
                                 IdentifierName("Diagnostics")),
                                 IdentifierName("CodeAnalysis"))),
+                        UsingDirective(
+                            IdentifierName("RedCow")),
+                        UsingDirective(
+                            QualifiedName(
+                                IdentifierName("RedCow"),
+                                IdentifierName("Immutable"))),
                     }),
             };
 
