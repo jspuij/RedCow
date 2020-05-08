@@ -53,7 +53,7 @@ namespace RedCow.Immutable
         /// <summary>
         /// Gets the allowed immutable reference types.
         /// </summary>
-        public ISet<Type> AllowedImmutableReferenceTypes => 
+        public ISet<Type> AllowedImmutableReferenceTypes =>
             this.producerOptions.AllowedImmutableReferenceTypes;
 
         /// <summary>
@@ -78,17 +78,7 @@ namespace RedCow.Immutable
                 throw new ArgumentNullException(nameof(draft));
             }
 
-            var immutableType = GetImmutableType(draft);
-
-            if (immutableType == null)
-            {
-                throw new InvalidOperationException("The object cannot be made immutable.");
-            }
-
-            // TODO: Implement finish draft.
-            var result = (TInterface)Activator.CreateInstance(immutableType);
-            this.CloneProvider.Clone(draft, result);
-            return result;
+            return (TInterface)this.FinishInstance(draft) !;
         }
 
         /// <summary>
@@ -117,6 +107,38 @@ namespace RedCow.Immutable
             object result = Activator.CreateInstance(draftType, draftState);
             this.CloneProvider.Clone(source, result);
             this.drafts.Add((IDraft)result);
+            return result;
+        }
+
+        /// <summary>
+        /// Finishes an instance.
+        /// </summary>
+        /// <param name="draft">The instance to finish.</param>
+        /// <returns>The immutable variant of the instance.</returns>
+        private object? FinishInstance(object? draft)
+        {
+            if (draft == null)
+            {
+                return null;
+            }
+
+            var immutableType = GetImmutableType(draft);
+
+            if (immutableType == null)
+            {
+                throw new InvalidOperationException("The object cannot be made immutable.");
+            }
+
+            var draftType = draft.GetType();
+
+            if (draftType.IsValueType || this.AllowedImmutableReferenceTypes.Contains(draftType) || draft.GetType() == immutableType)
+            {
+                return draft;
+            }
+
+            // TODO: Implement finish draft.
+            var result = Activator.CreateInstance(immutableType);
+            this.CloneProvider.Clone(draft, result);
             return result;
         }
     }

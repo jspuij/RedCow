@@ -120,6 +120,13 @@
             <param name="draft">The draft.</param>
             <returns>The immutable.</returns>
         </member>
+        <member name="M:RedCow.Immutable.DraftScope.FinishInstance(System.Object)">
+            <summary>
+            Finishes an instance.
+            </summary>
+            <param name="draft">The instance to finish.</param>
+            <returns>The immutable variant of the instance.</returns>
+        </member>
         <member name="M:RedCow.Immutable.DraftScope.CreateProxy(System.Object)">
             <summary>
             Creates a draft proxy using the current scope and clone provider.
