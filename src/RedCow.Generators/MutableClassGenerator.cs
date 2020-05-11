@@ -47,10 +47,6 @@ namespace RedCow.Generators
             this.interfaceType = (INamedTypeSymbol)attributeData.ConstructorArguments[0].Value;
 
             // System.Diagnostics.Debugger.Launch();
-            // while (!System.Diagnostics.Debugger.IsAttached)
-            // {
-            //     Thread.Sleep(500); // eww, eww, eww
-            // }
         }
 
         /// <summary>
@@ -65,11 +61,11 @@ namespace RedCow.Generators
             // Our generator is applied to any class that our attribute is applied to.
             var applyToClass = (ClassDeclarationSyntax)context.ProcessingNode;
 
-            ClassDeclarationSyntax partial = this.GeneratePartial(applyToClass);
+            ClassDeclarationSyntax partial = this.GeneratePartial(context, applyToClass);
 
-            ClassDeclarationSyntax immutable = this.GenerateImmutable(applyToClass);
+            ClassDeclarationSyntax immutable = this.GenerateImmutable(context, applyToClass);
 
-            ClassDeclarationSyntax draft = this.GenerateDraft(applyToClass);
+            ClassDeclarationSyntax draft = this.GenerateDraft(context, applyToClass);
 
             partial = partial.WithAttributeLists(
             List(
@@ -103,19 +99,20 @@ namespace RedCow.Generators
         /// <summary>
         /// Creates a property with getter and setter based on the readonly interface property.
         /// </summary>
-        /// <param name="p">The property to generate the Getter and Setter for.</param>
+        /// <param name="context">The transformation context.</param>
+        /// <param name="property">The property to generate the Getter and Setter for.</param>
         /// <returns>An <see cref="MemberDeclarationSyntax"/>.</returns>
-        private static MemberDeclarationSyntax CreateProperty(IPropertySymbol p)
+        private static MemberDeclarationSyntax CreateProperty(TransformationContext context, IPropertySymbol property)
         {
-            string documentationText = p.Type.SpecialType == SpecialType.System_Boolean ? $" Gets or sets a value indicating whether {p.Name} is true." : $" Gets or sets {p.Name}.";
+            string documentationText = property.Type.SpecialType == SpecialType.System_Boolean ? $" Gets or sets a value indicating whether {property.Name} is true." : $" Gets or sets {property.Name}.";
 
-            var baseType = GetBaseType(p.Type);
+            var baseType = GetMutableType(context, property.Type);
 
             var method = $@"
                 /// <summary>
                 /// {documentationText}
                 /// </summary>
-                public virtual {baseType} {p.Name}
+                public virtual {baseType} {property.Name}
                 {{
                     get;
                     set;
@@ -129,11 +126,28 @@ namespace RedCow.Generators
         /// <summary>
         /// Gets the BaseType (if available).
         /// </summary>
+        /// <param name="context">The transformation context.</param>
         /// <param name="typeSymbol">The type symbol to use.</param>
         /// <returns>The base type.</returns>
-        private static ITypeSymbol GetBaseType(ITypeSymbol typeSymbol)
+        private static ITypeSymbol GetMutableType(TransformationContext context, ITypeSymbol typeSymbol)
         {
             ITypeSymbol current = typeSymbol;
+
+            if (current is INamedTypeSymbol namedType)
+            {
+                if (namedType.IsGenericType)
+                {
+                    var unbound = namedType.ConstructUnboundGenericType();
+
+                    if (unbound.MetadataName == typeof(System.Collections.Generic.IReadOnlyCollection<>).Name)
+                    {
+                        var genericArgument = namedType.TypeArguments[0];
+                        var mutableType = GetMutableType(context, genericArgument);
+                        var iCollectionType = context.Compilation.GetTypeByMetadataName("System.Collections.Generic.IList`1");
+                        return iCollectionType.Construct(mutableType);
+                    }
+                }
+            }
 
             while (current != null)
             {
@@ -160,21 +174,22 @@ namespace RedCow.Generators
         /// Creates an immutable property with getter and setter that throws an <see cref="InvalidOperationException"/>,
         /// based on the readonly interface property.
         /// </summary>
-        /// <param name="p">The property to generate the Getter and Setter for.</param>
+        /// <param name="context">The transformation context.</param>
+        /// <param name="property">The property to generate the Getter and Setter for.</param>
         /// <returns>An <see cref="MemberDeclarationSyntax"/>.</returns>
-        private static MemberDeclarationSyntax CreateImmutableProperty(IPropertySymbol p)
+        private static MemberDeclarationSyntax CreateImmutableProperty(TransformationContext context, IPropertySymbol property)
         {
-            string documentationText = p.Type.SpecialType == SpecialType.System_Boolean ? $" Gets or sets a value indicating whether {p.Name} is true." : $" Gets or sets {p.Name}.";
+            string documentationText = property.Type.SpecialType == SpecialType.System_Boolean ? $" Gets or sets a value indicating whether {property.Name} is true." : $" Gets or sets {property.Name}.";
 
-            var baseType = GetBaseType(p.Type);
+            var baseType = GetMutableType(context, property.Type);
 
             var method = $@"
                 /// <summary>
                 /// {documentationText}
                 /// </summary>
-                public override {baseType} {p.Name}
+                public override {baseType} {property.Name}
                 {{
-                    get => base.{p.Name};
+                    get => base.{property.Name};
                     set
                     {{
                         if (this.Locked)
@@ -182,7 +197,7 @@ namespace RedCow.Generators
                             throw new ImmutableException(this, ""This is an immutable object, and cannot be changed."");
                         }}
                         
-                        base.{p.Name} = value;
+                        base.{property.Name} = value;
                     }}
                 }}
             ";
@@ -194,22 +209,23 @@ namespace RedCow.Generators
         /// <summary>
         /// Creates a draft property with getter and setter based on the readonly interface property.
         /// </summary>
-        /// <param name="p">The property to generate the Getter and Setter for.</param>
+        /// <param name="context">The transformation context.</param>
+        /// <param name="property">The property to generate the Getter and Setter for.</param>
         /// <returns>An <see cref="MemberDeclarationSyntax"/>.</returns>
-        private static MemberDeclarationSyntax CreateDraftProperty(IPropertySymbol p)
+        private static MemberDeclarationSyntax CreateDraftProperty(TransformationContext context, IPropertySymbol property)
         {
-            string documentationText = p.Type.SpecialType == SpecialType.System_Boolean ? $" Gets or sets a value indicating whether {p.Name} is true." : $" Gets or sets {p.Name}.";
+            string documentationText = property.Type.SpecialType == SpecialType.System_Boolean ? $" Gets or sets a value indicating whether {property.Name} is true." : $" Gets or sets {property.Name}.";
 
-            var baseType = GetBaseType(p.Type);
+            var baseType = GetMutableType(context, property.Type);
 
             var method = $@"
                 /// <summary>
                 ///  {documentationText}
                 /// </summary>
-                public override {baseType} {p.Name}
+                public override {baseType} {property.Name}
                 {{
-                    get => this.draftState.Get<{baseType}>(nameof({p.Name}), () => base.{p.Name}, value => base.{p.Name} = value);
-                    set => this.draftState.Set<{baseType}>(nameof({p.Name}), () => base.{p.Name} = value);
+                    get => this.draftState.Get<{baseType}>(nameof({property.Name}), () => base.{property.Name}, value => base.{property.Name} = value);
+                    set => this.draftState.Set<{baseType}>(nameof({property.Name}), () => base.{property.Name} = value);
                 }}
             ";
 
@@ -235,25 +251,51 @@ namespace RedCow.Generators
         /// <summary>
         /// Creates a property with getter and setter based on the readonly interface property.
         /// </summary>
-        /// <param name="p">The property to generate the Getter and Setter for.</param>
+        /// <param name="context">The transformation context.</param>
+        /// <param name="property">The property to generate the Getter and Setter for.</param>
         /// <returns>An <see cref="MemberDeclarationSyntax"/>.</returns>
-        private MemberDeclarationSyntax CreateInterfaceProperty(IPropertySymbol p)
+        private MemberDeclarationSyntax CreateInterfaceProperty(TransformationContext context, IPropertySymbol property)
         {
-            string documentationText = p.Type.SpecialType == SpecialType.System_Boolean ? $" Gets or sets a value indicating whether {p.Name} is true." : $" Gets or sets {p.Name}.";
+            string documentationText = property.Type.SpecialType == SpecialType.System_Boolean ? $"Gets a value indicating whether {property.Name} is true." : $"Gets {property.Name}.";
 
-            var baseType = GetBaseType(p.Type);
+            var baseType = GetMutableType(context, property.Type);
 
-            if (SymbolEqualityComparer.Default.Equals(baseType, p.Type))
+            if (SymbolEqualityComparer.Default.Equals(baseType, property.Type))
             {
                 return null;
             }
 
-            var method = $@"
+            string method = string.Empty;
+
+            if (property.Type is INamedTypeSymbol namedType)
+            {
+                if (namedType.IsGenericType)
+                {
+                    var unbound = namedType.ConstructUnboundGenericType();
+
+                    if (unbound.MetadataName == typeof(System.Collections.Generic.IReadOnlyCollection<>).Name)
+                    {
+                        var genericArgument = namedType.TypeArguments[0];
+                        var mutableType = GetMutableType(context, genericArgument);
+                        var iCollectionType = context.Compilation.GetTypeByMetadataName("System.Collections.Generic.IList`1");
+                        method = $@"
+                            /// <summary>
+                            /// {documentationText}
+                            /// </summary>
+                            {property.Type} {this.interfaceType.Name}.{property.Name} => new ReadOnlyCollection<{mutableType.Name}>(this.{property.Name});                        ";
+                    }
+                }
+            }
+
+            if (string.IsNullOrEmpty(method))
+            {
+                method = $@"
                 /// <summary>
                 /// {documentationText}
                 /// </summary>
-                {p.Type} {this.interfaceType.Name}.{p.Name} => this.{p.Name};
-            ";
+                {property.Type} {this.interfaceType.Name}.{property.Name} => this.{property.Name};
+                ";
+            }
 
             return ParseMemberDeclaration(method)
                 .NormalizeWhitespace();
@@ -262,9 +304,10 @@ namespace RedCow.Generators
         /// <summary>
         /// Generates the partial part of the class.
         /// </summary>
+        /// <param name="context">The transformation context.</param>
         /// <param name="sourceClassDeclaration">The source class declaration.</param>
         /// <returns>A partial class declaration.</returns>
-        private ClassDeclarationSyntax GeneratePartial(ClassDeclarationSyntax sourceClassDeclaration)
+        private ClassDeclarationSyntax GeneratePartial(TransformationContext context, ClassDeclarationSyntax sourceClassDeclaration)
         {
             var result = ClassDeclaration(sourceClassDeclaration.Identifier)
                             .AddModifiers(sourceClassDeclaration.Modifiers.ToArray());
@@ -274,8 +317,8 @@ namespace RedCow.Generators
                 Where(x => x is IPropertySymbol).
                 Cast<IPropertySymbol>().SelectMany(p =>
                 {
-                    var prop = CreateProperty(p);
-                    var intProp = this.CreateInterfaceProperty(p);
+                    var prop = CreateProperty(context, p);
+                    var intProp = this.CreateInterfaceProperty(context, p);
                     return intProp == null ? new[] { prop } : new[] { prop, intProp };
                 }).ToArray());
             return result;
@@ -284,9 +327,10 @@ namespace RedCow.Generators
         /// <summary>
         /// Generates the draft class.
         /// </summary>
+        /// <param name="context">The transformation context.</param>
         /// <param name="sourceClassDeclaration">The source class declaration.</param>
         /// <returns>A partial class declaration.</returns>
-        private ClassDeclarationSyntax GenerateDraft(ClassDeclarationSyntax sourceClassDeclaration)
+        private ClassDeclarationSyntax GenerateDraft(TransformationContext context, ClassDeclarationSyntax sourceClassDeclaration)
         {
             var result = ClassDeclaration($"Draft{sourceClassDeclaration.Identifier}")
                             .WithModifiers(sourceClassDeclaration.Modifiers)
@@ -310,7 +354,7 @@ namespace RedCow.Generators
                 Where(x => x is IPropertySymbol).
                 Cast<IPropertySymbol>().Select(p =>
                 {
-                    return CreateDraftProperty(p);
+                    return CreateDraftProperty(context, p);
                 }).ToArray());
 
             if (sourceClassDeclaration.Members.Any(x => x is ConstructorDeclarationSyntax))
@@ -439,9 +483,10 @@ namespace RedCow.Generators
         /// <summary>
         /// Generates the immutable derived class.
         /// </summary>
+        /// <param name="context">The transformation context.</param>
         /// <param name="sourceClassDeclaration">The source class declaration.</param>
         /// <returns>A partial class declaration.</returns>
-        private ClassDeclarationSyntax GenerateImmutable(ClassDeclarationSyntax sourceClassDeclaration)
+        private ClassDeclarationSyntax GenerateImmutable(TransformationContext context, ClassDeclarationSyntax sourceClassDeclaration)
         {
             var result = ClassDeclaration($"Immutable{sourceClassDeclaration.Identifier}")
                             .WithModifiers(sourceClassDeclaration.Modifiers)
@@ -471,7 +516,7 @@ namespace RedCow.Generators
                 Where(x => x is IPropertySymbol).
                 Cast<IPropertySymbol>().Select(p =>
                 {
-                    return CreateImmutableProperty(p);
+                    return CreateImmutableProperty(context, p);
                 }).ToArray());
 
             result = result.AddMembers(

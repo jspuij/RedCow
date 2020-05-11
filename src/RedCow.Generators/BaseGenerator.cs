@@ -71,6 +71,12 @@ namespace RedCow.Generators
                             QualifiedName(
                                 QualifiedName(
                                 IdentifierName("System"),
+                                IdentifierName("Collections")),
+                                IdentifierName("ObjectModel"))),
+                        UsingDirective(
+                            QualifiedName(
+                                QualifiedName(
+                                IdentifierName("System"),
                                 IdentifierName("Diagnostics")),
                                 IdentifierName("CodeAnalysis"))),
                         UsingDirective(

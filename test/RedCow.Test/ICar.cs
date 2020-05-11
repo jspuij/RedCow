@@ -1,4 +1,4 @@
-﻿// <copyright file="ITestPerson.cs" company="Jan-Willem Spuij">
+﻿// <copyright file="ICar.cs" company="Jan-Willem Spuij">
 // Copyright 2020 Jan-Willem Spuij
 //
 // Permission is hereby granted, free of charge, to any person obtaining a copy of this software and associated documentation
@@ -16,42 +16,24 @@
 
 namespace RedCow.Test
 {
+    using System;
     using System.Collections.Generic;
+    using System.Text;
 
     /// <summary>
-    /// Interface for an Immutable Test Person.
+    /// Car interface.
     /// </summary>
-    [GenerateProducers(typeof(TestPerson))]
-    public partial interface ITestPerson
+    [GenerateProducers(typeof(Car))]
+    public partial interface ICar
     {
         /// <summary>
-        /// Gets the first name.
+        /// Gets make of the Car.
         /// </summary>
-        string FirstName { get; }
+        public string Make { get; }
 
         /// <summary>
-        /// Gets the last name.
+        /// Gets model of the car.
         /// </summary>
-        public string LastName { get; }
-
-        /// <summary>
-        /// Gets a value indicating whether isAdult is true.
-        /// </summary>
-        public bool IsAdult { get; }
-
-        /// <summary>
-        /// Gets the First Child.
-        /// </summary>
-        public ITestPerson FirstChild { get; }
-
-        /// <summary>
-        /// Gets the Second Schild.
-        /// </summary>
-        public ITestPerson SecondChild { get; }
-
-        /// <summary>
-        /// Gets the cars.
-        /// </summary>
-        public IReadOnlyCollection<ICar> Cars { get; }
+        public string Model { get; }
     }
 }

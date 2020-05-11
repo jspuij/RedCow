@@ -81,33 +81,37 @@
             <param name="cancellationToken">The cancellation token.</param>
             <returns>A <see cref="T:System.Threading.Tasks.Task"/> representing the asynchronous operation.</returns>
         </member>
-        <member name="M:RedCow.Generators.MutableClassGenerator.CreateProperty(Microsoft.CodeAnalysis.IPropertySymbol)">
+        <member name="M:RedCow.Generators.MutableClassGenerator.CreateProperty(CodeGeneration.Roslyn.TransformationContext,Microsoft.CodeAnalysis.IPropertySymbol)">
             <summary>
             Creates a property with getter and setter based on the readonly interface property.
             </summary>
-            <param name="p">The property to generate the Getter and Setter for.</param>
+            <param name="context">The transformation context.</param>
+            <param name="property">The property to generate the Getter and Setter for.</param>
             <returns>An <see cref="T:Microsoft.CodeAnalysis.CSharp.Syntax.MemberDeclarationSyntax"/>.</returns>
         </member>
-        <member name="M:RedCow.Generators.MutableClassGenerator.GetBaseType(Microsoft.CodeAnalysis.ITypeSymbol)">
+        <member name="M:RedCow.Generators.MutableClassGenerator.GetMutableType(CodeGeneration.Roslyn.TransformationContext,Microsoft.CodeAnalysis.ITypeSymbol)">
             <summary>
             Gets the BaseType (if available).
             </summary>
+            <param name="context">The transformation context.</param>
             <param name="typeSymbol">The type symbol to use.</param>
             <returns>The base type.</returns>
         </member>
-        <member name="M:RedCow.Generators.MutableClassGenerator.CreateImmutableProperty(Microsoft.CodeAnalysis.IPropertySymbol)">
+        <member name="M:RedCow.Generators.MutableClassGenerator.CreateImmutableProperty(CodeGeneration.Roslyn.TransformationContext,Microsoft.CodeAnalysis.IPropertySymbol)">
             <summary>
             Creates an immutable property with getter and setter that throws an <see cref="T:System.InvalidOperationException"/>,
             based on the readonly interface property.
             </summary>
-            <param name="p">The property to generate the Getter and Setter for.</param>
+            <param name="context">The transformation context.</param>
+            <param name="property">The property to generate the Getter and Setter for.</param>
             <returns>An <see cref="T:Microsoft.CodeAnalysis.CSharp.Syntax.MemberDeclarationSyntax"/>.</returns>
         </member>
-        <member name="M:RedCow.Generators.MutableClassGenerator.CreateDraftProperty(Microsoft.CodeAnalysis.IPropertySymbol)">
+        <member name="M:RedCow.Generators.MutableClassGenerator.CreateDraftProperty(CodeGeneration.Roslyn.TransformationContext,Microsoft.CodeAnalysis.IPropertySymbol)">
             <summary>
             Creates a draft property with getter and setter based on the readonly interface property.
             </summary>
-            <param name="p">The property to generate the Getter and Setter for.</param>
+            <param name="context">The transformation context.</param>
+            <param name="property">The property to generate the Getter and Setter for.</param>
             <returns>An <see cref="T:Microsoft.CodeAnalysis.CSharp.Syntax.MemberDeclarationSyntax"/>.</returns>
         </member>
         <member name="M:RedCow.Generators.MutableClassGenerator.GenerateXmlDoc(System.String)">
@@ -117,24 +121,27 @@
             <param name="documentationText">The documentation text.</param>
             <returns>The XML Documentation as <see cref="T:Microsoft.CodeAnalysis.SyntaxTriviaList"/>.</returns>
         </member>
-        <member name="M:RedCow.Generators.MutableClassGenerator.CreateInterfaceProperty(Microsoft.CodeAnalysis.IPropertySymbol)">
+        <member name="M:RedCow.Generators.MutableClassGenerator.CreateInterfaceProperty(CodeGeneration.Roslyn.TransformationContext,Microsoft.CodeAnalysis.IPropertySymbol)">
             <summary>
             Creates a property with getter and setter based on the readonly interface property.
             </summary>
-            <param name="p">The property to generate the Getter and Setter for.</param>
+            <param name="context">The transformation context.</param>
+            <param name="property">The property to generate the Getter and Setter for.</param>
             <returns>An <see cref="T:Microsoft.CodeAnalysis.CSharp.Syntax.MemberDeclarationSyntax"/>.</returns>
         </member>
-        <member name="M:RedCow.Generators.MutableClassGenerator.GeneratePartial(Microsoft.CodeAnalysis.CSharp.Syntax.ClassDeclarationSyntax)">
+        <member name="M:RedCow.Generators.MutableClassGenerator.GeneratePartial(CodeGeneration.Roslyn.TransformationContext,Microsoft.CodeAnalysis.CSharp.Syntax.ClassDeclarationSyntax)">
             <summary>
             Generates the partial part of the class.
             </summary>
+            <param name="context">The transformation context.</param>
             <param name="sourceClassDeclaration">The source class declaration.</param>
             <returns>A partial class declaration.</returns>
         </member>
-        <member name="M:RedCow.Generators.MutableClassGenerator.GenerateDraft(Microsoft.CodeAnalysis.CSharp.Syntax.ClassDeclarationSyntax)">
+        <member name="M:RedCow.Generators.MutableClassGenerator.GenerateDraft(CodeGeneration.Roslyn.TransformationContext,Microsoft.CodeAnalysis.CSharp.Syntax.ClassDeclarationSyntax)">
             <summary>
             Generates the draft class.
             </summary>
+            <param name="context">The transformation context.</param>
             <param name="sourceClassDeclaration">The source class declaration.</param>
             <returns>A partial class declaration.</returns>
         </member>
@@ -171,10 +178,11 @@
             </summary>
             <returns>A member declaration.</returns>
         </member>
-        <member name="M:RedCow.Generators.MutableClassGenerator.GenerateImmutable(Microsoft.CodeAnalysis.CSharp.Syntax.ClassDeclarationSyntax)">
+        <member name="M:RedCow.Generators.MutableClassGenerator.GenerateImmutable(CodeGeneration.Roslyn.TransformationContext,Microsoft.CodeAnalysis.CSharp.Syntax.ClassDeclarationSyntax)">
             <summary>
             Generates the immutable derived class.
             </summary>
+            <param name="context">The transformation context.</param>
             <param name="sourceClassDeclaration">The source class declaration.</param>
             <returns>A partial class declaration.</returns>
         </member>

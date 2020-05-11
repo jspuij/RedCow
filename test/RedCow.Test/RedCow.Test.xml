@@ -4,6 +4,117 @@
         <name>RedCow.Test</name>
     </assembly>
     <members>
+        <member name="T:RedCow.Test.Car">
+            <summary>
+            Car class.
+            </summary>
+        </member>
+        <member name="P:RedCow.Test.Car.Make">
+            <summary>
+             Gets or sets Make.
+            </summary>
+        </member>
+        <member name="P:RedCow.Test.Car.Model">
+            <summary>
+             Gets or sets Model.
+            </summary>
+        </member>
+        <member name="T:RedCow.Test.ICar">
+            <summary>
+            Car interface.
+            </summary>
+        </member>
+        <member name="P:RedCow.Test.ICar.Make">
+            <summary>
+            Gets make of the Car.
+            </summary>
+        </member>
+        <member name="P:RedCow.Test.ICar.Model">
+            <summary>
+            Gets model of the car.
+            </summary>
+        </member>
+        <member name="M:RedCow.Test.ICar.Produce(RedCow.Test.Car,RedCow.IProducerOptions)">
+            <summary>
+            Produces the next <see cref = "T:RedCow.Test.ICar"/> based on the
+            intial state.
+            </summary>
+            <param name = "initialState">The initial State.</param>
+            <param name = "producerOptions">The producer options to use. If you leave them null, the default options will be used.</param>
+            <returns>The next immutable state.</returns>
+        </member>
+        <member name="M:RedCow.Test.ICar.Produce(System.Action{RedCow.Test.Car},RedCow.IProducerOptions)">
+            <summary>
+            Produces the next <see cref = "T:RedCow.Test.ICar"/> based on the
+            specified recipe action.
+            </summary>
+            <param name = "recipe">The recipe action.</param>
+            <param name = "producerOptions">The producer options to use. If you leave them null, the default options will be used.</param>
+            <returns>The next immutable state.</returns>
+        </member>
+        <member name="M:RedCow.Test.ICar.Produce(RedCow.Test.Car,System.Action{RedCow.Test.Car},RedCow.IProducerOptions)">
+            <summary>
+            Produces the next <see cref = "T:RedCow.Test.ICar"/> based on the
+            specified recipe action.
+            </summary>
+            <param name = "initialState">The initial State.</param>
+            <param name = "recipe">The recipe action.</param>
+            <param name = "producerOptions">The producer options to use. If you leave them null, the default options will be used.</param>
+            <returns>The next immutable state.</returns>
+        </member>
+        <member name="M:RedCow.Test.ICar.Produce(System.Func{RedCow.Test.Car},RedCow.IProducerOptions)">
+            <summary>
+            Produces the next <see cref = "T:RedCow.Test.ICar"/> based on the
+            specified recipe function.
+            </summary>
+            <param name = "recipe">The recipe function.</param>
+            <param name = "producerOptions">The producer options to use. If you leave them null, the default options will be used.</param>
+            <returns>The next immutable state.</returns>
+        </member>
+        <member name="M:RedCow.Test.ICar.Produce(RedCow.Test.Car,System.Func{RedCow.Test.Car},RedCow.IProducerOptions)">
+            <summary>
+            Produces the next <see cref = "T:RedCow.Test.ICar"/> based on the
+            specified recipe function.
+            </summary>
+            <param name = "initialState">The initial State.</param>
+            <param name = "recipe">The recipe function.</param>
+            <param name = "producerOptions">The producer options to use. If you leave them null, the default options will be used.</param>
+            <returns>The next immutable state.</returns>
+        </member>
+        <member name="M:RedCow.Test.ICar.Producer(System.Action{RedCow.Test.Car},RedCow.IProducerOptions)">
+            <summary>
+            Creates a Producer delegate that can be used to curry on an Immutable State.
+            </summary>
+            <param name = "recipe">The recipe action that operates on an object of type T.</param>
+            <param name = "producerOptions">The producer options to use. If you leave them null, the default options will be used.</param>
+            <returns>A producer delegate.</returns>
+        </member>
+        <member name="M:RedCow.Test.ICar.Producer(System.Func{RedCow.Test.Car},RedCow.IProducerOptions)">
+            <summary>
+            Creates a Producer delegate that can be used to curry on an Immutable State.
+            </summary>
+            <param name = "recipe">The recipe function that returns an object of type T.</param>
+            <param name = "producerOptions">The producer options to use. If you leave them null, the default options will be used.</param>
+            <returns>A recipe delegate.</returns>
+        </member>
+        <member name="M:RedCow.Test.ICar.Producer``1(System.Action{RedCow.Test.Car,``0},RedCow.IProducerOptions)">
+            <summary>
+            Creates a Producer delegate that can be used to curry on an Immutable State.
+            </summary>
+            <param name = "recipe">The recipe action that operates on an object of type T with a single argument.</param>
+            <param name = "producerOptions">The producer options to use. If you leave them null, the default options will be used.</param>
+            <typeparam name = "TArg">The type of the argument.</typeparam>
+            <returns>A producer delegate.</returns>
+        </member>
+        <member name="M:RedCow.Test.ICar.Producer``1(System.Func{``0,RedCow.Test.Car},RedCow.IProducerOptions)">
+            <summary>
+            Creates a Producer delegate that can be used to curry on an Immutable State.
+            </summary>
+            <param name = "recipe">The recipe function that returns an object of type T with a single argument.</param>
+            <param name = "producerOptions">The producer options to use. If you leave them null, the default options will be used.</param>
+            <typeparam name = "TArg">The type of the argument.</typeparam>
+            <returns>A producer delegate.</returns>
+        </member>
         <member name="T:RedCow.Test.ImmutableProducerTests">
             <summary>
             Unit tests for Immutable Producers.
@@ -87,6 +198,11 @@
         <member name="P:RedCow.Test.ITestPerson.SecondChild">
             <summary>
             Gets the Second Schild.
+            </summary>
+        </member>
+        <member name="P:RedCow.Test.ITestPerson.Cars">
+            <summary>
+            Gets the cars.
             </summary>
         </member>
         <member name="M:RedCow.Test.ITestPerson.Produce(RedCow.Test.TestPerson,RedCow.IProducerOptions)">
@@ -232,7 +348,7 @@
         </member>
         <member name="P:RedCow.Test.TestPerson.RedCow#Test#ITestPerson#FirstChild">
             <summary>
-             Gets or sets FirstChild.
+            Gets FirstChild.
             </summary>
         </member>
         <member name="P:RedCow.Test.TestPerson.SecondChild">
@@ -242,7 +358,82 @@
         </member>
         <member name="P:RedCow.Test.TestPerson.RedCow#Test#ITestPerson#SecondChild">
             <summary>
-             Gets or sets SecondChild.
+            Gets SecondChild.
+            </summary>
+        </member>
+        <member name="P:RedCow.Test.TestPerson.Cars">
+            <summary>
+             Gets or sets Cars.
+            </summary>
+        </member>
+        <member name="P:RedCow.Test.TestPerson.RedCow#Test#ITestPerson#Cars">
+            <summary>
+            Gets Cars.
+            </summary>
+        </member>
+        <member name="T:RedCow.Test.ImmutableCar">
+            <summary>
+            Immutable Implementation of <see cref = "T:RedCow.Test.Car"/>.
+            </summary>
+        </member>
+        <member name="P:RedCow.Test.ImmutableCar.Make">
+            <summary>
+             Gets or sets Make.
+            </summary>
+        </member>
+        <member name="P:RedCow.Test.ImmutableCar.Model">
+            <summary>
+             Gets or sets Model.
+            </summary>
+        </member>
+        <member name="P:RedCow.Test.ImmutableCar.Locked">
+            <summary>
+            Gets a value indicating whether the immutable is locked.
+            </summary>
+        </member>
+        <member name="M:RedCow.Test.ImmutableCar.Lock">
+            <summary>
+            Locks the immutable.
+            </summary>
+        </member>
+        <member name="T:RedCow.Test.DraftCar">
+            <summary>
+            Draft Implementation of <see cref = "T:RedCow.Test.Car"/>.
+            </summary>
+        </member>
+        <member name="P:RedCow.Test.DraftCar.Make">
+            <summary>
+              Gets or sets Make.
+            </summary>
+        </member>
+        <member name="P:RedCow.Test.DraftCar.Model">
+            <summary>
+              Gets or sets Model.
+            </summary>
+        </member>
+        <member name="M:RedCow.Test.DraftCar.#ctor(RedCow.Immutable.DraftState)">
+            <summary>
+            Initializes a new instance of the <see cref = "T:RedCow.Test.DraftCar"/> class.
+            </summary>
+        </member>
+        <member name="F:RedCow.Test.DraftCar.draftState">
+            <summary>
+            the draftState field.
+            </summary>
+        </member>
+        <member name="P:RedCow.Test.DraftCar.RedCow#Immutable#IDraft#DraftState">
+            <summary>
+            Gets or sets the DraftState.
+            </summary>
+        </member>
+        <member name="P:RedCow.Test.DraftCar.Original">
+            <summary>
+            Gets the original.
+            </summary>
+        </member>
+        <member name="P:RedCow.Test.DraftCar.ImmutableOriginal">
+            <summary>
+            Gets the original as Immutable.
             </summary>
         </member>
         <member name="T:RedCow.Test.ImmutableTestPerson">
@@ -273,6 +464,11 @@
         <member name="P:RedCow.Test.ImmutableTestPerson.SecondChild">
             <summary>
              Gets or sets SecondChild.
+            </summary>
+        </member>
+        <member name="P:RedCow.Test.ImmutableTestPerson.Cars">
+            <summary>
+             Gets or sets Cars.
             </summary>
         </member>
         <member name="P:RedCow.Test.ImmutableTestPerson.Locked">
@@ -313,6 +509,11 @@
         <member name="P:RedCow.Test.DraftTestPerson.SecondChild">
             <summary>
               Gets or sets SecondChild.
+            </summary>
+        </member>
+        <member name="P:RedCow.Test.DraftTestPerson.Cars">
+            <summary>
+              Gets or sets Cars.
             </summary>
         </member>
         <member name="M:RedCow.Test.DraftTestPerson.#ctor(RedCow.Immutable.DraftState)">

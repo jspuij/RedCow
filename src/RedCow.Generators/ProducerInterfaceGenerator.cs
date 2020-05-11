@@ -48,10 +48,6 @@ namespace RedCow.Generators
             this.mutableType = (INamedTypeSymbol)attributeData.ConstructorArguments[0].Value;
 
             // System.Diagnostics.Debugger.Launch();
-            // while (!System.Diagnostics.Debugger.IsAttached)
-            // {
-            //     Thread.Sleep(500); // eww, eww, eww
-            // }
         }
 
         /// <summary>
