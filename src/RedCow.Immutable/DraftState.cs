@@ -31,9 +31,9 @@ namespace RedCow.Immutable
         private readonly object original;
 
         /// <summary>
-        /// The list of changed properties.
+        /// A boolean indicating whether this draft is change tracking.
         /// </summary>
-        private readonly ISet<string> changedProperties = new HashSet<string>();
+        private bool changeTracking = false;
 
         /// <summary>
         /// Initializes a new instance of the <see cref="DraftState"/> class.
@@ -47,19 +47,19 @@ namespace RedCow.Immutable
         }
 
         /// <summary>
-        /// Gets or sets a value indicating whether or not this draft is revoked.
+        /// Gets a value indicating whether or not this draft is revoked.
         /// </summary>
-        public bool Revoked { get; set; }
+        public bool Revoked { get; private set; }
+
+        /// <summary>
+        /// Gets a value indicating whether or not this draft is changed.
+        /// </summary>
+        public bool Changed { get; private set; }
 
         /// <summary>
         /// Gets the scope this draft belongs to.
         /// </summary>
         public DraftScope Scope { get; }
-
-        /// <summary>
-        /// Gets the changed properties for this draft.
-        /// </summary>
-        public IEnumerable<string> ChangedProperties => this.changedProperties;
 
         /// <summary>
         /// Gets the original.
@@ -86,14 +86,14 @@ namespace RedCow.Immutable
 
             var result = getter();
 
-            if (result == null)
+            if (result == null || InternalIsDraft(result) || this.Scope.IsFinishing)
             {
                 return result;
             }
 
             var resultType = result.GetType();
 
-            if (resultType.IsValueType || this.Scope.AllowedImmutableReferenceTypes.Contains(resultType) || InternalIsDraft(result))
+            if (resultType.IsValueType || this.Scope.AllowedImmutableReferenceTypes.Contains(resultType))
             {
                 return result;
             }
@@ -119,7 +119,27 @@ namespace RedCow.Immutable
             }
 
             setter();
-            this.changedProperties.Add(propertyName);
+
+            if (this.changeTracking)
+            {
+                this.Changed = true;
+            }
+        }
+
+        /// <summary>
+        /// Revokes the draft.
+        /// </summary>
+        internal void Revoke()
+        {
+            this.Revoked = true;
+        }
+
+        /// <summary>
+        /// Starts change tracking.
+        /// </summary>
+        internal void StartTracking()
+        {
+            this.changeTracking = true;
         }
     }
 }

@@ -1,4 +1,4 @@
-﻿// <copyright file="ImmutableTests.cs" company="Jan-Willem Spuij">
+﻿// <copyright file="ImmutableProducerTests.cs" company="Jan-Willem Spuij">
 // Copyright 2020 Jan-Willem Spuij
 //
 // Permission is hereby granted, free of charge, to any person obtaining a copy of this software and associated documentation
@@ -16,15 +16,16 @@
 
 namespace RedCow.Test
 {
+    using System;
     using System.Diagnostics.CodeAnalysis;
     using System.Linq;
     using Xunit;
 
     /// <summary>
-    /// Unit tests for Immutables.
+    /// Unit tests for Immutable Producers.
     /// </summary>
     [ExcludeFromCodeCoverage]
-    public class ImmutableTests
+    public class ImmutableProducerTests
     {
         /// <summary>
         /// Tests the Initial Produce Method.
@@ -247,6 +248,29 @@ namespace RedCow.Test
                 Assert.NotEqual(r.Expected.LastName, r.Actual.LastName);
                 Assert.Equal(r.Expected.IsAdult, r.Actual.IsAdult);
                 Assert.Equal($"Anonimized nr. {r.Index}", r.Actual.LastName);
+            });
+        }
+
+        /// <summary>
+        /// Tests the that the produced immutable cannot be altered.
+        /// </summary>
+        [Fact]
+        public void LockedTest()
+        {
+            var initial = new TestPerson()
+            {
+                FirstName = "John",
+                LastName = "Doe",
+                IsAdult = true,
+            };
+
+            ITestPerson person = ITestPerson.Produce(initial);
+
+            Assert.Throws<InvalidOperationException>(() =>
+            {
+                var mutablePerson = (TestPerson)person;
+
+                mutablePerson.FirstName = "Test";
             });
         }
     }

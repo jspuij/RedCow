@@ -29,6 +29,10 @@ namespace RedCow.Immutable
         /// A list of drafts.
         /// </summary>
         private readonly List<IDraft> drafts = new List<IDraft>();
+
+        /// <summary>
+        /// The producer options.
+        /// </summary>
         private readonly IProducerOptions producerOptions;
 
         /// <summary>
@@ -55,6 +59,11 @@ namespace RedCow.Immutable
         /// </summary>
         public ISet<Type> AllowedImmutableReferenceTypes =>
             this.producerOptions.AllowedImmutableReferenceTypes;
+
+        /// <summary>
+        /// Gets a value indicating whether this scope is finishing.
+        /// </summary>
+        internal bool IsFinishing { get; private set; }
 
         /// <summary>
         /// Cleans up the scope.
@@ -105,7 +114,13 @@ namespace RedCow.Immutable
 
             // TODO: pluggable object creation.
             object result = this.CloneProvider.Clone(source, () => Activator.CreateInstance(draftType, draftState), source => source);
-            this.drafts.Add((IDraft)result);
+
+            if (result is IDraft draft)
+            {
+                draft.DraftState.StartTracking();
+                this.drafts.Add(draft);
+            }
+
             return result;
         }
 
@@ -142,18 +157,44 @@ namespace RedCow.Immutable
                     return draft;
                 }
 
+                // return the original if the draft did not change. Saves another copy.
+                if (draft is IDraft idraft && !idraft.DraftState.Changed)
+                {
+                    var original = idraft.DraftState.GetOriginal<object?>();
+
+                    if (original is ILockable)
+                    {
+                        return original;
+                    }
+                }
+
                 // TODO: pluggable object creation.
                 object? result = this.CloneProvider.Clone(draft, () => Activator.CreateInstance(immutableType), FinishInstanceInternal);
 
+                // lock the immutable.
                 if (result is ILockable lockable && !lockable.Locked)
                 {
                     lockable.Lock();
                 }
 
+                // revoke the draft.
+                if (draft is IDraft toRevoke)
+                {
+                    toRevoke.DraftState.Revoke();
+                }
+
                 return result;
             }
 
-            return FinishInstanceInternal(draft);
+            this.IsFinishing = true;
+            try
+            {
+                return FinishInstanceInternal(draft);
+            }
+            finally
+            {
+                this.IsFinishing = false;
+            }
         }
     }
 }

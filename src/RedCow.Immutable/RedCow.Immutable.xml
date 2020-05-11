@@ -85,6 +85,11 @@
             A list of drafts.
             </summary>
         </member>
+        <member name="F:RedCow.Immutable.DraftScope.producerOptions">
+            <summary>
+            The producer options.
+            </summary>
+        </member>
         <member name="M:RedCow.Immutable.DraftScope.#ctor(RedCow.IProducerOptions)">
             <summary>
             Initializes a new instance of the <see cref="T:RedCow.Immutable.DraftScope"/> class.
@@ -104,6 +109,11 @@
         <member name="P:RedCow.Immutable.DraftScope.AllowedImmutableReferenceTypes">
             <summary>
             Gets the allowed immutable reference types.
+            </summary>
+        </member>
+        <member name="P:RedCow.Immutable.DraftScope.IsFinishing">
+            <summary>
+            Gets a value indicating whether this scope is finishing.
             </summary>
         </member>
         <member name="M:RedCow.Immutable.DraftScope.Dispose">
@@ -145,9 +155,9 @@
             The original object.
             </summary>
         </member>
-        <member name="F:RedCow.Immutable.DraftState.changedProperties">
+        <member name="F:RedCow.Immutable.DraftState.changeTracking">
             <summary>
-            The list of changed properties.
+            A boolean indicating whether this draft is change tracking.
             </summary>
         </member>
         <member name="M:RedCow.Immutable.DraftState.#ctor(RedCow.Immutable.DraftScope,System.Object)">
@@ -159,17 +169,17 @@
         </member>
         <member name="P:RedCow.Immutable.DraftState.Revoked">
             <summary>
-            Gets or sets a value indicating whether or not this draft is revoked.
+            Gets a value indicating whether or not this draft is revoked.
+            </summary>
+        </member>
+        <member name="P:RedCow.Immutable.DraftState.Changed">
+            <summary>
+            Gets a value indicating whether or not this draft is changed.
             </summary>
         </member>
         <member name="P:RedCow.Immutable.DraftState.Scope">
             <summary>
             Gets the scope this draft belongs to.
-            </summary>
-        </member>
-        <member name="P:RedCow.Immutable.DraftState.ChangedProperties">
-            <summary>
-            Gets the changed properties for this draft.
             </summary>
         </member>
         <member name="M:RedCow.Immutable.DraftState.GetOriginal``1">
@@ -198,6 +208,16 @@
             <param name="propertyName">The property name.</param>
             <param name="setter">The setter.</param>
             <exception cref="T:System.InvalidOperationException">thrown when the draft is revoked.</exception>
+        </member>
+        <member name="M:RedCow.Immutable.DraftState.Revoke">
+            <summary>
+            Revokes the draft.
+            </summary>
+        </member>
+        <member name="M:RedCow.Immutable.DraftState.StartTracking">
+            <summary>
+            Starts change tracking.
+            </summary>
         </member>
         <member name="T:RedCow.Immutable.DraftTypeAttribute">
             <summary>

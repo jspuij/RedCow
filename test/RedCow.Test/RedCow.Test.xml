@@ -4,49 +4,54 @@
         <name>RedCow.Test</name>
     </assembly>
     <members>
-        <member name="T:RedCow.Test.ImmutableTests">
+        <member name="T:RedCow.Test.ImmutableProducerTests">
             <summary>
-            Unit tests for Immutables.
+            Unit tests for Immutable Producers.
             </summary>
         </member>
-        <member name="M:RedCow.Test.ImmutableTests.InitialProduceTest">
+        <member name="M:RedCow.Test.ImmutableProducerTests.InitialProduceTest">
             <summary>
             Tests the Initial Produce Method.
             </summary>
         </member>
-        <member name="M:RedCow.Test.ImmutableTests.StaticProduceActionTest">
+        <member name="M:RedCow.Test.ImmutableProducerTests.StaticProduceActionTest">
             <summary>
             Tests the Produce Method.
             </summary>
         </member>
-        <member name="M:RedCow.Test.ImmutableTests.ProduceActionTest">
+        <member name="M:RedCow.Test.ImmutableProducerTests.ProduceActionTest">
             <summary>
             Tests the Produce Method.
             </summary>
         </member>
-        <member name="M:RedCow.Test.ImmutableTests.StaticProduceFunctionTest">
+        <member name="M:RedCow.Test.ImmutableProducerTests.StaticProduceFunctionTest">
             <summary>
             Tests the Produce Method.
             </summary>
         </member>
-        <member name="M:RedCow.Test.ImmutableTests.ProduceFunctionTest">
+        <member name="M:RedCow.Test.ImmutableProducerTests.ProduceFunctionTest">
             <summary>
             Tests the Produce Method.
             </summary>
         </member>
-        <member name="M:RedCow.Test.ImmutableTests.ProducerActionTest">
+        <member name="M:RedCow.Test.ImmutableProducerTests.ProducerActionTest">
             <summary>
             Tests the Producer Method.
             </summary>
         </member>
-        <member name="M:RedCow.Test.ImmutableTests.ProducerFunctionTest">
+        <member name="M:RedCow.Test.ImmutableProducerTests.ProducerFunctionTest">
             <summary>
             Tests the Produce Method.
             </summary>
         </member>
-        <member name="M:RedCow.Test.ImmutableTests.ProducerActionWithArgumentTest">
+        <member name="M:RedCow.Test.ImmutableProducerTests.ProducerActionWithArgumentTest">
             <summary>
             Tests the Producer Method with argument.
+            </summary>
+        </member>
+        <member name="M:RedCow.Test.ImmutableProducerTests.LockedTest">
+            <summary>
+            Tests the that the produced immutable cannot be altered.
             </summary>
         </member>
         <member name="T:RedCow.Test.ITestPerson">
@@ -159,6 +164,21 @@
             <param name = "producerOptions">The producer options to use. If you leave them null, the default options will be used.</param>
             <typeparam name = "TArg">The type of the argument.</typeparam>
             <returns>A producer delegate.</returns>
+        </member>
+        <member name="T:RedCow.Test.NestedTests">
+            <summary>
+            Unit tests for nested produce and immutability.
+            </summary>
+        </member>
+        <member name="M:RedCow.Test.NestedTests.NestedProduceTest">
+            <summary>
+            Tests a nested produce.
+            </summary>
+        </member>
+        <member name="M:RedCow.Test.NestedTests.NestedProduceChangedTest">
+            <summary>
+            Tests a nested produce.
+            </summary>
         </member>
         <member name="T:RedCow.Test.ReflectionCloneProviderTests">
             <summary>

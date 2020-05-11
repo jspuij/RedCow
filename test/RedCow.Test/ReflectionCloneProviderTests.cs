@@ -29,15 +29,16 @@ namespace RedCow.Test
 #pragma warning disable CS1591 // Missing XML comment for publicly visible type or member
 #pragma warning disable SA1401 // Fields should be private
 #pragma warning disable SA1600 // Elements should be documented
-        public string PublicField;
+        public string PublicField = string.Empty;
 
-        private string privateField;
+        private string privateField = string.Empty;
 
-        public string PublicProperty { get; set; }
+        public string PublicProperty { get; set; } = string.Empty;
 
         public string ReadOnlyProperty => this.privateField;
 
-        private string PrivateProperty { get; set; }
+        private string PrivateProperty { get; set; } = string.Empty;
+
 #pragma warning restore SA1600 // Elements should be documented
 #pragma warning restore SA1401 // Fields should be private
 #pragma warning restore CS1591 // Missing XML comment for publicly visible type or member
