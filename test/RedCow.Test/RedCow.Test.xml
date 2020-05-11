@@ -19,6 +19,11 @@
              Gets or sets Model.
             </summary>
         </member>
+        <member name="T:RedCow.Test.CollectionTests">
+            <summary>
+            Unit tests for collections.
+            </summary>
+        </member>
         <member name="T:RedCow.Test.ICar">
             <summary>
             Car interface.

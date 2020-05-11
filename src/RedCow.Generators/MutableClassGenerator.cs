@@ -143,8 +143,8 @@ namespace RedCow.Generators
                     {
                         var genericArgument = namedType.TypeArguments[0];
                         var mutableType = GetMutableType(context, genericArgument);
-                        var iCollectionType = context.Compilation.GetTypeByMetadataName("System.Collections.Generic.IList`1");
-                        return iCollectionType.Construct(mutableType);
+                        var iListType = context.Compilation.GetTypeByMetadataName("System.Collections.Generic.IList`1");
+                        return iListType.Construct(mutableType);
                     }
                 }
             }
@@ -277,7 +277,6 @@ namespace RedCow.Generators
                     {
                         var genericArgument = namedType.TypeArguments[0];
                         var mutableType = GetMutableType(context, genericArgument);
-                        var iCollectionType = context.Compilation.GetTypeByMetadataName("System.Collections.Generic.IList`1");
                         method = $@"
                             /// <summary>
                             /// {documentationText}
