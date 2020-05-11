@@ -54,6 +54,11 @@
             Tests the that the produced immutable cannot be altered.
             </summary>
         </member>
+        <member name="M:RedCow.Test.ImmutableProducerTests.DraftRevokedTest">
+            <summary>
+            Tests that a draft is revoked after the immutable is produced.
+            </summary>
+        </member>
         <member name="T:RedCow.Test.ITestPerson">
             <summary>
             Interface for an Immutable Test Person.

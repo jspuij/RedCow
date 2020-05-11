@@ -273,5 +273,31 @@ namespace RedCow.Test
                 mutablePerson.FirstName = "Test";
             });
         }
+
+        /// <summary>
+        /// Tests that a draft is revoked after the immutable is produced.
+        /// </summary>
+        [Fact]
+        public void DraftRevokedTest()
+        {
+            TestPerson initial = new TestPerson()
+            {
+                FirstName = "John",
+                LastName = "Doe",
+                IsAdult = true,
+            };
+
+            TestPerson? draft = null;
+
+            ITestPerson person = ITestPerson.Produce(initial, p =>
+            {
+                draft = p;
+            });
+
+            Assert.Throws<DraftRevokedException>(() =>
+            {
+                Assert.Equal(draft!.FirstName, person.FirstName);
+            });
+        }
     }
 }
