@@ -180,6 +180,11 @@
             Tests a nested produce.
             </summary>
         </member>
+        <member name="M:RedCow.Test.NestedTests.CircularReferenceTest">
+            <summary>
+            Tests for circular references.
+            </summary>
+        </member>
         <member name="T:RedCow.Test.ReflectionCloneProviderTests">
             <summary>
             Unit tests for <see cref="T:RedCow.Immutable.ReflectionCloneProvider"/>.

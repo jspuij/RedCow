@@ -34,5 +34,10 @@ namespace RedCow
         /// Gets the immutable reference types that are allowed as Properties.
         /// </summary>
         public ISet<Type> AllowedImmutableReferenceTypes { get; }
+
+        /// <summary>
+        /// Gets the maximum recursion depth during Reconciliation.
+        /// </summary>
+        public int MaxDepth { get; }
     }
 }

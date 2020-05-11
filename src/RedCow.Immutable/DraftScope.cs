@@ -23,7 +23,7 @@ namespace RedCow.Immutable
     /// <summary>
     /// Represents a draft scope (A scope in which drafts are created).
     /// </summary>
-    public class DraftScope : IDraftScope, IProducerOptions
+    public class DraftScope : IDraftScope
     {
         /// <summary>
         /// A list of drafts.
@@ -131,65 +131,79 @@ namespace RedCow.Immutable
         /// <returns>The immutable variant of the instance.</returns>
         private object? FinishInstance(object? draft)
         {
-            object? FinishInstanceInternal(object? draft)
+            int level = 0;
+
+            object? Reconcile(object? draft)
             {
-                if (draft == null)
+                try
                 {
-                    return null;
-                }
-
-                var draftType = draft.GetType();
-
-                if (draftType.IsValueType || this.AllowedImmutableReferenceTypes.Contains(draftType))
-                {
-                    return draft;
-                }
-
-                var immutableType = GetImmutableType(draft);
-
-                if (immutableType == null)
-                {
-                    throw new InvalidOperationException($"The object of type {draftType} cannot be made immutable.");
-                }
-
-                if (draft.GetType() == immutableType)
-                {
-                    return draft;
-                }
-
-                // return the original if the draft did not change. Saves another copy.
-                if (draft is IDraft idraft && !idraft.DraftState.Changed)
-                {
-                    var original = idraft.DraftState.GetOriginal<object?>();
-
-                    if (original is ILockable)
+                    if (++level > this.producerOptions.MaxDepth)
                     {
-                        return original;
+                        throw new InvalidOperationException($"Max depth of {level - 1} exceeded during Finishing the draft");
                     }
+
+                    if (draft == null)
+                    {
+                        return null;
+                    }
+
+                    var draftType = draft.GetType();
+
+                    if (draftType.IsValueType || this.AllowedImmutableReferenceTypes.Contains(draftType))
+                    {
+                        return draft;
+                    }
+
+                    var immutableType = GetImmutableType(draft);
+
+                    if (immutableType == null)
+                    {
+                        throw new InvalidOperationException($"The object of type {draftType} cannot be made immutable.");
+                    }
+
+                    if (draft.GetType() == immutableType)
+                    {
+                        return draft;
+                    }
+
+                    // return the original if the draft did not change. Saves another copy.
+                    if (draft is IDraft idraft && !idraft.DraftState.Changed)
+                    {
+                        var original = idraft.DraftState.GetOriginal<object?>();
+
+                        if (original is ILockable)
+                        {
+                            return original;
+                        }
+                    }
+
+                    // TODO: pluggable object creation.
+                    object? result = this.CloneProvider.Clone(draft, () => Activator.CreateInstance(immutableType), Reconcile);
+
+                    // lock the immutable.
+                    if (result is ILockable lockable && !lockable.Locked)
+                    {
+                        lockable.Lock();
+                    }
+
+                    // revoke the draft.
+                    if (draft is IDraft toRevoke)
+                    {
+                        toRevoke.DraftState.Revoke();
+                    }
+
+                    return result;
                 }
-
-                // TODO: pluggable object creation.
-                object? result = this.CloneProvider.Clone(draft, () => Activator.CreateInstance(immutableType), FinishInstanceInternal);
-
-                // lock the immutable.
-                if (result is ILockable lockable && !lockable.Locked)
+                finally
                 {
-                    lockable.Lock();
+                    --level;
                 }
-
-                // revoke the draft.
-                if (draft is IDraft toRevoke)
-                {
-                    toRevoke.DraftState.Revoke();
-                }
-
-                return result;
             }
 
             this.IsFinishing = true;
             try
             {
-                return FinishInstanceInternal(draft);
+                return Reconcile(draft);
             }
             finally
             {

@@ -109,5 +109,27 @@ namespace RedCow.Test
             // this is the same immutable as it did not change.
             Assert.Same(person.SecondChild, result.SecondChild);
         }
+
+        /// <summary>
+        /// Tests for circular references.
+        /// </summary>
+        [Fact]
+        public void CircularReferenceTest()
+        {
+            var initial = new TestPerson()
+            {
+                FirstName = "John",
+                LastName = "Doe",
+                IsAdult = true,
+            };
+
+            // this is really weird.
+            initial.FirstChild = initial;
+
+            Assert.Throws<InvalidOperationException>(() =>
+            {
+                ITestPerson person = ITestPerson.Produce(initial);
+            });
+        }
     }
 }

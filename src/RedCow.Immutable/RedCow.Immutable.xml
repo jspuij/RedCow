@@ -386,6 +386,11 @@
             Gets the immutable reference types that are allowed as Properties.
             </summary>
         </member>
+        <member name="P:RedCow.IProducerOptions.MaxDepth">
+            <summary>
+            Gets the maximum recursion depth during Reconciliation.
+            </summary>
+        </member>
         <member name="T:RedCow.ProducerOptions">
             <summary>
             The producer options to use.
@@ -404,6 +409,11 @@
         <member name="P:RedCow.ProducerOptions.AllowedImmutableReferenceTypes">
             <summary>
             Gets the set of allowed immutable reference types.
+            </summary>
+        </member>
+        <member name="P:RedCow.ProducerOptions.MaxDepth">
+            <summary>
+            Gets or sets maximum recursion depth during Reconciliation.
             </summary>
         </member>
     </members>
