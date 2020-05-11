@@ -128,7 +128,7 @@ namespace RedCow.Test
             // this is really weird.
             initial.FirstChild = initial;
 
-            Assert.Throws<InvalidOperationException>(() =>
+            Assert.Throws<CircularReferenceException>(() =>
             {
                 ITestPerson person = ITestPerson.Produce(initial);
             });

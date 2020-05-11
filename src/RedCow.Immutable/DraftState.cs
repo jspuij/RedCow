@@ -81,7 +81,7 @@ namespace RedCow.Immutable
         {
             if (this.Revoked)
             {
-                throw new InvalidOperationException("The draft is out of scope and has been revoked.");
+                throw new DraftRevokedException(this, "The draft is out of scope and has been revoked.");
             }
 
             var result = getter();
@@ -115,7 +115,7 @@ namespace RedCow.Immutable
         {
             if (this.Revoked)
             {
-                throw new InvalidOperationException("The draft is out of scope and has been revoked.");
+                throw new DraftRevokedException(this, "The draft is out of scope and has been revoked.");
             }
 
             setter();

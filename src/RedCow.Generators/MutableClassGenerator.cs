@@ -179,7 +179,7 @@ namespace RedCow.Generators
                     {{
                         if (this.Locked)
                         {{
-                            throw new InvalidOperationException(""This is an immutable object, and cannot be changed."");
+                            throw new ImmutableException(this, ""This is an immutable object, and cannot be changed."");
                         }}
                         
                         base.{p.Name} = value;

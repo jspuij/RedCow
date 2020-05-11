@@ -266,7 +266,7 @@ namespace RedCow.Test
 
             ITestPerson person = ITestPerson.Produce(initial);
 
-            Assert.Throws<InvalidOperationException>(() =>
+            Assert.Throws<ImmutableException>(() =>
             {
                 var mutablePerson = (TestPerson)person;
 

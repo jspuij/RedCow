@@ -100,7 +100,7 @@ namespace RedCow.Immutable
         {
             if (InternalIsDraft(source))
             {
-                throw new InvalidOperationException("The object is already a draft.");
+                throw new DraftException(source, "The object is already a draft.");
             }
 
             Type? draftType = GetDraftType(source);
@@ -109,7 +109,7 @@ namespace RedCow.Immutable
 
             if (draftType == null)
             {
-                throw new InvalidOperationException("The object is not draftable.");
+                throw new DraftException(source, "The object is not draftable.");
             }
 
             // TODO: pluggable object creation.
@@ -137,14 +137,14 @@ namespace RedCow.Immutable
             {
                 try
                 {
-                    if (++level > this.producerOptions.MaxDepth)
-                    {
-                        throw new InvalidOperationException($"Max depth of {level - 1} exceeded during Finishing the draft");
-                    }
-
                     if (draft == null)
                     {
                         return null;
+                    }
+
+                    if (++level > this.producerOptions.MaxDepth)
+                    {
+                        throw new CircularReferenceException(draft, $"Max depth of {level - 1} exceeded during Finishing the draft");
                     }
 
                     var draftType = draft.GetType();
@@ -158,7 +158,7 @@ namespace RedCow.Immutable
 
                     if (immutableType == null)
                     {
-                        throw new InvalidOperationException($"The object of type {draftType} cannot be made immutable.");
+                        throw new DraftException(draft, $"The object of type {draftType} cannot be made immutable.");
                     }
 
                     if (draft.GetType() == immutableType)

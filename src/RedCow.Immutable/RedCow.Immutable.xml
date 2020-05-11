@@ -4,6 +4,35 @@
         <name>RedCow.Immutable</name>
     </assembly>
     <members>
+        <member name="T:RedCow.CircularReferenceException">
+            <summary>
+            An exception for circular references during reconciliation.
+            </summary>
+        </member>
+        <member name="M:RedCow.CircularReferenceException.#ctor(System.Object,System.String)">
+            <summary>
+            Initializes a new instance of the <see cref="T:RedCow.CircularReferenceException"/> class.
+            </summary>
+            <param name="draft">The draft object that was involved in the exception.</param>
+            <param name="message">The message.</param>
+        </member>
+        <member name="T:RedCow.DraftException">
+            <summary>
+            An exception for drafts.
+            </summary>
+        </member>
+        <member name="M:RedCow.DraftException.#ctor(System.Object,System.String)">
+            <summary>
+            Initializes a new instance of the <see cref="T:RedCow.DraftException"/> class.
+            </summary>
+            <param name="draft">The draft object that was involved in the exception.</param>
+            <param name="message">The message.</param>
+        </member>
+        <member name="P:RedCow.DraftException.Draft">
+            <summary>
+            Gets the draft object.
+            </summary>
+        </member>
         <member name="T:RedCow.Immutable.DraftExtensions">
             <summary>
             Extension methods for drafts.
@@ -319,6 +348,18 @@
             <param name="assignmentFunction">The assignment function to use to assign the source value properties to the destination.</param>
             <returns>The cloned type.</returns>
         </member>
+        <member name="T:RedCow.DraftRevokedException">
+            <summary>
+            An exception that occurs when a property is changed or accessed on a draft that has been revoked.
+            </summary>
+        </member>
+        <member name="M:RedCow.DraftRevokedException.#ctor(System.Object,System.String)">
+            <summary>
+            Initializes a new instance of the <see cref="T:RedCow.DraftRevokedException"/> class.
+            </summary>
+            <param name="draft">The draft object that was involved in the exception.</param>
+            <param name="message">The message.</param>
+        </member>
         <member name="T:RedCow.GenerateMutableAttribute">
             <summary>
             Generate Mutable Attribute. Can be applied to a class to automatically generate properties that are mutable for
@@ -369,6 +410,23 @@
         <member name="M:RedCow.ILockable.Lock">
             <summary>
             Locks the Immutable.
+            </summary>
+        </member>
+        <member name="T:RedCow.ImmutableException">
+            <summary>
+            An exception for immutables.
+            </summary>
+        </member>
+        <member name="M:RedCow.ImmutableException.#ctor(System.Object,System.String)">
+            <summary>
+            Initializes a new instance of the <see cref="T:RedCow.ImmutableException"/> class.
+            </summary>
+            <param name="immutable">The draft object that was involved in the exception.</param>
+            <param name="message">The message.</param>
+        </member>
+        <member name="P:RedCow.ImmutableException.Immutable">
+            <summary>
+            Gets the immutable object.
             </summary>
         </member>
         <member name="T:RedCow.IProducerOptions">
