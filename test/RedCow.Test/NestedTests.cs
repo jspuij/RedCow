@@ -18,12 +18,14 @@ namespace RedCow.Test
 {
     using System;
     using System.Collections.Generic;
+    using System.Diagnostics.CodeAnalysis;
     using System.Text;
     using Xunit;
 
     /// <summary>
     /// Unit tests for nested produce and immutability.
     /// </summary>
+    [ExcludeFromCodeCoverage]
     public class NestedTests
     {
         /// <summary>
