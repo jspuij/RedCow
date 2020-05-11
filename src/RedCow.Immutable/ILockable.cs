@@ -1,4 +1,4 @@
-﻿// <copyright file="Immutable{T}.cs" company="Jan-Willem Spuij">
+﻿// <copyright file="ILockable.cs" company="Jan-Willem Spuij">
 // Copyright 2020 Jan-Willem Spuij
 //
 // Permission is hereby granted, free of charge, to any person obtaining a copy of this software and associated documentation
@@ -17,10 +17,9 @@
 namespace RedCow
 {
     /// <summary>
-    /// Interface for Immutable instances of <typeparamref name="T"/>.
+    /// Interface for instances that can be locked.
     /// </summary>
-    /// <typeparam name="T">The mutable type.</typeparam>
-    public interface Immutable<T>
+    public interface ILockable
     {
         /// <summary>
         /// Gets a value indicating whether the immutable is locked.

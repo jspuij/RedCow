@@ -1,4 +1,4 @@
-﻿// <copyright file="ImmutableOfTTests.cs" company="Jan-Willem Spuij">
+﻿// <copyright file="ImmutableTests.cs" company="Jan-Willem Spuij">
 // Copyright 2020 Jan-Willem Spuij
 //
 // Permission is hereby granted, free of charge, to any person obtaining a copy of this software and associated documentation
@@ -21,10 +21,10 @@ namespace RedCow.Test
     using Xunit;
 
     /// <summary>
-    /// Unit tests for <see cref="Immutable{T}"/>.
+    /// Unit tests for Immutables.
     /// </summary>
     [ExcludeFromCodeCoverage]
-    public class ImmutableOfTTests
+    public class ImmutableTests
     {
         /// <summary>
         /// Tests the Initial Produce Method.

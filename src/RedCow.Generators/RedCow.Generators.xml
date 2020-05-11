@@ -88,6 +88,13 @@
             <param name="p">The property to generate the Getter and Setter for.</param>
             <returns>An <see cref="T:Microsoft.CodeAnalysis.CSharp.Syntax.MemberDeclarationSyntax"/>.</returns>
         </member>
+        <member name="M:RedCow.Generators.MutableClassGenerator.GetBaseType(Microsoft.CodeAnalysis.ITypeSymbol)">
+            <summary>
+            Gets the BaseType (if available).
+            </summary>
+            <param name="typeSymbol">The type symbol to use.</param>
+            <returns>The base type.</returns>
+        </member>
         <member name="M:RedCow.Generators.MutableClassGenerator.CreateImmutableProperty(Microsoft.CodeAnalysis.IPropertySymbol)">
             <summary>
             Creates an immutable property with getter and setter that throws an <see cref="T:System.InvalidOperationException"/>,
@@ -109,6 +116,13 @@
             </summary>
             <param name="documentationText">The documentation text.</param>
             <returns>The XML Documentation as <see cref="T:Microsoft.CodeAnalysis.SyntaxTriviaList"/>.</returns>
+        </member>
+        <member name="M:RedCow.Generators.MutableClassGenerator.CreateInterfaceProperty(Microsoft.CodeAnalysis.IPropertySymbol)">
+            <summary>
+            Creates a property with getter and setter based on the readonly interface property.
+            </summary>
+            <param name="p">The property to generate the Getter and Setter for.</param>
+            <returns>An <see cref="T:Microsoft.CodeAnalysis.CSharp.Syntax.MemberDeclarationSyntax"/>.</returns>
         </member>
         <member name="M:RedCow.Generators.MutableClassGenerator.GeneratePartial(Microsoft.CodeAnalysis.CSharp.Syntax.ClassDeclarationSyntax)">
             <summary>

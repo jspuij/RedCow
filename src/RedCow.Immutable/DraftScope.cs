@@ -104,8 +104,7 @@ namespace RedCow.Immutable
             }
 
             // TODO: pluggable object creation.
-            object result = Activator.CreateInstance(draftType, draftState);
-            this.CloneProvider.Clone(source, result);
+            object result = this.CloneProvider.Clone(source, () => Activator.CreateInstance(draftType, draftState), source => source);
             this.drafts.Add((IDraft)result);
             return result;
         }
@@ -117,29 +116,44 @@ namespace RedCow.Immutable
         /// <returns>The immutable variant of the instance.</returns>
         private object? FinishInstance(object? draft)
         {
-            if (draft == null)
+            object? FinishInstanceInternal(object? draft)
             {
-                return null;
+                if (draft == null)
+                {
+                    return null;
+                }
+
+                var draftType = draft.GetType();
+
+                if (draftType.IsValueType || this.AllowedImmutableReferenceTypes.Contains(draftType))
+                {
+                    return draft;
+                }
+
+                var immutableType = GetImmutableType(draft);
+
+                if (immutableType == null)
+                {
+                    throw new InvalidOperationException($"The object of type {draftType} cannot be made immutable.");
+                }
+
+                if (draft.GetType() == immutableType)
+                {
+                    return draft;
+                }
+
+                // TODO: pluggable object creation.
+                object? result = this.CloneProvider.Clone(draft, () => Activator.CreateInstance(immutableType), FinishInstanceInternal);
+
+                if (result is ILockable lockable && !lockable.Locked)
+                {
+                    lockable.Lock();
+                }
+
+                return result;
             }
 
-            var immutableType = GetImmutableType(draft);
-
-            if (immutableType == null)
-            {
-                throw new InvalidOperationException("The object cannot be made immutable.");
-            }
-
-            var draftType = draft.GetType();
-
-            if (draftType.IsValueType || this.AllowedImmutableReferenceTypes.Contains(draftType) || draft.GetType() == immutableType)
-            {
-                return draft;
-            }
-
-            // TODO: Implement finish draft.
-            var result = Activator.CreateInstance(immutableType);
-            this.CloneProvider.Clone(draft, result);
-            return result;
+            return FinishInstanceInternal(draft);
         }
     }
 }

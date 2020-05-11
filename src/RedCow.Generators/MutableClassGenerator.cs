@@ -109,11 +109,13 @@ namespace RedCow.Generators
         {
             string documentationText = p.Type.SpecialType == SpecialType.System_Boolean ? $" Gets or sets a value indicating whether {p.Name} is true." : $" Gets or sets {p.Name}.";
 
+            var baseType = GetBaseType(p.Type);
+
             var method = $@"
                 /// <summary>
                 /// {documentationText}
                 /// </summary>
-                public virtual {p.Type.Name} {p.Name}
+                public virtual {baseType} {p.Name}
                 {{
                     get;
                     set;
@@ -122,6 +124,36 @@ namespace RedCow.Generators
 
             return ParseMemberDeclaration(method)
                 .NormalizeWhitespace();
+        }
+
+        /// <summary>
+        /// Gets the BaseType (if available).
+        /// </summary>
+        /// <param name="typeSymbol">The type symbol to use.</param>
+        /// <returns>The base type.</returns>
+        private static ITypeSymbol GetBaseType(ITypeSymbol typeSymbol)
+        {
+            ITypeSymbol current = typeSymbol;
+
+            while (current != null)
+            {
+                foreach (var attribute in current.GetAttributes())
+                {
+                    if (attribute.AttributeClass.Name == "GenerateMutableAttribute")
+                    {
+                        return current;
+                    }
+
+                    if (attribute.AttributeClass.Name == "GenerateProducersAttribute")
+                    {
+                        return (ITypeSymbol)attribute.ConstructorArguments[0].Value;
+                    }
+                }
+
+                current = current.BaseType;
+            }
+
+            return typeSymbol;
         }
 
         /// <summary>
@@ -134,11 +166,13 @@ namespace RedCow.Generators
         {
             string documentationText = p.Type.SpecialType == SpecialType.System_Boolean ? $" Gets or sets a value indicating whether {p.Name} is true." : $" Gets or sets {p.Name}.";
 
+            var baseType = GetBaseType(p.Type);
+
             var method = $@"
                 /// <summary>
                 /// {documentationText}
                 /// </summary>
-                public override {p.Type.Name} {p.Name}
+                public override {baseType} {p.Name}
                 {{
                     get => base.{p.Name};
                     set
@@ -166,14 +200,16 @@ namespace RedCow.Generators
         {
             string documentationText = p.Type.SpecialType == SpecialType.System_Boolean ? $" Gets or sets a value indicating whether {p.Name} is true." : $" Gets or sets {p.Name}.";
 
+            var baseType = GetBaseType(p.Type);
+
             var method = $@"
                 /// <summary>
                 ///  {documentationText}
                 /// </summary>
-                public override {p.Type.Name} {p.Name}
+                public override {baseType} {p.Name}
                 {{
-                    get => this.draftState.Get<{p.Type.Name}>(nameof({p.Name}), () => base.{p.Name}, value => base.{p.Name} = value);
-                    set => this.draftState.Set<{p.Type.Name}>(nameof({p.Name}), () => base.{p.Name} = value);
+                    get => this.draftState.Get<{baseType}>(nameof({p.Name}), () => base.{p.Name}, value => base.{p.Name} = value);
+                    set => this.draftState.Set<{baseType}>(nameof({p.Name}), () => base.{p.Name} = value);
                 }}
             ";
 
@@ -197,6 +233,33 @@ namespace RedCow.Generators
         }
 
         /// <summary>
+        /// Creates a property with getter and setter based on the readonly interface property.
+        /// </summary>
+        /// <param name="p">The property to generate the Getter and Setter for.</param>
+        /// <returns>An <see cref="MemberDeclarationSyntax"/>.</returns>
+        private MemberDeclarationSyntax CreateInterfaceProperty(IPropertySymbol p)
+        {
+            string documentationText = p.Type.SpecialType == SpecialType.System_Boolean ? $" Gets or sets a value indicating whether {p.Name} is true." : $" Gets or sets {p.Name}.";
+
+            var baseType = GetBaseType(p.Type);
+
+            if (SymbolEqualityComparer.Default.Equals(baseType, p.Type))
+            {
+                return null;
+            }
+
+            var method = $@"
+                /// <summary>
+                /// {documentationText}
+                /// </summary>
+                {p.Type} {this.interfaceType.Name}.{p.Name} => this.{p.Name};
+            ";
+
+            return ParseMemberDeclaration(method)
+                .NormalizeWhitespace();
+        }
+
+        /// <summary>
         /// Generates the partial part of the class.
         /// </summary>
         /// <param name="sourceClassDeclaration">The source class declaration.</param>
@@ -209,9 +272,11 @@ namespace RedCow.Generators
             result = result.AddMembers(
                 this.interfaceType.GetMembers().
                 Where(x => x is IPropertySymbol).
-                Cast<IPropertySymbol>().Select(p =>
+                Cast<IPropertySymbol>().SelectMany(p =>
                 {
-                    return CreateProperty(p);
+                    var prop = CreateProperty(p);
+                    var intProp = this.CreateInterfaceProperty(p);
+                    return intProp == null ? new[] { prop } : new[] { prop, intProp };
                 }).ToArray());
             return result;
         }
@@ -393,7 +458,7 @@ namespace RedCow.Generators
                                             TriviaList()))))
                             .AddBaseListTypes(
                                 SimpleBaseType(ParseTypeName(sourceClassDeclaration.Identifier.Text)),
-                                SimpleBaseType(ParseTypeName($"Immutable<{sourceClassDeclaration.Identifier.Text}>")));
+                                SimpleBaseType(ParseTypeName($"ILockable")));
 
             result = result.WithMembers(List(
                    sourceClassDeclaration.Members.

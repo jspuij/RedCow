@@ -36,5 +36,15 @@ namespace RedCow.Test
         /// Gets a value indicating whether isAdult is true.
         /// </summary>
         public bool IsAdult { get; }
+
+        /// <summary>
+        /// Gets the First Child.
+        /// </summary>
+        public ITestPerson FirstChild { get; }
+
+        /// <summary>
+        /// Gets the Second Schild.
+        /// </summary>
+        public ITestPerson SecondChild { get; }
     }
 }

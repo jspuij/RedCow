@@ -16,6 +16,7 @@
 
 namespace RedCow.Immutable
 {
+    using System;
     using System.Reflection;
     using System.Security.Cryptography;
 
@@ -28,10 +29,13 @@ namespace RedCow.Immutable
         /// Clones the public properties of an object to another object.
         /// </summary>
         /// <param name="source">The source.</param>
-        /// <param name="destination">The destination.</param>
-        public void Clone(object source, object destination)
+        /// <param name="destinationActivator">The function that creates the destination instance..</param>
+        /// <param name="assignmentFunction">The assignment function to use to assign the source value properties to the destination.</param>
+        /// <returns>The cloned type.</returns>
+        public object Clone(object source, Func<object> destinationActivator, Func<object?, object?> assignmentFunction)
         {
             var sourceType = source.GetType();
+            object destination = destinationActivator();
             var destinationType = destination.GetType();
 
             foreach (var sourceProperty in sourceType.GetProperties(BindingFlags.Public | BindingFlags.Instance))
@@ -43,9 +47,12 @@ namespace RedCow.Immutable
                     continue;
                 }
 
-                var value = sourceProperty.GetValue(source);
+                object? value = sourceProperty.GetValue(source);
+                value = assignmentFunction(value);
                 destinationProperty.SetValue(destination, value);
             }
+
+            return destination;
         }
     }
 }

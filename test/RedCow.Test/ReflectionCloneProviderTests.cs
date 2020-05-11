@@ -49,11 +49,10 @@ namespace RedCow.Test
         public void ClonesAllPublicProperties()
         {
             var cloneProvider = new ReflectionCloneProvider();
-            var destination = new ReflectionCloneProviderTests();
 
             this.PublicProperty = "John Doe";
 
-            cloneProvider.Clone(this, destination);
+            ReflectionCloneProviderTests destination = (ReflectionCloneProviderTests)cloneProvider.Clone(this, () => new ReflectionCloneProviderTests(), source => source);
 
             Assert.Equal(this.PublicProperty, destination.PublicProperty);
         }
@@ -65,13 +64,12 @@ namespace RedCow.Test
         public void DoesNotClonePrivatePropertiesAndFields()
         {
             var cloneProvider = new ReflectionCloneProvider();
-            var destination = new ReflectionCloneProviderTests();
 
             this.privateField = "John Doe";
             this.PublicField = "John Doe";
             this.PrivateProperty = "John Doe";
 
-            cloneProvider.Clone(this, destination);
+            ReflectionCloneProviderTests destination = (ReflectionCloneProviderTests)cloneProvider.Clone(this, () => new ReflectionCloneProviderTests(), source => source);
 
             Assert.NotEqual(this.privateField, destination.privateField);
             Assert.NotEqual(this.PublicField, destination.PublicField);

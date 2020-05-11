@@ -120,13 +120,6 @@
             <param name="draft">The draft.</param>
             <returns>The immutable.</returns>
         </member>
-        <member name="M:RedCow.Immutable.DraftScope.FinishInstance(System.Object)">
-            <summary>
-            Finishes an instance.
-            </summary>
-            <param name="draft">The instance to finish.</param>
-            <returns>The immutable variant of the instance.</returns>
-        </member>
         <member name="M:RedCow.Immutable.DraftScope.CreateProxy(System.Object)">
             <summary>
             Creates a draft proxy using the current scope and clone provider.
@@ -134,6 +127,13 @@
             <param name="source">The source object to create the proxy for.</param>
             <exception cref="T:System.InvalidOperationException">When the source object is not draftable.</exception>
             <returns>An instance of type T.</returns>
+        </member>
+        <member name="M:RedCow.Immutable.DraftScope.FinishInstance(System.Object)">
+            <summary>
+            Finishes an instance.
+            </summary>
+            <param name="draft">The instance to finish.</param>
+            <returns>The immutable variant of the instance.</returns>
         </member>
         <member name="T:RedCow.Immutable.DraftState">
             <summary>
@@ -223,12 +223,14 @@
             to another object.
             </summary>
         </member>
-        <member name="M:RedCow.Immutable.ICloneProvider.Clone(System.Object,System.Object)">
+        <member name="M:RedCow.Immutable.ICloneProvider.Clone(System.Object,System.Func{System.Object},System.Func{System.Object,System.Object})">
             <summary>
             Clones the public properties of an object to another object.
             </summary>
             <param name="source">The source.</param>
-            <param name="destination">The destination.</param>
+            <param name="destinationActivator">The function that creates the destination instance..</param>
+            <param name="assignmentFunction">The assignment function to use to assign the source value properties to the destination.</param>
+            <returns>The cloned type.</returns>
         </member>
         <member name="T:RedCow.Immutable.IDraft">
             <summary>
@@ -288,12 +290,14 @@
             Provides cloning using reflection.
             </summary>
         </member>
-        <member name="M:RedCow.Immutable.ReflectionCloneProvider.Clone(System.Object,System.Object)">
+        <member name="M:RedCow.Immutable.ReflectionCloneProvider.Clone(System.Object,System.Func{System.Object},System.Func{System.Object,System.Object})">
             <summary>
             Clones the public properties of an object to another object.
             </summary>
             <param name="source">The source.</param>
-            <param name="destination">The destination.</param>
+            <param name="destinationActivator">The function that creates the destination instance..</param>
+            <param name="assignmentFunction">The assignment function to use to assign the source value properties to the destination.</param>
+            <returns>The cloned type.</returns>
         </member>
         <member name="T:RedCow.GenerateMutableAttribute">
             <summary>
@@ -332,18 +336,17 @@
             Gets the type of the Immutable Interface.
             </summary>
         </member>
-        <member name="T:RedCow.Immutable`1">
+        <member name="T:RedCow.ILockable">
             <summary>
-            Interface for Immutable instances of <typeparamref name="T"/>.
+            Interface for instances that can be locked.
             </summary>
-            <typeparam name="T">The mutable type.</typeparam>
         </member>
-        <member name="P:RedCow.Immutable`1.Locked">
+        <member name="P:RedCow.ILockable.Locked">
             <summary>
             Gets a value indicating whether the immutable is locked.
             </summary>
         </member>
-        <member name="M:RedCow.Immutable`1.Lock">
+        <member name="M:RedCow.ILockable.Lock">
             <summary>
             Locks the Immutable.
             </summary>

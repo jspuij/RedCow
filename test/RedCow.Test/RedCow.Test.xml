@@ -4,47 +4,47 @@
         <name>RedCow.Test</name>
     </assembly>
     <members>
-        <member name="T:RedCow.Test.ImmutableOfTTests">
+        <member name="T:RedCow.Test.ImmutableTests">
             <summary>
-            Unit tests for <see cref="T:RedCow.Immutable`1"/>.
+            Unit tests for Immutables.
             </summary>
         </member>
-        <member name="M:RedCow.Test.ImmutableOfTTests.InitialProduceTest">
+        <member name="M:RedCow.Test.ImmutableTests.InitialProduceTest">
             <summary>
             Tests the Initial Produce Method.
             </summary>
         </member>
-        <member name="M:RedCow.Test.ImmutableOfTTests.StaticProduceActionTest">
+        <member name="M:RedCow.Test.ImmutableTests.StaticProduceActionTest">
             <summary>
             Tests the Produce Method.
             </summary>
         </member>
-        <member name="M:RedCow.Test.ImmutableOfTTests.ProduceActionTest">
+        <member name="M:RedCow.Test.ImmutableTests.ProduceActionTest">
             <summary>
             Tests the Produce Method.
             </summary>
         </member>
-        <member name="M:RedCow.Test.ImmutableOfTTests.StaticProduceFunctionTest">
+        <member name="M:RedCow.Test.ImmutableTests.StaticProduceFunctionTest">
             <summary>
             Tests the Produce Method.
             </summary>
         </member>
-        <member name="M:RedCow.Test.ImmutableOfTTests.ProduceFunctionTest">
+        <member name="M:RedCow.Test.ImmutableTests.ProduceFunctionTest">
             <summary>
             Tests the Produce Method.
             </summary>
         </member>
-        <member name="M:RedCow.Test.ImmutableOfTTests.ProducerActionTest">
+        <member name="M:RedCow.Test.ImmutableTests.ProducerActionTest">
             <summary>
             Tests the Producer Method.
             </summary>
         </member>
-        <member name="M:RedCow.Test.ImmutableOfTTests.ProducerFunctionTest">
+        <member name="M:RedCow.Test.ImmutableTests.ProducerFunctionTest">
             <summary>
             Tests the Produce Method.
             </summary>
         </member>
-        <member name="M:RedCow.Test.ImmutableOfTTests.ProducerActionWithArgumentTest">
+        <member name="M:RedCow.Test.ImmutableTests.ProducerActionWithArgumentTest">
             <summary>
             Tests the Producer Method with argument.
             </summary>
@@ -69,9 +69,19 @@
             Gets a value indicating whether isAdult is true.
             </summary>
         </member>
+        <member name="P:RedCow.Test.ITestPerson.FirstChild">
+            <summary>
+            Gets the First Child.
+            </summary>
+        </member>
+        <member name="P:RedCow.Test.ITestPerson.SecondChild">
+            <summary>
+            Gets the Second Schild.
+            </summary>
+        </member>
         <member name="M:RedCow.Test.ITestPerson.Produce(RedCow.Test.TestPerson,RedCow.IProducerOptions)">
             <summary>
-            Produces the next <see cref = "T:RedCow.Immutable`1"/> based on the
+            Produces the next <see cref = "T:RedCow.Test.ITestPerson"/> based on the
             intial state.
             </summary>
             <param name = "initialState">The initial State.</param>
@@ -80,7 +90,7 @@
         </member>
         <member name="M:RedCow.Test.ITestPerson.Produce(System.Action{RedCow.Test.TestPerson},RedCow.IProducerOptions)">
             <summary>
-            Produces the next <see cref = "T:RedCow.Immutable`1"/> based on the
+            Produces the next <see cref = "T:RedCow.Test.ITestPerson"/> based on the
             specified recipe action.
             </summary>
             <param name = "recipe">The recipe action.</param>
@@ -89,7 +99,7 @@
         </member>
         <member name="M:RedCow.Test.ITestPerson.Produce(RedCow.Test.TestPerson,System.Action{RedCow.Test.TestPerson},RedCow.IProducerOptions)">
             <summary>
-            Produces the next <see cref = "T:RedCow.Immutable`1"/> based on the
+            Produces the next <see cref = "T:RedCow.Test.ITestPerson"/> based on the
             specified recipe action.
             </summary>
             <param name = "initialState">The initial State.</param>
@@ -99,7 +109,7 @@
         </member>
         <member name="M:RedCow.Test.ITestPerson.Produce(System.Func{RedCow.Test.TestPerson},RedCow.IProducerOptions)">
             <summary>
-            Produces the next <see cref = "T:RedCow.Immutable`1"/> based on the
+            Produces the next <see cref = "T:RedCow.Test.ITestPerson"/> based on the
             specified recipe function.
             </summary>
             <param name = "recipe">The recipe function.</param>
@@ -108,7 +118,7 @@
         </member>
         <member name="M:RedCow.Test.ITestPerson.Produce(RedCow.Test.TestPerson,System.Func{RedCow.Test.TestPerson},RedCow.IProducerOptions)">
             <summary>
-            Produces the next <see cref = "T:RedCow.Immutable`1"/> based on the
+            Produces the next <see cref = "T:RedCow.Test.ITestPerson"/> based on the
             specified recipe function.
             </summary>
             <param name = "initialState">The initial State.</param>
@@ -185,6 +195,26 @@
              Gets or sets a value indicating whether IsAdult is true.
             </summary>
         </member>
+        <member name="P:RedCow.Test.TestPerson.FirstChild">
+            <summary>
+             Gets or sets FirstChild.
+            </summary>
+        </member>
+        <member name="P:RedCow.Test.TestPerson.RedCow#Test#ITestPerson#FirstChild">
+            <summary>
+             Gets or sets FirstChild.
+            </summary>
+        </member>
+        <member name="P:RedCow.Test.TestPerson.SecondChild">
+            <summary>
+             Gets or sets SecondChild.
+            </summary>
+        </member>
+        <member name="P:RedCow.Test.TestPerson.RedCow#Test#ITestPerson#SecondChild">
+            <summary>
+             Gets or sets SecondChild.
+            </summary>
+        </member>
         <member name="T:RedCow.Test.ImmutableTestPerson">
             <summary>
             Immutable Implementation of <see cref = "T:RedCow.Test.TestPerson"/>.
@@ -203,6 +233,16 @@
         <member name="P:RedCow.Test.ImmutableTestPerson.IsAdult">
             <summary>
              Gets or sets a value indicating whether IsAdult is true.
+            </summary>
+        </member>
+        <member name="P:RedCow.Test.ImmutableTestPerson.FirstChild">
+            <summary>
+             Gets or sets FirstChild.
+            </summary>
+        </member>
+        <member name="P:RedCow.Test.ImmutableTestPerson.SecondChild">
+            <summary>
+             Gets or sets SecondChild.
             </summary>
         </member>
         <member name="P:RedCow.Test.ImmutableTestPerson.Locked">
@@ -233,6 +273,16 @@
         <member name="P:RedCow.Test.DraftTestPerson.IsAdult">
             <summary>
               Gets or sets a value indicating whether IsAdult is true.
+            </summary>
+        </member>
+        <member name="P:RedCow.Test.DraftTestPerson.FirstChild">
+            <summary>
+              Gets or sets FirstChild.
+            </summary>
+        </member>
+        <member name="P:RedCow.Test.DraftTestPerson.SecondChild">
+            <summary>
+              Gets or sets SecondChild.
             </summary>
         </member>
         <member name="M:RedCow.Test.DraftTestPerson.#ctor(RedCow.Immutable.DraftState)">

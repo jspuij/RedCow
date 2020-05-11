@@ -106,7 +106,7 @@ namespace RedCow.Generators
 
             var method = $@"
                 /// <summary>
-                /// Produces the next <see cref = ""Immutable{{T}}""/> based on the
+                /// Produces the next <see cref = ""{interfaceName}""/> based on the
                 /// intial state.
                 /// </summary>
                 /// <param name = ""initialState"">The initial State.</param>
@@ -132,7 +132,7 @@ namespace RedCow.Generators
 
             var method = $@"
                 /// <summary>
-                /// Produces the next <see cref = ""Immutable{{T}}""/> based on the
+                /// Produces the next <see cref = ""{interfaceName}""/> based on the
                 /// specified recipe action.
                 /// </summary>
                 /// <param name = ""recipe"">The recipe action.</param>
@@ -157,7 +157,7 @@ namespace RedCow.Generators
 
             var method = $@"
                 /// <summary>
-                /// Produces the next <see cref = ""Immutable{{T}}""/> based on the
+                /// Produces the next <see cref = ""{interfaceName}""/> based on the
                 /// specified recipe action.
                 /// </summary>
                 /// <param name = ""initialState"">The initial State.</param>
@@ -184,7 +184,7 @@ namespace RedCow.Generators
 
             var method = $@"
                 /// <summary>
-                /// Produces the next <see cref = ""Immutable{{T}}""/> based on the
+                /// Produces the next <see cref = ""{interfaceName}""/> based on the
                 /// specified recipe function.
                 /// </summary>
                 /// <param name = ""recipe"">The recipe function.</param>
@@ -209,7 +209,7 @@ namespace RedCow.Generators
 
             var method = $@"
                 /// <summary>
-                /// Produces the next <see cref = ""Immutable{{T}}""/> based on the
+                /// Produces the next <see cref = ""{interfaceName}""/> based on the
                 /// specified recipe function.
                 /// </summary>
                 /// <param name = ""initialState"">The initial State.</param>
