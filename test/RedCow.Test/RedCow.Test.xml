@@ -24,6 +24,11 @@
             Unit tests for collections.
             </summary>
         </member>
+        <member name="M:RedCow.Test.CollectionTests.CollectionProduceTest">
+            <summary>
+            Tests producing a collection.
+            </summary>
+        </member>
         <member name="T:RedCow.Test.ICar">
             <summary>
             Car interface.

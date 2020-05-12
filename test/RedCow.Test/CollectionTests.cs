@@ -19,11 +19,40 @@ namespace RedCow.Test
     using System;
     using System.Collections.Generic;
     using System.Text;
+    using Xunit;
 
     /// <summary>
     /// Unit tests for collections.
     /// </summary>
     public class CollectionTests
     {
+        /// <summary>
+        /// Tests producing a collection.
+        /// </summary>
+        [Fact]
+        public void CollectionProduceTest()
+        {
+            var initial = new TestPerson()
+            {
+                FirstName = "John",
+                LastName = "Doe",
+                IsAdult = true,
+                Cars = new List<Car>()
+                {
+                    new Car
+                    {
+                        Make = "Ferrari",
+                        Model = "250 LM",
+                    },
+                    new Car
+                    {
+                        Make = "Shelby",
+                        Model = "Daytona Cobra Coupe",
+                    },
+                },
+            };
+
+            var person = ITestPerson.Produce(initial);
+        }
     }
 }
