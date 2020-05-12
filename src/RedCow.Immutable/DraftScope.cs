@@ -18,6 +18,9 @@ namespace RedCow.Immutable
 {
     using System;
     using System.Collections.Generic;
+    using System.Linq;
+    using System.Runtime.InteropServices.ComTypes;
+    using System.Xml.Schema;
     using static DraftExtensions;
 
     /// <summary>
@@ -25,11 +28,6 @@ namespace RedCow.Immutable
     /// </summary>
     public class DraftScope : IDraftScope
     {
-        /// <summary>
-        /// A list of drafts.
-        /// </summary>
-        private readonly List<IDraft> drafts = new List<IDraft>();
-
         /// <summary>
         /// The producer options.
         /// </summary>
@@ -39,7 +37,7 @@ namespace RedCow.Immutable
         /// Initializes a new instance of the <see cref="DraftScope"/> class.
         /// </summary>
         /// <param name = "producerOptions">The producer options to use. If you leave them null, the default options will be used.</param>
-        public DraftScope(IProducerOptions producerOptions)
+        internal DraftScope(IProducerOptions producerOptions)
         {
             this.producerOptions = producerOptions ?? throw new ArgumentNullException(nameof(producerOptions));
         }
@@ -96,29 +94,27 @@ namespace RedCow.Immutable
         /// <param name="source">The source object to create the proxy for.</param>
         /// <exception cref="InvalidOperationException">When the source object is not draftable.</exception>
         /// <returns>An instance of type T.</returns>
-        internal object CreateProxy(object source)
+        public object CreateProxy(object source)
         {
             if (InternalIsDraft(source))
             {
                 throw new DraftException(source, "The object is already a draft.");
             }
 
-            Type? draftType = GetDraftType(source);
+            Type? proxyType = GetProxyType(source);
 
-            var draftState = new DraftState(this, source);
-
-            if (draftType == null)
+            if (proxyType == null)
             {
                 throw new DraftException(source, "The object is not draftable.");
             }
 
-            // TODO: pluggable object creation.
-            object result = this.CloneProvider.Clone(source, () => Activator.CreateInstance(draftType, draftState), source => source);
+            var draftState = new DraftState(this, source);
 
+            // TODO: pluggable object creation.
+            object result = Activator.CreateInstance(proxyType);
             if (result is IDraft draft)
             {
-                draft.DraftState.StartTracking();
-                this.drafts.Add(draft);
+                draft.DraftState = draftState;
             }
 
             return result;
@@ -154,45 +150,37 @@ namespace RedCow.Immutable
                         return draft;
                     }
 
-                    var immutableType = GetImmutableType(draft);
+                    var proxyType = GetProxyType(draft);
 
-                    if (immutableType == null)
+                    if (proxyType == null)
                     {
                         throw new DraftException(draft, $"The object of type {draftType} cannot be made immutable.");
                     }
 
-                    if (draft.GetType() == immutableType)
+                    if (draft is IDraft idraft)
                     {
-                        return draft;
-                    }
-
-                    // return the original if the draft did not change. Saves another copy.
-                    if (draft is IDraft idraft && !idraft.DraftState.Changed)
-                    {
-                        var original = idraft.DraftState.GetOriginal<object?>();
-
-                        if (original is ILockable)
+                        foreach (var child in idraft.DraftState.Children)
                         {
-                            return original;
+                            Reconcile(child);
+                        }
+
+                        if (idraft.DraftState!.Changed)
+                        {
+                            idraft.DraftState = null;
+                        }
+                        else
+                        {
+                            draft = idraft.DraftState.GetOriginal<object?>();
+                            idraft.DraftState.Revoke();
                         }
                     }
 
-                    // TODO: pluggable object creation.
-                    object? result = this.CloneProvider.Clone(draft, () => Activator.CreateInstance(immutableType), Reconcile);
-
-                    // lock the immutable.
-                    if (result is ILockable lockable && !lockable.Locked)
+                    if (draft is ILockable lockable)
                     {
                         lockable.Lock();
                     }
 
-                    // revoke the draft.
-                    if (draft is IDraft toRevoke)
-                    {
-                        toRevoke.DraftState.Revoke();
-                    }
-
-                    return result;
+                    return draft;
                 }
                 finally
                 {

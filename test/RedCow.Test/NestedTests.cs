@@ -61,7 +61,11 @@ namespace RedCow.Test
                 p.FirstChild.LastName = "Anon";
             });
 
-            Assert.NotSame(initial, person);
+            // Copy on write.
+            Assert.Same(initial, person);
+            Assert.Same(initial.FirstChild, person.FirstChild);
+            Assert.Same(initial.SecondChild, person.SecondChild);
+
             Assert.NotSame(person, result);
             Assert.NotSame(person.FirstChild, result.FirstChild);
 
@@ -70,10 +74,11 @@ namespace RedCow.Test
         }
 
         /// <summary>
-        /// Tests a nested produce.
+        /// Tests a nested produce where an inner draft is changed.
+        /// This should also change all parent drafts up to the root.
         /// </summary>
         [Fact]
-        public void NestedProduceChangedTest()
+        public void InnerNestedProduceTest()
         {
             var initial = new TestPerson()
             {
@@ -98,13 +103,14 @@ namespace RedCow.Test
 
             var result = person.Produce(p =>
             {
-                p.LastName = "Anon";
                 p.FirstChild.LastName = "Anon";
-                var local = p.SecondChild;
-                Assert.NotSame(local, initial.SecondChild);
             });
 
-            Assert.NotSame(initial, person);
+            // Copy on write.
+            Assert.Same(initial, person);
+            Assert.Same(initial.FirstChild, person.FirstChild);
+            Assert.Same(initial.SecondChild, person.SecondChild);
+
             Assert.NotSame(person, result);
             Assert.NotSame(person.FirstChild, result.FirstChild);
 

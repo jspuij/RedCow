@@ -80,7 +80,7 @@ namespace RedCow.Immutable
             {
                 if (InternalIsDraft(state))
                 {
-                    scope.Parent = ((IDraft)state).DraftState.Scope;
+                    scope.Parent = ((IDraft)state).DraftState!.Scope;
                     draft = (T)state;
                     return scope;
                 }
@@ -103,12 +103,7 @@ namespace RedCow.Immutable
         /// <exception cref="ArgumentNullException">when the state is null.</exception>
         internal static bool InternalIsDraft(object state)
         {
-            if (state is null)
-            {
-                throw new ArgumentNullException(nameof(state));
-            }
-
-            return state is IDraft;
+            return state is IDraft idraft && idraft.DraftState != null;
         }
 
         /// <summary>
@@ -121,18 +116,18 @@ namespace RedCow.Immutable
         {
             if (state is null)
             {
-                throw new ArgumentNullException(nameof(state));
+                return false;
             }
 
-            return GetDraftType(state) != null;
+            return GetProxyType(state) != null;
         }
 
         /// <summary>
-        /// Gets the draft Type for this object.
+        /// Gets the proxy Type for this object.
         /// </summary>
         /// <param name="source">The source object.</param>
         /// <returns>The draft type if found, otherwise null.</returns>
-        internal static Type? GetDraftType(object source)
+        internal static Type? GetProxyType(object source)
         {
             Type? type = source.GetType();
 
@@ -140,9 +135,9 @@ namespace RedCow.Immutable
 
             while (type != null)
             {
-                if (type.GetCustomAttributes().SingleOrDefault(x => x is DraftTypeAttribute) is DraftTypeAttribute draftTypeAttribute)
+                if (type.GetCustomAttributes().SingleOrDefault(x => x is ProxyTypeAttribute) is ProxyTypeAttribute draftTypeAttribute)
                 {
-                    draftType = draftTypeAttribute.DraftType;
+                    draftType = draftTypeAttribute.ProxyType;
                     break;
                 }
 
@@ -150,31 +145,6 @@ namespace RedCow.Immutable
             }
 
             return draftType;
-        }
-
-        /// <summary>
-        /// Gets the immutable Type for this object.
-        /// </summary>
-        /// <param name="source">The source object.</param>
-        /// <returns>The immutable type if found, otherwise null.</returns>
-        internal static Type? GetImmutableType(object source)
-        {
-            Type? type = source.GetType();
-
-            Type? immutableType = null;
-
-            while (type != null)
-            {
-                if (type.GetCustomAttributes().SingleOrDefault(x => x is ImmutableTypeAttribute) is ImmutableTypeAttribute immutableTypeAttribute)
-                {
-                    immutableType = immutableTypeAttribute.ImmutableType;
-                    break;
-                }
-
-                type = type.BaseType;
-            }
-
-            return immutableType;
         }
     }
 }

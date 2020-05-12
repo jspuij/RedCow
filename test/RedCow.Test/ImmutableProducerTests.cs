@@ -42,7 +42,8 @@ namespace RedCow.Test
 
             ITestPerson person = ITestPerson.Produce(initial);
 
-            Assert.NotSame(initial, person);
+            // Copy on write so the objects should be identical.
+            Assert.Same(initial, person);
             Assert.Equal(initial.FirstName, person.FirstName);
             Assert.Equal(initial.LastName, person.LastName);
             Assert.Equal(initial.IsAdult, person.IsAdult);
@@ -280,16 +281,16 @@ namespace RedCow.Test
         [Fact]
         public void DraftRevokedTest()
         {
-            TestPerson initial = new TestPerson()
+            ITestPerson initial = ITestPerson.Produce(new TestPerson()
             {
                 FirstName = "John",
                 LastName = "Doe",
                 IsAdult = true,
-            };
+            });
 
             TestPerson? draft = null;
 
-            ITestPerson person = ITestPerson.Produce(initial, p =>
+            ITestPerson person = initial.Produce(p =>
             {
                 draft = p;
             });

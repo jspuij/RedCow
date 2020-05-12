@@ -1,4 +1,4 @@
-﻿// <copyright file="DraftTypeAttribute.cs" company="Jan-Willem Spuij">
+﻿// <copyright file="ProxyTypeAttribute.cs" company="Jan-Willem Spuij">
 // Copyright 2020 Jan-Willem Spuij
 //
 // Permission is hereby granted, free of charge, to any person obtaining a copy of this software and associated documentation
@@ -19,24 +19,24 @@ namespace RedCow.Immutable
     using System;
 
     /// <summary>
-    /// Draft type attribute. Indicates which class is the draft type for this type.
+    /// Proxy type attribute. Indicates which class is the proxy type for this type.
     /// </summary>
-    public class DraftTypeAttribute : Attribute
+    public class ProxyTypeAttribute : Attribute
     {
         /// <summary>
-        /// Initializes a new instance of the <see cref="DraftTypeAttribute"/> class.
+        /// Initializes a new instance of the <see cref="ProxyTypeAttribute"/> class.
         /// </summary>
-        /// <param name="draftType">
-        /// The draft type.
+        /// <param name="proxyType">
+        /// The proxy type.
         /// </param>
-        public DraftTypeAttribute(Type draftType)
+        public ProxyTypeAttribute(Type proxyType)
         {
-            this.DraftType = draftType;
+            this.ProxyType = proxyType;
         }
 
         /// <summary>
-        /// Gets the draft type.
+        /// Gets the proxy type.
         /// </summary>
-        public Type DraftType { get; }
+        public Type ProxyType { get; }
     }
 }

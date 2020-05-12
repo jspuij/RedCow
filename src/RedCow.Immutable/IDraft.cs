@@ -22,8 +22,13 @@ namespace RedCow.Immutable
     public interface IDraft
     {
         /// <summary>
-        /// Gets or the <see cref="DraftState"/> for this draft.
+        /// Gets or sets the <see cref="DraftState"/> for this draft.
         /// </summary>
-        public DraftState DraftState { get; }
+        public DraftState? DraftState { get; set; }
+
+        /// <summary>
+        /// Clones the draft from the original.
+        /// </summary>
+        public void Clone();
     }
 }

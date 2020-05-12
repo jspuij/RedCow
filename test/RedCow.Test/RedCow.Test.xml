@@ -9,14 +9,39 @@
             Car class.
             </summary>
         </member>
+        <member name="F:RedCow.Test.Car._Make">
+            <summary>
+            Make field.
+            </summary>
+        </member>
         <member name="P:RedCow.Test.Car.Make">
             <summary>
              Gets or sets Make.
             </summary>
         </member>
+        <member name="F:RedCow.Test.Car._Model">
+            <summary>
+            Model field.
+            </summary>
+        </member>
         <member name="P:RedCow.Test.Car.Model">
             <summary>
              Gets or sets Model.
+            </summary>
+        </member>
+        <member name="F:RedCow.Test.Car.locked">
+            <summary>
+            Whether the instance is locked.
+            </summary>
+        </member>
+        <member name="P:RedCow.Test.Car.RedCow#ILockable#Locked">
+            <summary>
+            Gets a value indicating whether the immutable is locked.
+            </summary>
+        </member>
+        <member name="M:RedCow.Test.Car.RedCow#ILockable#Lock">
+            <summary>
+            Locks the immutable.
             </summary>
         </member>
         <member name="T:RedCow.Test.CollectionTests">
@@ -306,9 +331,10 @@
             Tests a nested produce.
             </summary>
         </member>
-        <member name="M:RedCow.Test.NestedTests.NestedProduceChangedTest">
+        <member name="M:RedCow.Test.NestedTests.InnerNestedProduceTest">
             <summary>
-            Tests a nested produce.
+            Tests a nested produce where an inner draft is changed.
+            This should also change all parent drafts up to the root.
             </summary>
         </member>
         <member name="M:RedCow.Test.NestedTests.CircularReferenceTest">
@@ -336,9 +362,19 @@
             The mutable type.
             </summary>
         </member>
+        <member name="F:RedCow.Test.TestPerson._FirstName">
+            <summary>
+            FirstName field.
+            </summary>
+        </member>
         <member name="P:RedCow.Test.TestPerson.FirstName">
             <summary>
              Gets or sets FirstName.
+            </summary>
+        </member>
+        <member name="F:RedCow.Test.TestPerson._LastName">
+            <summary>
+            LastName field.
             </summary>
         </member>
         <member name="P:RedCow.Test.TestPerson.LastName">
@@ -346,9 +382,19 @@
              Gets or sets LastName.
             </summary>
         </member>
+        <member name="F:RedCow.Test.TestPerson._IsAdult">
+            <summary>
+             A boolean indicating whether IsAdult is true.
+            </summary>
+        </member>
         <member name="P:RedCow.Test.TestPerson.IsAdult">
             <summary>
              Gets or sets a value indicating whether IsAdult is true.
+            </summary>
+        </member>
+        <member name="F:RedCow.Test.TestPerson._FirstChild">
+            <summary>
+            FirstChild field.
             </summary>
         </member>
         <member name="P:RedCow.Test.TestPerson.FirstChild">
@@ -361,6 +407,11 @@
             Gets FirstChild.
             </summary>
         </member>
+        <member name="F:RedCow.Test.TestPerson._SecondChild">
+            <summary>
+            SecondChild field.
+            </summary>
+        </member>
         <member name="P:RedCow.Test.TestPerson.SecondChild">
             <summary>
              Gets or sets SecondChild.
@@ -369,6 +420,11 @@
         <member name="P:RedCow.Test.TestPerson.RedCow#Test#ITestPerson#SecondChild">
             <summary>
             Gets SecondChild.
+            </summary>
+        </member>
+        <member name="F:RedCow.Test.TestPerson._Cars">
+            <summary>
+            Cars field.
             </summary>
         </member>
         <member name="P:RedCow.Test.TestPerson.Cars">
@@ -381,174 +437,119 @@
             Gets Cars.
             </summary>
         </member>
-        <member name="T:RedCow.Test.ImmutableCar">
+        <member name="F:RedCow.Test.TestPerson.locked">
             <summary>
-            Immutable Implementation of <see cref = "T:RedCow.Test.Car"/>.
+            Whether the instance is locked.
             </summary>
         </member>
-        <member name="P:RedCow.Test.ImmutableCar.Make">
+        <member name="P:RedCow.Test.TestPerson.RedCow#ILockable#Locked">
+            <summary>
+            Gets a value indicating whether the immutable is locked.
+            </summary>
+        </member>
+        <member name="M:RedCow.Test.TestPerson.RedCow#ILockable#Lock">
+            <summary>
+            Locks the immutable.
+            </summary>
+        </member>
+        <member name="T:RedCow.Test.ProxyCar">
+            <summary>
+            Proxy Implementation of <see cref = "T:RedCow.Test.Car"/>.
+            </summary>
+        </member>
+        <member name="P:RedCow.Test.ProxyCar.Make">
             <summary>
              Gets or sets Make.
             </summary>
         </member>
-        <member name="P:RedCow.Test.ImmutableCar.Model">
+        <member name="P:RedCow.Test.ProxyCar.Model">
             <summary>
              Gets or sets Model.
             </summary>
         </member>
-        <member name="P:RedCow.Test.ImmutableCar.Locked">
-            <summary>
-            Gets a value indicating whether the immutable is locked.
-            </summary>
-        </member>
-        <member name="M:RedCow.Test.ImmutableCar.Lock">
-            <summary>
-            Locks the immutable.
-            </summary>
-        </member>
-        <member name="T:RedCow.Test.DraftCar">
-            <summary>
-            Draft Implementation of <see cref = "T:RedCow.Test.Car"/>.
-            </summary>
-        </member>
-        <member name="P:RedCow.Test.DraftCar.Make">
-            <summary>
-              Gets or sets Make.
-            </summary>
-        </member>
-        <member name="P:RedCow.Test.DraftCar.Model">
-            <summary>
-              Gets or sets Model.
-            </summary>
-        </member>
-        <member name="M:RedCow.Test.DraftCar.#ctor(RedCow.Immutable.DraftState)">
-            <summary>
-            Initializes a new instance of the <see cref = "T:RedCow.Test.DraftCar"/> class.
-            </summary>
-        </member>
-        <member name="F:RedCow.Test.DraftCar.draftState">
+        <member name="F:RedCow.Test.ProxyCar.draftState">
             <summary>
             the draftState field.
             </summary>
         </member>
-        <member name="P:RedCow.Test.DraftCar.RedCow#Immutable#IDraft#DraftState">
+        <member name="P:RedCow.Test.ProxyCar.RedCow#Immutable#IDraft#DraftState">
             <summary>
             Gets or sets the DraftState.
             </summary>
         </member>
-        <member name="P:RedCow.Test.DraftCar.Original">
+        <member name="P:RedCow.Test.ProxyCar.Original">
             <summary>
             Gets the original.
             </summary>
         </member>
-        <member name="P:RedCow.Test.DraftCar.ImmutableOriginal">
+        <member name="P:RedCow.Test.ProxyCar.ImmutableOriginal">
             <summary>
             Gets the original as Immutable.
             </summary>
         </member>
-        <member name="T:RedCow.Test.ImmutableTestPerson">
+        <member name="M:RedCow.Test.ProxyCar.RedCow#Immutable#IDraft#Clone">
             <summary>
-            Immutable Implementation of <see cref = "T:RedCow.Test.TestPerson"/>.
+            Clones the object from the original.
             </summary>
         </member>
-        <member name="P:RedCow.Test.ImmutableTestPerson.FirstName">
+        <member name="T:RedCow.Test.ProxyTestPerson">
+            <summary>
+            Proxy Implementation of <see cref = "T:RedCow.Test.TestPerson"/>.
+            </summary>
+        </member>
+        <member name="P:RedCow.Test.ProxyTestPerson.FirstName">
             <summary>
              Gets or sets FirstName.
             </summary>
         </member>
-        <member name="P:RedCow.Test.ImmutableTestPerson.LastName">
+        <member name="P:RedCow.Test.ProxyTestPerson.LastName">
             <summary>
              Gets or sets LastName.
             </summary>
         </member>
-        <member name="P:RedCow.Test.ImmutableTestPerson.IsAdult">
+        <member name="P:RedCow.Test.ProxyTestPerson.IsAdult">
             <summary>
              Gets or sets a value indicating whether IsAdult is true.
             </summary>
         </member>
-        <member name="P:RedCow.Test.ImmutableTestPerson.FirstChild">
+        <member name="P:RedCow.Test.ProxyTestPerson.FirstChild">
             <summary>
              Gets or sets FirstChild.
             </summary>
         </member>
-        <member name="P:RedCow.Test.ImmutableTestPerson.SecondChild">
+        <member name="P:RedCow.Test.ProxyTestPerson.SecondChild">
             <summary>
              Gets or sets SecondChild.
             </summary>
         </member>
-        <member name="P:RedCow.Test.ImmutableTestPerson.Cars">
+        <member name="P:RedCow.Test.ProxyTestPerson.Cars">
             <summary>
              Gets or sets Cars.
             </summary>
         </member>
-        <member name="P:RedCow.Test.ImmutableTestPerson.Locked">
-            <summary>
-            Gets a value indicating whether the immutable is locked.
-            </summary>
-        </member>
-        <member name="M:RedCow.Test.ImmutableTestPerson.Lock">
-            <summary>
-            Locks the immutable.
-            </summary>
-        </member>
-        <member name="T:RedCow.Test.DraftTestPerson">
-            <summary>
-            Draft Implementation of <see cref = "T:RedCow.Test.TestPerson"/>.
-            </summary>
-        </member>
-        <member name="P:RedCow.Test.DraftTestPerson.FirstName">
-            <summary>
-              Gets or sets FirstName.
-            </summary>
-        </member>
-        <member name="P:RedCow.Test.DraftTestPerson.LastName">
-            <summary>
-              Gets or sets LastName.
-            </summary>
-        </member>
-        <member name="P:RedCow.Test.DraftTestPerson.IsAdult">
-            <summary>
-              Gets or sets a value indicating whether IsAdult is true.
-            </summary>
-        </member>
-        <member name="P:RedCow.Test.DraftTestPerson.FirstChild">
-            <summary>
-              Gets or sets FirstChild.
-            </summary>
-        </member>
-        <member name="P:RedCow.Test.DraftTestPerson.SecondChild">
-            <summary>
-              Gets or sets SecondChild.
-            </summary>
-        </member>
-        <member name="P:RedCow.Test.DraftTestPerson.Cars">
-            <summary>
-              Gets or sets Cars.
-            </summary>
-        </member>
-        <member name="M:RedCow.Test.DraftTestPerson.#ctor(RedCow.Immutable.DraftState)">
-            <summary>
-            Initializes a new instance of the <see cref = "T:RedCow.Test.DraftTestPerson"/> class.
-            </summary>
-        </member>
-        <member name="F:RedCow.Test.DraftTestPerson.draftState">
+        <member name="F:RedCow.Test.ProxyTestPerson.draftState">
             <summary>
             the draftState field.
             </summary>
         </member>
-        <member name="P:RedCow.Test.DraftTestPerson.RedCow#Immutable#IDraft#DraftState">
+        <member name="P:RedCow.Test.ProxyTestPerson.RedCow#Immutable#IDraft#DraftState">
             <summary>
             Gets or sets the DraftState.
             </summary>
         </member>
-        <member name="P:RedCow.Test.DraftTestPerson.Original">
+        <member name="P:RedCow.Test.ProxyTestPerson.Original">
             <summary>
             Gets the original.
             </summary>
         </member>
-        <member name="P:RedCow.Test.DraftTestPerson.ImmutableOriginal">
+        <member name="P:RedCow.Test.ProxyTestPerson.ImmutableOriginal">
             <summary>
             Gets the original as Immutable.
+            </summary>
+        </member>
+        <member name="M:RedCow.Test.ProxyTestPerson.RedCow#Immutable#IDraft#Clone">
+            <summary>
+            Clones the object from the original.
             </summary>
         </member>
     </members>

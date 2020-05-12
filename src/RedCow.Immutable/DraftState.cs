@@ -31,11 +31,6 @@ namespace RedCow.Immutable
         private readonly object original;
 
         /// <summary>
-        /// A boolean indicating whether this draft is change tracking.
-        /// </summary>
-        private bool changeTracking = false;
-
-        /// <summary>
         /// Initializes a new instance of the <see cref="DraftState"/> class.
         /// </summary>
         /// <param name="scope">The scope this draft state belongs to.</param>
@@ -54,7 +49,7 @@ namespace RedCow.Immutable
         /// <summary>
         /// Gets a value indicating whether or not this draft is changed.
         /// </summary>
-        public bool Changed { get; private set; }
+        public bool Changed { get; internal set; }
 
         /// <summary>
         /// Gets the scope this draft belongs to.
@@ -74,19 +69,20 @@ namespace RedCow.Immutable
         /// <typeparam name="T">The type of the Property.</typeparam>
         /// <param name="propertyName">The property name.</param>
         /// <param name="getter">The getter.</param>
+        /// <param name="originalGetter">The getter to get the original property.</param>
         /// <param name="setter">The setter.</param>
         /// <exception cref="InvalidOperationException">thrown when the draft is revoked.</exception>
         /// <returns>The property value.</returns>
-        public T Get<T>(string propertyName, Func<T> getter, Action<T> setter)
+        public T Get<T>(string propertyName, Func<T> getter, Func<T> originalGetter, Action<T> setter)
         {
             if (this.Revoked)
             {
-                throw new DraftRevokedException(this, "The draft is out of scope and has been revoked.");
+                throw new DraftRevokedException(this, $"Exception while getting property {propertyName}: The draft is out of scope and has been revoked.");
             }
 
-            var result = getter();
+            var result = this.Changed ? getter() : originalGetter();
 
-            if (result == null || InternalIsDraft(result) || this.Scope.IsFinishing)
+            if (result == null)
             {
                 return result;
             }
@@ -94,6 +90,20 @@ namespace RedCow.Immutable
             var resultType = result.GetType();
 
             if (resultType.IsValueType || this.Scope.AllowedImmutableReferenceTypes.Contains(resultType))
+            {
+                return result;
+            }
+
+            if (!this.Changed)
+            {
+                var proxy = getter();
+                if (proxy != null)
+                {
+                    result = proxy;
+                }
+            }
+
+            if (InternalIsDraft(result) || this.Scope.IsFinishing)
             {
                 return result;
             }
@@ -110,20 +120,22 @@ namespace RedCow.Immutable
         /// <typeparam name="T">The type of the Property.</typeparam>
         /// <param name="propertyName">The property name.</param>
         /// <param name="setter">The setter.</param>
+        /// <param name="copyOnWrite">The copy on write action.</param>
         /// <exception cref="InvalidOperationException">thrown when the draft is revoked.</exception>
-        public void Set<T>(string propertyName, Action setter)
+        public void Set<T>(string propertyName, Action setter, Action copyOnWrite)
         {
             if (this.Revoked)
             {
-                throw new DraftRevokedException(this, "The draft is out of scope and has been revoked.");
+                throw new DraftRevokedException(this, $"Exception while setting property {propertyName}: The draft is out of scope and has been revoked.");
+            }
+
+            if (!this.Changed)
+            {
+                this.Changed = true;
+                copyOnWrite();
             }
 
             setter();
-
-            if (this.changeTracking)
-            {
-                this.Changed = true;
-            }
         }
 
         /// <summary>
@@ -132,14 +144,6 @@ namespace RedCow.Immutable
         internal void Revoke()
         {
             this.Revoked = true;
-        }
-
-        /// <summary>
-        /// Starts change tracking.
-        /// </summary>
-        internal void StartTracking()
-        {
-            this.changeTracking = true;
         }
     }
 }

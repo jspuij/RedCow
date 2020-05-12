@@ -17,8 +17,10 @@
 namespace RedCow.Generators
 {
     using System;
+    using System.Collections.Generic;
     using System.Diagnostics.CodeAnalysis;
     using System.Linq;
+    using System.Text;
     using System.Threading;
     using System.Threading.Tasks;
     using CodeGeneration.Roslyn;
@@ -63,37 +65,32 @@ namespace RedCow.Generators
 
             ClassDeclarationSyntax partial = this.GeneratePartial(context, applyToClass);
 
-            ClassDeclarationSyntax immutable = this.GenerateImmutable(context, applyToClass);
+            ClassDeclarationSyntax proxy = this.GenerateProxy(context, applyToClass);
 
-            ClassDeclarationSyntax draft = this.GenerateDraft(context, applyToClass);
+            return Task.FromResult(List(new MemberDeclarationSyntax[] { partial, proxy }));
+        }
 
-            partial = partial.WithAttributeLists(
-            List(
-                new AttributeListSyntax[]
-                {
-                    AttributeList(
-                        SingletonSeparatedList(
-                            Attribute(
-                                IdentifierName("ImmutableType"))
-                            .WithArgumentList(
-                                AttributeArgumentList(
-                                    SingletonSeparatedList(
-                                        AttributeArgument(
-                                            TypeOfExpression(
-                                                IdentifierName($"Immutable{applyToClass.Identifier}")))))))),
-                    AttributeList(
-                        SingletonSeparatedList(
-                            Attribute(
-                                IdentifierName("DraftType"))
-                            .WithArgumentList(
-                                AttributeArgumentList(
-                                    SingletonSeparatedList(
-                                        AttributeArgument(
-                                            TypeOfExpression(
-                                                IdentifierName($"Draft{applyToClass.Identifier}")))))))),
-                }));
+        /// <summary>
+        /// Creates a backinf field based on the readonly interface property.
+        /// </summary>
+        /// <param name="context">The transformation context.</param>
+        /// <param name="property">The property to generate the Getter and Setter for.</param>
+        /// <returns>An <see cref="MemberDeclarationSyntax"/>.</returns>
+        private static MemberDeclarationSyntax CreateField(TransformationContext context, IPropertySymbol property)
+        {
+            string documentationText = property.Type.SpecialType == SpecialType.System_Boolean ? $" A boolean indicating whether {property.Name} is true." : $"{property.Name} field.";
 
-            return Task.FromResult(List(new MemberDeclarationSyntax[] { partial, immutable, draft }));
+            var baseType = GetMutableType(context, property.Type);
+
+            var method = $@"
+                /// <summary>
+                /// {documentationText}
+                /// </summary>
+                private {baseType} _{property.Name};
+            ";
+
+            return ParseMemberDeclaration(method)
+                .NormalizeWhitespace();
         }
 
         /// <summary>
@@ -114,8 +111,15 @@ namespace RedCow.Generators
                 /// </summary>
                 public virtual {baseType} {property.Name}
                 {{
-                    get;
-                    set;
+                    get => this._{property.Name};
+                    set
+                    {{
+                        if (this.locked)
+                        {{
+                            throw new ImmutableException(this, $""{property.Name} cannot be changed as this object is immutable"");
+                        }}
+                        this._{property.Name} = value;
+                    }}
                 }}
             ";
 
@@ -171,62 +175,42 @@ namespace RedCow.Generators
         }
 
         /// <summary>
-        /// Creates an immutable property with getter and setter that throws an <see cref="InvalidOperationException"/>,
-        /// based on the readonly interface property.
+        /// Creates a proxy property with getter and setter based on the readonly interface property.
         /// </summary>
         /// <param name="context">The transformation context.</param>
         /// <param name="property">The property to generate the Getter and Setter for.</param>
         /// <returns>An <see cref="MemberDeclarationSyntax"/>.</returns>
-        private static MemberDeclarationSyntax CreateImmutableProperty(TransformationContext context, IPropertySymbol property)
+        private static MemberDeclarationSyntax CreateProxyProperty(TransformationContext context, IPropertySymbol property)
         {
             string documentationText = property.Type.SpecialType == SpecialType.System_Boolean ? $" Gets or sets a value indicating whether {property.Name} is true." : $" Gets or sets {property.Name}.";
 
             var baseType = GetMutableType(context, property.Type);
 
             var method = $@"
-                /// <summary>
-                /// {documentationText}
-                /// </summary>
-                public override {baseType} {property.Name}
+            /// <summary>
+            /// {documentationText}
+            /// </summary>
+            public override {baseType} {property.Name}
+            {{
+                get
                 {{
-                    get => base.{property.Name};
-                    set
+                    if (this.draftState == null)
                     {{
-                        if (this.Locked)
-                        {{
-                            throw new ImmutableException(this, ""This is an immutable object, and cannot be changed."");
-                        }}
-                        
+                        return base.{property.Name};
+                    }}
+
+                    return this.draftState.Get<{baseType}>(nameof({property.Name}), () => base.{property.Name}, () => this.Original.{property.Name}, value => base.{property.Name} = value);
+                }}
+                set
+                {{
+                    if (this.draftState == null)
+                    {{
                         base.{property.Name} = value;
                     }}
+
+                    this.draftState.Set<{baseType}>(nameof({property.Name}), () => base.{property.Name} = value, ((IDraft)this).Clone);
                 }}
-            ";
-
-            return ParseMemberDeclaration(method)
-                .NormalizeWhitespace();
-        }
-
-        /// <summary>
-        /// Creates a draft property with getter and setter based on the readonly interface property.
-        /// </summary>
-        /// <param name="context">The transformation context.</param>
-        /// <param name="property">The property to generate the Getter and Setter for.</param>
-        /// <returns>An <see cref="MemberDeclarationSyntax"/>.</returns>
-        private static MemberDeclarationSyntax CreateDraftProperty(TransformationContext context, IPropertySymbol property)
-        {
-            string documentationText = property.Type.SpecialType == SpecialType.System_Boolean ? $" Gets or sets a value indicating whether {property.Name} is true." : $" Gets or sets {property.Name}.";
-
-            var baseType = GetMutableType(context, property.Type);
-
-            var method = $@"
-                /// <summary>
-                ///  {documentationText}
-                /// </summary>
-                public override {baseType} {property.Name}
-                {{
-                    get => this.draftState.Get<{baseType}>(nameof({property.Name}), () => base.{property.Name}, value => base.{property.Name} = value);
-                    set => this.draftState.Set<{baseType}>(nameof({property.Name}), () => base.{property.Name} = value);
-                }}
+            }}
             ";
 
             return ParseMemberDeclaration(method)
@@ -246,6 +230,60 @@ namespace RedCow.Generators
                 /// </summary>
             ";
             return ParseLeadingTrivia(trivia);
+        }
+
+        /// <summary>
+        /// Generates the Locked field on the immutable class.
+        /// </summary>
+        /// <returns>The property declaration.</returns>
+        private static MemberDeclarationSyntax GenerateLockedField()
+        {
+            var field = $@"
+                /// <summary>
+                /// Whether the instance is locked.
+                /// </summary>
+                private bool locked;
+            ";
+
+            return ParseMemberDeclaration(field)
+                .NormalizeWhitespace();
+        }
+
+        /// <summary>
+        /// Generates the Lock method on the immutable class.
+        /// </summary>
+        /// <returns>The method declaration.</returns>
+        private static MemberDeclarationSyntax GenerateLockMethod()
+        {
+            var method = $@"
+                /// <summary>
+                /// Locks the immutable.
+                /// </summary>
+                void ILockable.Lock()
+                {{
+                    this.locked = true;
+                }}
+            ";
+
+            return ParseMemberDeclaration(method)
+                .NormalizeWhitespace();
+        }
+
+        /// <summary>
+        /// Generates the Locked property on the immutable class.
+        /// </summary>
+        /// <returns>The property declaration.</returns>
+        private static MemberDeclarationSyntax GenerateLockedProperty()
+        {
+            var property = $@"
+                /// <summary>
+                /// Gets a value indicating whether the immutable is locked.
+                /// </summary>
+                bool ILockable.Locked => this.locked;
+            ";
+
+            return ParseMemberDeclaration(property)
+                .NormalizeWhitespace();
         }
 
         /// <summary>
@@ -309,29 +347,55 @@ namespace RedCow.Generators
         private ClassDeclarationSyntax GeneratePartial(TransformationContext context, ClassDeclarationSyntax sourceClassDeclaration)
         {
             var result = ClassDeclaration(sourceClassDeclaration.Identifier)
-                            .AddModifiers(sourceClassDeclaration.Modifiers.ToArray());
+                            .AddModifiers(sourceClassDeclaration.Modifiers.ToArray())
+                             .AddBaseListTypes(
+                                SimpleBaseType(ParseTypeName(this.interfaceType.Name)),
+                                SimpleBaseType(ParseTypeName("ILockable")));
 
             result = result.AddMembers(
                 this.interfaceType.GetMembers().
                 Where(x => x is IPropertySymbol).
                 Cast<IPropertySymbol>().SelectMany(p =>
                 {
+                    var field = CreateField(context, p);
                     var prop = CreateProperty(context, p);
                     var intProp = this.CreateInterfaceProperty(context, p);
-                    return intProp == null ? new[] { prop } : new[] { prop, intProp };
+                    return intProp == null ? new[] { field, prop } : new[] { field, prop, intProp };
                 }).ToArray());
+
+            result = result.WithAttributeLists(
+            List(
+                new AttributeListSyntax[]
+                {
+                    AttributeList(
+                        SingletonSeparatedList(
+                            Attribute(
+                                IdentifierName("ProxyType"))
+                            .WithArgumentList(
+                                AttributeArgumentList(
+                                    SingletonSeparatedList(
+                                        AttributeArgument(
+                                            TypeOfExpression(
+                                                IdentifierName($"Proxy{sourceClassDeclaration.Identifier}")))))))),
+                }));
+
+            result = result.AddMembers(
+             GenerateLockedField(),
+             GenerateLockedProperty(),
+             GenerateLockMethod());
+
             return result;
         }
 
         /// <summary>
-        /// Generates the draft class.
+        /// Generates the proxy class.
         /// </summary>
         /// <param name="context">The transformation context.</param>
         /// <param name="sourceClassDeclaration">The source class declaration.</param>
         /// <returns>A partial class declaration.</returns>
-        private ClassDeclarationSyntax GenerateDraft(TransformationContext context, ClassDeclarationSyntax sourceClassDeclaration)
+        private ClassDeclarationSyntax GenerateProxy(TransformationContext context, ClassDeclarationSyntax sourceClassDeclaration)
         {
-            var result = ClassDeclaration($"Draft{sourceClassDeclaration.Identifier}")
+            var result = ClassDeclaration($"Proxy{sourceClassDeclaration.Identifier}")
                             .WithModifiers(sourceClassDeclaration.Modifiers)
                              .WithAttributeLists(
                                 SingletonList<AttributeListSyntax>(
@@ -341,7 +405,7 @@ namespace RedCow.Generators
                                                 IdentifierName("ExcludeFromCodeCoverage"))))
                                     .WithOpenBracketToken(
                                         Token(
-                                            GenerateXmlDoc($"Draft Implementation of <see cref=\"{sourceClassDeclaration.Identifier}\"/>."),
+                                            GenerateXmlDoc($"Proxy Implementation of <see cref=\"{sourceClassDeclaration.Identifier}\"/>."),
                                             SyntaxKind.OpenBracketToken,
                                             TriviaList()))))
                             .AddBaseListTypes(
@@ -353,7 +417,7 @@ namespace RedCow.Generators
                 Where(x => x is IPropertySymbol).
                 Cast<IPropertySymbol>().Select(p =>
                 {
-                    return CreateDraftProperty(context, p);
+                    return CreateProxyProperty(context, p);
                 }).ToArray());
 
             if (sourceClassDeclaration.Members.Any(x => x is ConstructorDeclarationSyntax))
@@ -362,29 +426,68 @@ namespace RedCow.Generators
                     sourceClassDeclaration.Members.
                     Where(x => x is ConstructorDeclarationSyntax).
                     Cast<ConstructorDeclarationSyntax>().
-                    Select(c => this.GenerateDraftConstructor(sourceClassDeclaration, c))));
-            }
-            else
-            {
-                result = result.AddMembers(this.GenerateDraftConstructor(sourceClassDeclaration));
+                    Select(c => this.GenerateProxyConstructor(sourceClassDeclaration, c))));
             }
 
             result = result.AddMembers(
               this.GenerateDraftStateField(),
               this.GenerateDraftStateProperty(),
               this.GenerateOriginalProperty(sourceClassDeclaration),
-              this.GenerateImmutableOriginalProperty());
+              this.GenerateImmutableOriginalProperty(),
+              this.GenerateCloneMethod(context, this.interfaceType.GetMembers().
+                Where(x => x is IPropertySymbol).
+                Cast<IPropertySymbol>()));
 
             return result;
         }
 
         /// <summary>
-        /// Generates a single draft constructor.
+        /// Generates the clone method.
+        /// </summary>
+        /// <param name="context">The transformation context.</param>
+        /// <param name="properties">The properties to generate the clone method for.</param>
+        /// <returns>The Member Declaration syntax.</returns>
+        private MemberDeclarationSyntax GenerateCloneMethod(TransformationContext context, IEnumerable<IPropertySymbol> properties)
+        {
+            string methodStart = $@"
+        /// <summary>
+        /// Clones the object from the original.
+        /// </summary>
+        void IDraft.Clone()
+        {{";
+
+            var stringBuilder = new StringBuilder(methodStart);
+
+            foreach (var property in properties)
+            {
+                var baseType = GetMutableType(context, property.Type);
+
+                if (SymbolEqualityComparer.Default.Equals(baseType, property.Type))
+                {
+                    stringBuilder.AppendLine($@"this.{property.Name} = this.Original.{property.Name};");
+                }
+                else
+                {
+                    stringBuilder.AppendLine($@"
+                        if (!this.{property.Name}.IsDraft())
+                        {{
+                            this.{property.Name} = this.Original.{property.Name};
+                        }}");
+                }
+            }
+
+            stringBuilder.AppendLine("}");
+            return ParseMemberDeclaration(stringBuilder.ToString())
+    .NormalizeWhitespace();
+        }
+
+        /// <summary>
+        /// Generates a single proxy constructor.
         /// </summary>
         /// <param name="sourceClassDeclaration">The source class declaration.</param>
         /// <param name="constructorDeclarationSyntax">An optional existing constructor on the base class.</param>
         /// <returns>A member declaration.</returns>
-        private MemberDeclarationSyntax GenerateDraftConstructor(
+        private MemberDeclarationSyntax GenerateProxyConstructor(
             ClassDeclarationSyntax sourceClassDeclaration,
             ConstructorDeclarationSyntax constructorDeclarationSyntax = null)
         {
@@ -392,35 +495,17 @@ namespace RedCow.Generators
                 constructorDeclarationSyntax?.ParameterList?.Parameters
                 ?? default(SeparatedSyntaxList<ParameterSyntax>);
 
-            string arguments = parameters.Any() ? $", {parameters.ToFullString()}" : string.Empty;
+            string arguments = parameters.Any() ? parameters.ToFullString() : string.Empty;
             var constructor = $@"
                 /// <summary>
-                /// Initializes a new instance of the <see cref=""Draft{sourceClassDeclaration.Identifier}""/> class.
+                /// Initializes a new instance of the <see cref=""Proxy{sourceClassDeclaration.Identifier}""/> class.
                 /// </summary>
-                public Draft{sourceClassDeclaration.Identifier}(DraftState draftState{arguments}) : base({string.Join(",", parameters.Select(x => x.Identifier))})
+                public Proxy{sourceClassDeclaration.Identifier}({arguments}) : base({string.Join(",", parameters.Select(x => x.Identifier))})
                 {{
-                    this.draftState = draftState ?? throw new ArgumentNullException(nameof(draftState));
                 }}
             ";
 
             return ParseMemberDeclaration(constructor)
-                .NormalizeWhitespace();
-        }
-
-        /// <summary>
-        /// Generates the draft state field.
-        /// </summary>
-        /// <returns>A member declaration.</returns>
-        private MemberDeclarationSyntax GenerateDraftStateField()
-        {
-            var field = $@"
-                /// <summary>
-                /// the draftState field.
-                /// </summary>
-                private DraftState draftState;
-            ";
-
-            return ParseMemberDeclaration(field)
                 .NormalizeWhitespace();
         }
 
@@ -460,6 +545,23 @@ namespace RedCow.Generators
         }
 
         /// <summary>
+        /// Generates the draft state field.
+        /// </summary>
+        /// <returns>A member declaration.</returns>
+        private MemberDeclarationSyntax GenerateDraftStateField()
+        {
+            var field = $@"
+                /// <summary>
+                /// the draftState field.
+                /// </summary>
+                private DraftState draftState;
+            ";
+
+            return ParseMemberDeclaration(field)
+                .NormalizeWhitespace();
+        }
+
+        /// <summary>
         /// Generates the DraftState property.
         /// </summary>
         /// <returns>A member declaration.</returns>
@@ -472,115 +574,8 @@ namespace RedCow.Generators
                 DraftState IDraft.DraftState
                 {{
                     get => this.draftState;
+                    set => this.draftState = value;
                 }}
-            ";
-
-            return ParseMemberDeclaration(property)
-                .NormalizeWhitespace();
-        }
-
-        /// <summary>
-        /// Generates the immutable derived class.
-        /// </summary>
-        /// <param name="context">The transformation context.</param>
-        /// <param name="sourceClassDeclaration">The source class declaration.</param>
-        /// <returns>A partial class declaration.</returns>
-        private ClassDeclarationSyntax GenerateImmutable(TransformationContext context, ClassDeclarationSyntax sourceClassDeclaration)
-        {
-            var result = ClassDeclaration($"Immutable{sourceClassDeclaration.Identifier}")
-                            .WithModifiers(sourceClassDeclaration.Modifiers)
-                             .WithAttributeLists(
-                                SingletonList<AttributeListSyntax>(
-                                    AttributeList(
-                                        SingletonSeparatedList<AttributeSyntax>(
-                                            Attribute(
-                                                IdentifierName("ExcludeFromCodeCoverage"))))
-                                    .WithOpenBracketToken(
-                                        Token(
-                                            GenerateXmlDoc($"Immutable Implementation of <see cref=\"{sourceClassDeclaration.Identifier}\"/>."),
-                                            SyntaxKind.OpenBracketToken,
-                                            TriviaList()))))
-                            .AddBaseListTypes(
-                                SimpleBaseType(ParseTypeName(sourceClassDeclaration.Identifier.Text)),
-                                SimpleBaseType(ParseTypeName($"ILockable")));
-
-            result = result.WithMembers(List(
-                   sourceClassDeclaration.Members.
-                   Where(x => x is ConstructorDeclarationSyntax).
-                   Cast<ConstructorDeclarationSyntax>().
-                   Select(c => this.GenerateImmutableConstructor(sourceClassDeclaration, c))));
-
-            result = result.AddMembers(
-                this.interfaceType.GetMembers().
-                Where(x => x is IPropertySymbol).
-                Cast<IPropertySymbol>().Select(p =>
-                {
-                    return CreateImmutableProperty(context, p);
-                }).ToArray());
-
-            result = result.AddMembers(
-                this.GenerateLockedProperty(),
-                this.GenerateLockMethod());
-
-            return result;
-        }
-
-        /// <summary>
-        /// Generates a single immutable constructor.
-        /// </summary>
-        /// <param name="sourceClassDeclaration">The source class declaration.</param>
-        /// <param name="constructorDeclarationSyntax">An optional existing constructor on the base class.</param>
-        /// <returns>A member declaration.</returns>
-        private MemberDeclarationSyntax GenerateImmutableConstructor(ClassDeclarationSyntax sourceClassDeclaration, ConstructorDeclarationSyntax constructorDeclarationSyntax)
-        {
-            SeparatedSyntaxList<ParameterSyntax> parameters =
-                            constructorDeclarationSyntax?.ParameterList?.Parameters
-                            ?? default(SeparatedSyntaxList<ParameterSyntax>);
-
-            var constructor = $@"
-                /// <summary>
-                /// Initializes a new instance of the <see cref=""Immutable{sourceClassDeclaration.Identifier}""/> class.
-                /// </summary>
-                public Immutable{sourceClassDeclaration.Identifier}({parameters.ToFullString()}) : base({string.Join(",", parameters.Select(x => x.Identifier))})
-                {{
-                }}
-            ";
-
-            return ParseMemberDeclaration(constructor)
-                .NormalizeWhitespace();
-        }
-
-        /// <summary>
-        /// Generates the Lock method on the immutable class.
-        /// </summary>
-        /// <returns>The method declaration.</returns>
-        private MemberDeclarationSyntax GenerateLockMethod()
-        {
-            var method = $@"
-                /// <summary>
-                /// Locks the immutable.
-                /// </summary>
-                public void Lock()
-                {{
-                    this.Locked = true;
-                }}
-            ";
-
-            return ParseMemberDeclaration(method)
-                .NormalizeWhitespace();
-        }
-
-        /// <summary>
-        /// Generates the Locked property on the immutable class.
-        /// </summary>
-        /// <returns>The property declaration.</returns>
-        private MemberDeclarationSyntax GenerateLockedProperty()
-        {
-            var property = $@"
-                /// <summary>
-                /// Gets a value indicating whether the immutable is locked.
-                /// </summary>
-                public bool Locked {{ get; private set; }} = false;
             ";
 
             return ParseMemberDeclaration(property)

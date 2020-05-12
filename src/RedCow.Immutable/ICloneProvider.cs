@@ -28,9 +28,8 @@ namespace RedCow.Immutable
         /// Clones the public properties of an object to another object.
         /// </summary>
         /// <param name="source">The source.</param>
-        /// <param name="destinationActivator">The function that creates the destination instance..</param>
+        /// <param name="destination">The destination object.</param>
         /// <param name="assignmentFunction">The assignment function to use to assign the source value properties to the destination.</param>
-        /// <returns>The cloned type.</returns>
-        public object Clone(object source, Func<object> destinationActivator, Func<object?, object?> assignmentFunction);
+        public void Clone(object source, object destination, Func<object?, object?> assignmentFunction);
     }
 }
