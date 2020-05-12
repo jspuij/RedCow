@@ -199,7 +199,6 @@ namespace RedCow.Immutable
                 }
 
                 return draft;
-
             }
             finally
             {

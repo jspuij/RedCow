@@ -193,10 +193,10 @@ namespace RedCow.Test
         }
 
         /// <summary>
-        /// Tests for max level of nested circular references.
+        /// Tests for max level of draft references.
         /// </summary>
         [Fact]
-        public void CircularReferenceExceedsMaxLevelTest()
+        public void DraftExceedsMaxLevelTest()
         {
             var initial = new TestPerson()
             {

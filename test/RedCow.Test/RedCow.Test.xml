@@ -347,9 +347,9 @@
             Tests for CoW of nested circular references.
             </summary>
         </member>
-        <member name="M:RedCow.Test.NestedTests.CircularReferenceExceedsMaxLevelTest">
+        <member name="M:RedCow.Test.NestedTests.DraftExceedsMaxLevelTest">
             <summary>
-            Tests for max level of nested circular references.
+            Tests for max level of draft references.
             </summary>
         </member>
         <member name="M:RedCow.Test.NestedTests.NestedLockedTest">
