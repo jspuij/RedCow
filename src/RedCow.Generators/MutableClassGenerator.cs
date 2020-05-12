@@ -253,19 +253,36 @@ namespace RedCow.Generators
         /// Generates the Lock method on the immutable class.
         /// </summary>
         /// <returns>The method declaration.</returns>
-        private static MemberDeclarationSyntax GenerateLockMethod()
+        private static MemberDeclarationSyntax GenerateLockMethod(TransformationContext context, IEnumerable<IPropertySymbol> properties)
         {
-            var method = $@"
+            var methodStart = $@"
                 /// <summary>
                 /// Locks the immutable.
                 /// </summary>
                 void ILockable.Lock()
                 {{
                     this.locked = true;
-                }}
             ";
 
-            return ParseMemberDeclaration(method)
+            var stringBuilder = new StringBuilder(methodStart);
+
+            foreach (var property in properties)
+            {
+                var baseType = GetMutableType(context, property.Type);
+
+                if (!SymbolEqualityComparer.Default.Equals(baseType, property.Type))
+                {
+                    stringBuilder.AppendLine($@"
+                        if (this.{property.Name} is ILockable && !((ILockable)this.{property.Name}).Locked)
+                        {{
+                            ((ILockable)this.{property.Name}).Lock();
+                        }}");
+                }
+            }
+
+            stringBuilder.AppendLine("}");
+
+            return ParseMemberDeclaration(stringBuilder.ToString())
                 .NormalizeWhitespace();
         }
 
@@ -382,7 +399,11 @@ namespace RedCow.Generators
             result = result.AddMembers(
              GenerateLockedField(),
              GenerateLockedProperty(),
-             GenerateLockMethod());
+             GenerateLockMethod(
+                context,
+                this.interfaceType.GetMembers().
+                Where(x => x is IPropertySymbol).
+                Cast<IPropertySymbol>()));
 
             return result;
         }

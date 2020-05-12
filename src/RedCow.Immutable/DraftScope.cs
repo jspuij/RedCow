@@ -159,9 +159,14 @@ namespace RedCow.Immutable
 
                     if (draft is IDraft idraft)
                     {
-                        foreach (var child in idraft.DraftState.Children)
+                        foreach ((string propertyName, object child) in idraft.DraftState!.Children)
                         {
-                            Reconcile(child);
+                            var immutable = Reconcile(child);
+                            if (ReferenceEquals(immutable, child))
+                            {
+                                // use reflection to set the property and trigger changed on the parent.
+                                draftType.GetProperty(propertyName).SetValue(draft, immutable);
+                            }
                         }
 
                         if (idraft.DraftState!.Changed)
@@ -175,11 +180,6 @@ namespace RedCow.Immutable
                         }
                     }
 
-                    if (draft is ILockable lockable)
-                    {
-                        lockable.Lock();
-                    }
-
                     return draft;
                 }
                 finally
@@ -191,7 +191,15 @@ namespace RedCow.Immutable
             this.IsFinishing = true;
             try
             {
-                return Reconcile(draft);
+                draft = Reconcile(draft);
+
+                if (draft is ILockable lockable)
+                {
+                    lockable.Lock();
+                }
+
+                return draft;
+
             }
             finally
             {

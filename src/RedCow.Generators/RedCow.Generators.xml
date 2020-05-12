@@ -126,7 +126,7 @@
             </summary>
             <returns>The property declaration.</returns>
         </member>
-        <member name="M:RedCow.Generators.MutableClassGenerator.GenerateLockMethod">
+        <member name="M:RedCow.Generators.MutableClassGenerator.GenerateLockMethod(CodeGeneration.Roslyn.TransformationContext,System.Collections.Generic.IEnumerable{Microsoft.CodeAnalysis.IPropertySymbol})">
             <summary>
             Generates the Lock method on the immutable class.
             </summary>

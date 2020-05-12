@@ -57,6 +57,11 @@ namespace RedCow.Immutable
         public DraftScope Scope { get; }
 
         /// <summary>
+        /// Gets child draft proxies.
+        /// </summary>
+        public IDictionary<string, object> Children { get; private set; } = new Dictionary<string, object>();
+
+        /// <summary>
         /// Gets the original.
         /// </summary>
         /// <typeparam name="T">The type to cast the original to.</typeparam>
@@ -109,6 +114,7 @@ namespace RedCow.Immutable
             }
 
             result = (T)this.Scope.CreateProxy(result);
+            this.Children.Add(propertyName, result);
             setter(result);
 
             return result;

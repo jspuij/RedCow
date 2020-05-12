@@ -194,6 +194,11 @@
             Gets the scope this draft belongs to.
             </summary>
         </member>
+        <member name="P:RedCow.Immutable.DraftState.Children">
+            <summary>
+            Gets child draft proxies.
+            </summary>
+        </member>
         <member name="M:RedCow.Immutable.DraftState.GetOriginal``1">
             <summary>
             Gets the original.

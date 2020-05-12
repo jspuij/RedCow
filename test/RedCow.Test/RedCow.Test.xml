@@ -339,7 +339,22 @@
         </member>
         <member name="M:RedCow.Test.NestedTests.CircularReferenceTest">
             <summary>
-            Tests for circular references.
+            Tests for CoW of circular references.
+            </summary>
+        </member>
+        <member name="M:RedCow.Test.NestedTests.NestedCircularReferenceTest">
+            <summary>
+            Tests for CoW of nested circular references.
+            </summary>
+        </member>
+        <member name="M:RedCow.Test.NestedTests.CircularReferenceExceedsMaxLevelTest">
+            <summary>
+            Tests for max level of nested circular references.
+            </summary>
+        </member>
+        <member name="M:RedCow.Test.NestedTests.NestedLockedTest">
+            <summary>
+            Tests the that the produced immutable cannot be altered.
             </summary>
         </member>
         <member name="T:RedCow.Test.ReflectionCloneProviderTests">

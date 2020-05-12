@@ -90,12 +90,18 @@ namespace RedCow.Test
                     FirstName = "Baby",
                     LastName = "Doe",
                     IsAdult = false,
-                },
-                SecondChild = new TestPerson()
-                {
-                    FirstName = "Mika",
-                    LastName = "Doe",
-                    IsAdult = false,
+                    FirstChild = new TestPerson()
+                    {
+                        FirstName = "Mika",
+                        LastName = "Doe",
+                        IsAdult = false,
+                        FirstChild = new TestPerson()
+                        {
+                            FirstName = "Play",
+                            LastName = "Doe",
+                            IsAdult = false,
+                        },
+                    },
                 },
             };
 
@@ -103,23 +109,25 @@ namespace RedCow.Test
 
             var result = person.Produce(p =>
             {
-                p.FirstChild.LastName = "Anon";
+                p.FirstChild.FirstChild.LastName = "Anon";
             });
 
             // Copy on write.
             Assert.Same(initial, person);
             Assert.Same(initial.FirstChild, person.FirstChild);
-            Assert.Same(initial.SecondChild, person.SecondChild);
+            Assert.Same(initial.FirstChild.FirstChild, person.FirstChild.FirstChild);
+            Assert.Same(initial.FirstChild.FirstChild.FirstChild, person.FirstChild.FirstChild.FirstChild);
 
             Assert.NotSame(person, result);
             Assert.NotSame(person.FirstChild, result.FirstChild);
+            Assert.NotSame(person.FirstChild.FirstChild, result.FirstChild.FirstChild);
 
             // this is the same immutable as it did not change.
-            Assert.Same(person.SecondChild, result.SecondChild);
+            Assert.Same(person.FirstChild.FirstChild.FirstChild, result.FirstChild.FirstChild.FirstChild);
         }
 
         /// <summary>
-        /// Tests for circular references.
+        /// Tests for CoW of circular references.
         /// </summary>
         [Fact]
         public void CircularReferenceTest()
@@ -134,9 +142,140 @@ namespace RedCow.Test
             // this is really weird.
             initial.FirstChild = initial;
 
+            ITestPerson person = ITestPerson.Produce(initial);
+
+            var result = person.Produce(p =>
+            {
+                p.LastName = "Bravo";
+            });
+
+            Assert.NotSame(initial, result);
+            Assert.Equal("Bravo", result.LastName);
+            Assert.NotSame(result, result.FirstChild);
+            Assert.Equal("Doe", result.FirstChild.LastName);
+        }
+
+        /// <summary>
+        /// Tests for CoW of nested circular references.
+        /// </summary>
+        [Fact]
+        public void NestedCircularReferenceTest()
+        {
+            var initial = new TestPerson()
+            {
+                FirstName = "John",
+                LastName = "Doe",
+                IsAdult = true,
+                FirstChild = new TestPerson()
+                {
+                    FirstName = "Baby",
+                    LastName = "Doe",
+                    IsAdult = false,
+                },
+            };
+
+            ITestPerson person = ITestPerson.Produce(initial);
+
+            var result = person.Produce(p =>
+            {
+                p.FirstChild.FirstChild = p;
+            });
+
+            result = result.Produce(p =>
+            {
+                p.LastName = "Bravo";
+            });
+
+            Assert.NotSame(initial, result);
+            Assert.Equal("Bravo", result.LastName);
+            Assert.NotSame(result, result.FirstChild);
+            Assert.Equal("Doe", result.FirstChild.FirstChild.LastName);
+        }
+
+        /// <summary>
+        /// Tests for max level of nested circular references.
+        /// </summary>
+        [Fact]
+        public void CircularReferenceExceedsMaxLevelTest()
+        {
+            var initial = new TestPerson()
+            {
+                FirstName = "John",
+                LastName = "Doe",
+                IsAdult = true,
+            };
+
+            ITestPerson person = ITestPerson.Produce(initial);
+
             Assert.Throws<CircularReferenceException>(() =>
             {
-                ITestPerson person = ITestPerson.Produce(initial);
+                var result = person.Produce(p =>
+                {
+                    var person = p;
+                    for (int i = 0; i < ProducerOptions.Default.MaxDepth + 1; i++)
+                    {
+                        person.FirstChild = new TestPerson()
+                        {
+                            FirstName = $"John {i}",
+                            LastName = "Doe",
+                            IsAdult = true,
+                        };
+                        person = person.FirstChild;
+                    }
+                });
+            });
+        }
+
+        /// <summary>
+        /// Tests the that the produced immutable cannot be altered.
+        /// </summary>
+        [Fact]
+        public void NestedLockedTest()
+        {
+            var initial = new TestPerson()
+            {
+                FirstName = "John",
+                LastName = "Doe",
+                IsAdult = true,
+                FirstChild = new TestPerson()
+                {
+                    FirstName = "Baby",
+                    LastName = "Doe",
+                    IsAdult = false,
+                    FirstChild = new TestPerson()
+                    {
+                        FirstName = "Mika",
+                        LastName = "Doe",
+                        IsAdult = false,
+                        FirstChild = new TestPerson()
+                        {
+                            FirstName = "Play",
+                            LastName = "Doe",
+                            IsAdult = false,
+                        },
+                    },
+                },
+            };
+
+            ITestPerson person = ITestPerson.Produce(initial);
+
+            var mutablePerson = (TestPerson)person;
+
+            Assert.Throws<ImmutableException>(() =>
+            {
+                mutablePerson.FirstName = "Test";
+            });
+            Assert.Throws<ImmutableException>(() =>
+            {
+                mutablePerson.FirstChild.FirstName = "Test";
+            });
+            Assert.Throws<ImmutableException>(() =>
+            {
+                mutablePerson.FirstChild.FirstChild.FirstName = "Test";
+            });
+            Assert.Throws<ImmutableException>(() =>
+            {
+                mutablePerson.FirstChild.FirstChild.FirstChild.FirstName = "Test";
             });
         }
     }
