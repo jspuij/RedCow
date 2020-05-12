@@ -394,6 +394,10 @@ namespace RedCow.Generators
                                         AttributeArgument(
                                             TypeOfExpression(
                                                 IdentifierName($"Proxy{sourceClassDeclaration.Identifier}")))))))),
+                    AttributeList(
+                        SingletonSeparatedList(
+                            Attribute(
+                                IdentifierName("ExcludeFromCodeCoverage")))),
                 }));
 
             result = result.AddMembers(

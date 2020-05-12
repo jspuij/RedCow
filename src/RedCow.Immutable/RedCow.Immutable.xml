@@ -16,6 +16,18 @@
             <param name="draft">The draft object that was involved in the exception.</param>
             <param name="message">The message.</param>
         </member>
+        <member name="T:RedCow.Collections.ProxyList`1">
+            <summary>
+            A list that can act as a proxy around another list.
+            </summary>
+            <typeparam name="T">The type that is held in the list.</typeparam>
+        </member>
+        <member name="M:RedCow.Collections.ProxyList`1.#ctor(System.Collections.Generic.IList{`0})">
+            <summary>
+            Initializes a new instance of the <see cref="T:RedCow.Collections.ProxyList`1"/> class.
+            </summary>
+            <param name="innerlist">The list to enclose.</param>
+        </member>
         <member name="T:RedCow.DraftException">
             <summary>
             An exception for drafts.

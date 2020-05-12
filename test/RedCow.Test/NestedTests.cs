@@ -278,5 +278,43 @@ namespace RedCow.Test
                 mutablePerson.FirstChild.FirstChild.FirstChild.FirstName = "Test";
             });
         }
+
+        /// <summary>
+        /// Tests that a draft is revoked after the immutable is produced.
+        /// </summary>
+        [Fact]
+        public void NestedDraftRevokedTest()
+        {
+            ITestPerson initial = ITestPerson.Produce(new TestPerson()
+            {
+                FirstName = "John",
+                LastName = "Doe",
+                IsAdult = true,
+                FirstChild = new TestPerson()
+                {
+                    FirstName = "Baby",
+                    LastName = "Doe",
+                    IsAdult = false,
+                },
+            });
+
+            TestPerson? draft = null;
+            TestPerson? draftChild = null;
+
+            ITestPerson person = initial.Produce(p =>
+            {
+                draft = p;
+                draftChild = p.FirstChild;
+            });
+
+            Assert.Throws<DraftRevokedException>(() =>
+            {
+                Assert.Equal(draft!.FirstName, person.FirstName);
+            });
+            Assert.Throws<DraftRevokedException>(() =>
+            {
+                Assert.Equal(draftChild!.FirstName, person.FirstChild.FirstName);
+            });
+        }
     }
 }

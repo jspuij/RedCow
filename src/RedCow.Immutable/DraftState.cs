@@ -150,6 +150,10 @@ namespace RedCow.Immutable
         internal void Revoke()
         {
             this.Revoked = true;
+            foreach (IDraft child in this.Children.Values)
+            {
+                child.DraftState?.Revoke();
+            }
         }
     }
 }

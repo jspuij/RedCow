@@ -357,6 +357,11 @@
             Tests the that the produced immutable cannot be altered.
             </summary>
         </member>
+        <member name="M:RedCow.Test.NestedTests.NestedDraftRevokedTest">
+            <summary>
+            Tests that a draft is revoked after the immutable is produced.
+            </summary>
+        </member>
         <member name="T:RedCow.Test.ReflectionCloneProviderTests">
             <summary>
             Unit tests for <see cref="T:RedCow.Immutable.ReflectionCloneProvider"/>.
