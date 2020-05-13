@@ -183,9 +183,37 @@ namespace RedCow.Immutable
                     }
                     else if (idraft.DraftState is CollectionDraftState collectionDraftState)
                     {
-                        if (draft is IList list)
+                        if (draft is IDictionary dictionary)
                         {
-                            // todo: handle dictionaries and sets.
+                            var updates = new List<Action>();
+                            foreach (DictionaryEntry entry in dictionary)
+                            {
+                                if (InternalIsDraft(entry.Value))
+                                {
+                                    var immutable = Reconcile(entry.Value);
+
+                                    // draft turned into immutable.
+                                    if (ReferenceEquals(immutable, entry.Value))
+                                    {
+                                        idraft.DraftState!.Changed = true;
+                                    }
+
+                                    // draft reverted to original.
+                                    else
+                                    {
+                                        updates.Add(() => dictionary[entry.Key] = immutable);
+                                    }
+                                }
+                            }
+
+                            foreach (var update in updates)
+                            {
+                                update();
+                            }
+                        }
+                        else if (draft is IList list)
+                        {
+                            // todo: handle sets.
                             for (int i = 0; i < list.Count; i++)
                             {
                                 object? child = list[i];

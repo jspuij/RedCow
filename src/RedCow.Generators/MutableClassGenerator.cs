@@ -143,7 +143,16 @@ namespace RedCow.Generators
                 {
                     var unbound = namedType.ConstructUnboundGenericType();
 
-                    if (unbound.MetadataName == typeof(System.Collections.Generic.IReadOnlyCollection<>).Name ||
+                    if (unbound.MetadataName == typeof(System.Collections.Generic.IReadOnlyDictionary<,>).Name)
+                    {
+                        var keyArgument = namedType.TypeArguments[0];
+                        var keyType = GetMutableType(context, keyArgument);
+                        var valueArgument = namedType.TypeArguments[1];
+                        var mutableType = GetMutableType(context, valueArgument);
+                        var iListType = context.Compilation.GetTypeByMetadataName("System.Collections.Generic.IDictionary`2");
+                        return iListType.Construct(keyType, mutableType);
+                    }
+                    else if (unbound.MetadataName == typeof(System.Collections.Generic.IReadOnlyCollection<>).Name ||
                         unbound.MetadataName == typeof(System.Collections.Generic.IReadOnlyList<>).Name)
                     {
                         var genericArgument = namedType.TypeArguments[0];
@@ -330,7 +339,8 @@ namespace RedCow.Generators
                     var unbound = namedType.ConstructUnboundGenericType();
 
                     if (unbound.MetadataName == typeof(System.Collections.Generic.IReadOnlyCollection<>).Name ||
-                        unbound.MetadataName == typeof(System.Collections.Generic.IReadOnlyList<>).Name)
+                        unbound.MetadataName == typeof(System.Collections.Generic.IReadOnlyList<>).Name ||
+                        unbound.MetadataName == typeof(System.Collections.Generic.IReadOnlyDictionary<,>).Name)
                     {
                         method = $@"
                             /// <summary>

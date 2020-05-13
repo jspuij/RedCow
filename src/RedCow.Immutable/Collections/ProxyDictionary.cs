@@ -296,7 +296,7 @@ namespace RedCow.Immutable.Collections
             /// <summary>
             /// Gets the current item.
             /// </summary>
-            public object Current => this.enumerator.Current;
+            public object Current => this.Entry;
 
             /// <summary>
             /// Advances the enumerator to the next element of the collection.

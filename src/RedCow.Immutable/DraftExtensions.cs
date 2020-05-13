@@ -142,19 +142,28 @@ namespace RedCow.Immutable
 
                     if (genericTypeArguments.Length == 2)
                     {
+                        var dictionaryType = typeof(IDictionary<,>).MakeGenericType(genericTypeArguments);
+                        if (dictionaryType.IsAssignableFrom(type))
+                        {
+                            return typeof(ProxyDictionary<,>).MakeGenericType(genericTypeArguments);
+                        }
+
                         throw new NotImplementedException();
                     }
                     else if (genericTypeArguments.Length == 1)
                     {
                         var setType = typeof(ISet<>).MakeGenericType(genericTypeArguments);
-                        if (type.IsAssignableFrom(setType))
+                        var collectionType = typeof(ICollection<>).MakeGenericType(genericTypeArguments);
+                        if (setType.IsAssignableFrom(type))
                         {
                             throw new NotImplementedException();
                         }
-                        else
+                        else if (collectionType.IsAssignableFrom(type))
                         {
                             return typeof(ProxyList<>).MakeGenericType(genericTypeArguments);
                         }
+
+                        throw new NotImplementedException();
                     }
                 }
                 else

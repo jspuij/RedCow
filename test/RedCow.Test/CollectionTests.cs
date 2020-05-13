@@ -67,6 +67,7 @@ namespace RedCow.Test
 
             Assert.NotSame(initial, result);
             Assert.NotSame(initial.Cars, result.Cars);
+            Assert.Equal(3, result.Cars.Count);
             Assert.True(((ILockable)result.Cars.Last()).Locked);
         }
 
@@ -189,6 +190,167 @@ namespace RedCow.Test
             {
                 Assert.Same(result.Cars[0], cars ![0]);
             });
+        }
+
+        /// <summary>
+        /// Tests producing a collection.
+        /// </summary>
+        [Fact]
+        public void DictionaryProduceTest()
+        {
+            var initial = new PhoneBook()
+            {
+                Entries = new Dictionary<string, TestPerson>()
+                {
+                    ["0800JOHNDOE"] = new TestPerson()
+                    {
+                        FirstName = "John",
+                        LastName = "Doe",
+                        IsAdult = true,
+                    },
+                    ["0800JANEDOE"] = new TestPerson()
+                    {
+                        FirstName = "Jane",
+                        LastName = "Doe",
+                        IsAdult = true,
+                    },
+                },
+            };
+
+            var phoneBook = IPhoneBook.Produce(initial);
+
+            var result = phoneBook.Produce(p =>
+            {
+                p.Entries["0800BABYDOE"] = new TestPerson()
+                {
+                    FirstName = "Baby",
+                    LastName = "Doe",
+                    IsAdult = false,
+                };
+            });
+
+            Assert.NotSame(initial, result);
+            Assert.NotSame(initial.Entries, result.Entries);
+            Assert.Equal(3, result.Entries.Count);
+            Assert.True(((ILockable)result.Entries.Values.Last()).Locked);
+        }
+
+        /// <summary>
+        /// Tests producing a dictionary with a nested change.
+        /// </summary>
+        [Fact]
+        public void DictionaryNestedChangeTest()
+        {
+            var initial = new PhoneBook()
+            {
+                Entries = new Dictionary<string, TestPerson>()
+                {
+                    ["0800JOHNDOE"] = new TestPerson()
+                    {
+                        FirstName = "John",
+                        LastName = "Doe",
+                        IsAdult = true,
+                    },
+                    ["0800JANEDOE"] = new TestPerson()
+                    {
+                        FirstName = "Jane",
+                        LastName = "Doe",
+                        IsAdult = true,
+                    },
+                },
+            };
+
+            var phoneBook = IPhoneBook.Produce(initial);
+
+            var result = phoneBook.Produce(p =>
+            {
+                p.Entries["0800JANEDOE"].LastName = "Divorced";
+            });
+
+            Assert.NotSame(initial, result);
+            Assert.NotSame(initial.Entries, result.Entries);
+            Assert.Same(initial.Entries["0800JOHNDOE"], result.Entries["0800JOHNDOE"]);
+            Assert.NotSame(initial.Entries["0800JANEDOE"], result.Entries["0800JANEDOE"]);
+        }
+
+        /// <summary>
+        /// Tests whether the dictionary is revoked.
+        /// </summary>
+        [Fact]
+        public void DictionaryRevokedTest()
+        {
+            var initial = new PhoneBook()
+            {
+                Entries = new Dictionary<string, TestPerson>()
+                {
+                    ["0800JOHNDOE"] = new TestPerson()
+                    {
+                        FirstName = "John",
+                        LastName = "Doe",
+                        IsAdult = true,
+                    },
+                    ["0800JANEDOE"] = new TestPerson()
+                    {
+                        FirstName = "Jane",
+                        LastName = "Doe",
+                        IsAdult = true,
+                    },
+                },
+            };
+
+            var phoneBook = IPhoneBook.Produce(initial);
+
+            IDictionary<string, TestPerson>? entries = null;
+
+            var result = phoneBook.Produce(p =>
+            {
+                entries = p.Entries;
+            });
+
+            Assert.NotSame(entries, result.Entries);
+            Assert.Throws<DraftRevokedException>(() =>
+            {
+                Assert.Same(result.Entries["0800JOHNDOE"], entries!["0800JOHNDOE"]);
+            });
+        }
+
+        /// <summary>
+        /// Tests whether enumerating the dictionary, but not changing anything,
+        /// returns the original dictionary.
+        /// </summary>
+        [Fact]
+        public void UnchangedDictionaryTest()
+        {
+            var initial = new PhoneBook()
+            {
+                Entries = new Dictionary<string, TestPerson>()
+                {
+                    ["0800JOHNDOE"] = new TestPerson()
+                    {
+                        FirstName = "John",
+                        LastName = "Doe",
+                        IsAdult = true,
+                    },
+                    ["0800JANEDOE"] = new TestPerson()
+                    {
+                        FirstName = "Jane",
+                        LastName = "Doe",
+                        IsAdult = true,
+                    },
+                },
+            };
+
+            var phoneBook = IPhoneBook.Produce(initial);
+
+            var result = phoneBook.Produce(p =>
+            {
+                foreach (var keyValuePair in p.Entries)
+                {
+                    Assert.True(keyValuePair.Value.IsDraft());
+                }
+            });
+
+            Assert.Same(phoneBook.Entries, result.Entries);
         }
     }
 }

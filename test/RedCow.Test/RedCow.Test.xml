@@ -70,6 +70,27 @@
             Tests whether the collection is revoked.
             </summary>
         </member>
+        <member name="M:RedCow.Test.CollectionTests.DictionaryProduceTest">
+            <summary>
+            Tests producing a collection.
+            </summary>
+        </member>
+        <member name="M:RedCow.Test.CollectionTests.DictionaryNestedChangeTest">
+            <summary>
+            Tests producing a dictionary with a nested change.
+            </summary>
+        </member>
+        <member name="M:RedCow.Test.CollectionTests.DictionaryRevokedTest">
+            <summary>
+            Tests whether the dictionary is revoked.
+            </summary>
+        </member>
+        <member name="M:RedCow.Test.CollectionTests.UnchangedDictionaryTest">
+            <summary>
+            Tests whether enumerating the dictionary, but not changing anything,
+            returns the original dictionary.
+            </summary>
+        </member>
         <member name="T:RedCow.Test.ICar">
             <summary>
             Car interface.
@@ -226,6 +247,97 @@
             Tests that during produce new state is not drafted.
             </summary>
         </member>
+        <member name="T:RedCow.Test.IPhoneBook">
+            <summary>
+            A phone book.
+            </summary>
+        </member>
+        <member name="P:RedCow.Test.IPhoneBook.Entries">
+            <summary>
+            Gets the phone book entries.
+            </summary>
+        </member>
+        <member name="M:RedCow.Test.IPhoneBook.Produce(RedCow.Test.PhoneBook,RedCow.IProducerOptions)">
+            <summary>
+            Produces the next <see cref = "T:RedCow.Test.IPhoneBook"/> based on the
+            intial state.
+            </summary>
+            <param name = "initialState">The initial State.</param>
+            <param name = "producerOptions">The producer options to use. If you leave them null, the default options will be used.</param>
+            <returns>The next immutable state.</returns>
+        </member>
+        <member name="M:RedCow.Test.IPhoneBook.Produce(System.Action{RedCow.Test.PhoneBook},RedCow.IProducerOptions)">
+            <summary>
+            Produces the next <see cref = "T:RedCow.Test.IPhoneBook"/> based on the
+            specified recipe action.
+            </summary>
+            <param name = "recipe">The recipe action.</param>
+            <param name = "producerOptions">The producer options to use. If you leave them null, the default options will be used.</param>
+            <returns>The next immutable state.</returns>
+        </member>
+        <member name="M:RedCow.Test.IPhoneBook.Produce(RedCow.Test.PhoneBook,System.Action{RedCow.Test.PhoneBook},RedCow.IProducerOptions)">
+            <summary>
+            Produces the next <see cref = "T:RedCow.Test.IPhoneBook"/> based on the
+            specified recipe action.
+            </summary>
+            <param name = "initialState">The initial State.</param>
+            <param name = "recipe">The recipe action.</param>
+            <param name = "producerOptions">The producer options to use. If you leave them null, the default options will be used.</param>
+            <returns>The next immutable state.</returns>
+        </member>
+        <member name="M:RedCow.Test.IPhoneBook.Produce(System.Func{RedCow.Test.PhoneBook},RedCow.IProducerOptions)">
+            <summary>
+            Produces the next <see cref = "T:RedCow.Test.IPhoneBook"/> based on the
+            specified recipe function.
+            </summary>
+            <param name = "recipe">The recipe function.</param>
+            <param name = "producerOptions">The producer options to use. If you leave them null, the default options will be used.</param>
+            <returns>The next immutable state.</returns>
+        </member>
+        <member name="M:RedCow.Test.IPhoneBook.Produce(RedCow.Test.PhoneBook,System.Func{RedCow.Test.PhoneBook},RedCow.IProducerOptions)">
+            <summary>
+            Produces the next <see cref = "T:RedCow.Test.IPhoneBook"/> based on the
+            specified recipe function.
+            </summary>
+            <param name = "initialState">The initial State.</param>
+            <param name = "recipe">The recipe function.</param>
+            <param name = "producerOptions">The producer options to use. If you leave them null, the default options will be used.</param>
+            <returns>The next immutable state.</returns>
+        </member>
+        <member name="M:RedCow.Test.IPhoneBook.Producer(System.Action{RedCow.Test.PhoneBook},RedCow.IProducerOptions)">
+            <summary>
+            Creates a Producer delegate that can be used to curry on an Immutable State.
+            </summary>
+            <param name = "recipe">The recipe action that operates on an object of type T.</param>
+            <param name = "producerOptions">The producer options to use. If you leave them null, the default options will be used.</param>
+            <returns>A producer delegate.</returns>
+        </member>
+        <member name="M:RedCow.Test.IPhoneBook.Producer(System.Func{RedCow.Test.PhoneBook},RedCow.IProducerOptions)">
+            <summary>
+            Creates a Producer delegate that can be used to curry on an Immutable State.
+            </summary>
+            <param name = "recipe">The recipe function that returns an object of type T.</param>
+            <param name = "producerOptions">The producer options to use. If you leave them null, the default options will be used.</param>
+            <returns>A recipe delegate.</returns>
+        </member>
+        <member name="M:RedCow.Test.IPhoneBook.Producer``1(System.Action{RedCow.Test.PhoneBook,``0},RedCow.IProducerOptions)">
+            <summary>
+            Creates a Producer delegate that can be used to curry on an Immutable State.
+            </summary>
+            <param name = "recipe">The recipe action that operates on an object of type T with a single argument.</param>
+            <param name = "producerOptions">The producer options to use. If you leave them null, the default options will be used.</param>
+            <typeparam name = "TArg">The type of the argument.</typeparam>
+            <returns>A producer delegate.</returns>
+        </member>
+        <member name="M:RedCow.Test.IPhoneBook.Producer``1(System.Func{``0,RedCow.Test.PhoneBook},RedCow.IProducerOptions)">
+            <summary>
+            Creates a Producer delegate that can be used to curry on an Immutable State.
+            </summary>
+            <param name = "recipe">The recipe function that returns an object of type T with a single argument.</param>
+            <param name = "producerOptions">The producer options to use. If you leave them null, the default options will be used.</param>
+            <typeparam name = "TArg">The type of the argument.</typeparam>
+            <returns>A producer delegate.</returns>
+        </member>
         <member name="T:RedCow.Test.ITestPerson">
             <summary>
             Interface for an Immutable Test Person.
@@ -378,6 +490,41 @@
             Tests that a draft is revoked after the immutable is produced.
             </summary>
         </member>
+        <member name="T:RedCow.Test.PhoneBook">
+            <summary>
+            A phone book.
+            </summary>
+        </member>
+        <member name="F:RedCow.Test.PhoneBook._Entries">
+            <summary>
+            Entries field.
+            </summary>
+        </member>
+        <member name="P:RedCow.Test.PhoneBook.Entries">
+            <summary>
+             Gets or sets Entries.
+            </summary>
+        </member>
+        <member name="P:RedCow.Test.PhoneBook.RedCow#Test#IPhoneBook#Entries">
+            <summary>
+            Gets Entries.
+            </summary>
+        </member>
+        <member name="F:RedCow.Test.PhoneBook.locked">
+            <summary>
+            Whether the instance is locked.
+            </summary>
+        </member>
+        <member name="P:RedCow.Test.PhoneBook.RedCow#ILockable#Locked">
+            <summary>
+            Gets a value indicating whether the immutable is locked.
+            </summary>
+        </member>
+        <member name="M:RedCow.Test.PhoneBook.RedCow#ILockable#Lock">
+            <summary>
+            Locks the immutable.
+            </summary>
+        </member>
         <member name="T:RedCow.Test.ReflectionCloneProviderTests">
             <summary>
             Unit tests for <see cref="T:RedCow.Immutable.ReflectionCloneProvider"/>.
@@ -524,6 +671,41 @@
             </summary>
         </member>
         <member name="M:RedCow.Test.ProxyCar.RedCow#Immutable#IDraft#Clone">
+            <summary>
+            Clones the object from the original.
+            </summary>
+        </member>
+        <member name="T:RedCow.Test.ProxyPhoneBook">
+            <summary>
+            Proxy Implementation of <see cref = "T:RedCow.Test.PhoneBook"/>.
+            </summary>
+        </member>
+        <member name="P:RedCow.Test.ProxyPhoneBook.Entries">
+            <summary>
+             Gets or sets Entries.
+            </summary>
+        </member>
+        <member name="F:RedCow.Test.ProxyPhoneBook.draftState">
+            <summary>
+            the draftState field.
+            </summary>
+        </member>
+        <member name="P:RedCow.Test.ProxyPhoneBook.RedCow#Immutable#IDraft#DraftState">
+            <summary>
+            Gets or sets the DraftState.
+            </summary>
+        </member>
+        <member name="P:RedCow.Test.ProxyPhoneBook.Original">
+            <summary>
+            Gets the original.
+            </summary>
+        </member>
+        <member name="P:RedCow.Test.ProxyPhoneBook.ImmutableOriginal">
+            <summary>
+            Gets the original as Immutable.
+            </summary>
+        </member>
+        <member name="M:RedCow.Test.ProxyPhoneBook.RedCow#Immutable#IDraft#Clone">
             <summary>
             Clones the object from the original.
             </summary>
