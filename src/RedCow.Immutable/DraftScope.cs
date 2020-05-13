@@ -185,11 +185,10 @@ namespace RedCow.Immutable
                     {
                         if (draft is IList list)
                         {
-                            int index = 0;
-
                             // todo: handle dictionaries and sets.
-                            foreach (object? child in list)
+                            for (int i = 0; i < list.Count; i++)
                             {
+                                object? child = list[i];
                                 if (InternalIsDraft(child))
                                 {
                                     var immutable = Reconcile(child);
@@ -203,11 +202,9 @@ namespace RedCow.Immutable
                                     // draft reverted to original.
                                     else
                                     {
-                                        list[index] = immutable;
+                                        list[i] = immutable;
                                     }
                                 }
-
-                                index++;
                             }
                         }
                     }

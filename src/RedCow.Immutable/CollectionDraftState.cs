@@ -91,7 +91,7 @@ namespace RedCow.Immutable
                 throw new DraftRevokedException(this, "Exception while modifying element: The draft is out of scope and has been revoked.");
             }
 
-            if (!this.Changed)
+            if (!this.Scope.IsFinishing && !this.Changed)
             {
                 this.Changed = true;
                 copyOnWrite();

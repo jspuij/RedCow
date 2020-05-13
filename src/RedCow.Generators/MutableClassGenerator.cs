@@ -332,13 +332,12 @@ namespace RedCow.Generators
                     if (unbound.MetadataName == typeof(System.Collections.Generic.IReadOnlyCollection<>).Name ||
                         unbound.MetadataName == typeof(System.Collections.Generic.IReadOnlyList<>).Name)
                     {
-                        var genericArgument = namedType.TypeArguments[0];
-                        var mutableType = GetMutableType(context, genericArgument);
                         method = $@"
                             /// <summary>
                             /// {documentationText}
                             /// </summary>
-                            {property.Type} {this.interfaceType.Name}.{property.Name} => new ReadOnlyCollection<{mutableType.Name}>(this.{property.Name});                        ";
+                            {property.Type} {this.interfaceType.Name}.{property.Name} => ({property.Type})this.{property.Name};
+                        ";
                     }
                 }
             }

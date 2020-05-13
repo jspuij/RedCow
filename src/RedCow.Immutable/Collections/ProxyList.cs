@@ -405,8 +405,14 @@ namespace RedCow.Immutable.Collections
             int index = 0;
             while (enumerator.MoveNext())
             {
-                index += 1;
-                yield return this.collectionDraftState!.Get(() => enumerator.Current, value => this.InnerList[index] = value, this.CopyOnWrite);
+                try
+                {
+                    yield return this.collectionDraftState!.Get(() => enumerator.Current, value => this.InnerList[index] = value, this.CopyOnWrite);
+                }
+                finally
+                {
+                    index++;
+                }
             }
         }
 
@@ -428,7 +434,7 @@ namespace RedCow.Immutable.Collections
         {
             if (this.collectionDraftState?.Revoked ?? false)
             {
-                throw new DraftException(this, $"This {this.GetType()} instance is revoked.");
+                throw new DraftRevokedException(this, $"This {this.GetType()} instance is revoked.");
             }
         }
 

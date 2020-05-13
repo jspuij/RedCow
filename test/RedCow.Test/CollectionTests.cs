@@ -20,6 +20,7 @@ namespace RedCow.Test
     using System.Collections.Generic;
     using System.Linq;
     using System.Text;
+    using RedCow.Immutable;
     using Xunit;
 
     /// <summary>
@@ -106,6 +107,88 @@ namespace RedCow.Test
             Assert.NotSame(initial.Cars, result.Cars);
             Assert.Same(initial.Cars[0], result.Cars[0]);
             Assert.NotSame(initial.Cars[1], result.Cars[1]);
+        }
+
+        /// <summary>
+        /// Tests whether enumerating the collection, but not changing anything,
+        /// returns the original collection.
+        /// </summary>
+        [Fact]
+        public void UnchangedCollectionTest()
+        {
+            var initial = new TestPerson()
+            {
+                FirstName = "John",
+                LastName = "Doe",
+                IsAdult = true,
+                Cars = new List<Car>()
+                {
+                    new Car
+                    {
+                        Make = "Ferrari",
+                        Model = "250 LM",
+                    },
+                    new Car
+                    {
+                        Make = "Shelby",
+                        Model = "Daytona Cobra Coupe",
+                    },
+                },
+            };
+
+            var person = ITestPerson.Produce(initial);
+
+            var result = person.Produce(p =>
+            {
+                foreach (var car in p.Cars)
+                {
+                    Assert.True(car.IsDraft());
+                }
+            });
+
+            Assert.Same(person.Cars, result.Cars);
+        }
+
+        /// <summary>
+        /// Tests whether the collection is revoked.
+        /// </summary>
+        [Fact]
+        public void CollectionRevokedTest()
+        {
+            var initial = new TestPerson()
+            {
+                FirstName = "John",
+                LastName = "Doe",
+                IsAdult = true,
+                Cars = new List<Car>()
+                {
+                    new Car
+                    {
+                        Make = "Ferrari",
+                        Model = "250 LM",
+                    },
+                    new Car
+                    {
+                        Make = "Shelby",
+                        Model = "Daytona Cobra Coupe",
+                    },
+                },
+            };
+
+            var person = ITestPerson.Produce(initial);
+
+            IList<Car>? cars = null;
+
+            var result = person.Produce(p =>
+            {
+                cars = p.Cars;
+            });
+
+            Assert.NotSame(cars, result.Cars);
+            Assert.Throws<DraftRevokedException>(() =>
+            {
+                Assert.Same(result.Cars[0], cars ![0]);
+            });
         }
     }
 }

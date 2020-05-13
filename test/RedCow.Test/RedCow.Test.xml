@@ -59,6 +59,17 @@
             Tests producing a collection.
             </summary>
         </member>
+        <member name="M:RedCow.Test.CollectionTests.UnchangedCollectionTest">
+            <summary>
+            Tests whether enumerating the collection, but not changing anything,
+            returns the original collection.
+            </summary>
+        </member>
+        <member name="M:RedCow.Test.CollectionTests.CollectionRevokedTest">
+            <summary>
+            Tests whether the collection is revoked.
+            </summary>
+        </member>
         <member name="T:RedCow.Test.ICar">
             <summary>
             Car interface.
