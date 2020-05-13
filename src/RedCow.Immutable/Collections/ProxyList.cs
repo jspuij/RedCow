@@ -326,7 +326,17 @@ namespace RedCow.Immutable.Collections
         void ILockable.Lock()
         {
             this.ThrowIfRevoked();
-            this.locked = true;
+            if (!this.locked)
+            {
+                this.locked = true;
+                foreach (T item in this.InnerList)
+                {
+                    if (item is ILockable lockable)
+                    {
+                        lockable.Lock();
+                    }
+                }
+            }
         }
 
         /// <summary>

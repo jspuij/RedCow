@@ -54,6 +54,11 @@
             Tests producing a collection.
             </summary>
         </member>
+        <member name="M:RedCow.Test.CollectionTests.CollectionNestedChangeTest">
+            <summary>
+            Tests producing a collection.
+            </summary>
+        </member>
         <member name="T:RedCow.Test.ICar">
             <summary>
             Car interface.

@@ -18,6 +18,7 @@ namespace RedCow.Test
 {
     using System;
     using System.Collections.Generic;
+    using System.Linq;
     using System.Text;
     using Xunit;
 
@@ -53,6 +54,58 @@ namespace RedCow.Test
             };
 
             var person = ITestPerson.Produce(initial);
+
+            var result = person.Produce(p =>
+            {
+                p.Cars.Add(new Car()
+                {
+                    Make = "Rolls Royce",
+                    Model = "10 HP",
+                });
+            });
+
+            Assert.NotSame(initial, result);
+            Assert.NotSame(initial.Cars, result.Cars);
+            Assert.True(((ILockable)result.Cars.Last()).Locked);
+        }
+
+        /// <summary>
+        /// Tests producing a collection.
+        /// </summary>
+        [Fact]
+        public void CollectionNestedChangeTest()
+        {
+            var initial = new TestPerson()
+            {
+                FirstName = "John",
+                LastName = "Doe",
+                IsAdult = true,
+                Cars = new List<Car>()
+                {
+                    new Car
+                    {
+                        Make = "Ferrari",
+                        Model = "250 LM",
+                    },
+                    new Car
+                    {
+                        Make = "Shelby",
+                        Model = "Daytona Cobra Coupe",
+                    },
+                },
+            };
+
+            var person = ITestPerson.Produce(initial);
+
+            var result = person.Produce(p =>
+            {
+                p.Cars[1].Make = "Shelby American";
+            });
+
+            Assert.NotSame(initial, result);
+            Assert.NotSame(initial.Cars, result.Cars);
+            Assert.Same(initial.Cars[0], result.Cars[0]);
+            Assert.NotSame(initial.Cars[1], result.Cars[1]);
         }
     }
 }

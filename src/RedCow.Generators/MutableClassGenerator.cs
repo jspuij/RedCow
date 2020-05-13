@@ -143,7 +143,8 @@ namespace RedCow.Generators
                 {
                     var unbound = namedType.ConstructUnboundGenericType();
 
-                    if (unbound.MetadataName == typeof(System.Collections.Generic.IReadOnlyCollection<>).Name)
+                    if (unbound.MetadataName == typeof(System.Collections.Generic.IReadOnlyCollection<>).Name ||
+                        unbound.MetadataName == typeof(System.Collections.Generic.IReadOnlyList<>).Name)
                     {
                         var genericArgument = namedType.TypeArguments[0];
                         var mutableType = GetMutableType(context, genericArgument);
@@ -328,7 +329,8 @@ namespace RedCow.Generators
                 {
                     var unbound = namedType.ConstructUnboundGenericType();
 
-                    if (unbound.MetadataName == typeof(System.Collections.Generic.IReadOnlyCollection<>).Name)
+                    if (unbound.MetadataName == typeof(System.Collections.Generic.IReadOnlyCollection<>).Name ||
+                        unbound.MetadataName == typeof(System.Collections.Generic.IReadOnlyList<>).Name)
                     {
                         var genericArgument = namedType.TypeArguments[0];
                         var mutableType = GetMutableType(context, genericArgument);

@@ -17,6 +17,7 @@
 namespace RedCow.Immutable
 {
     using System;
+    using System.Collections;
     using System.Collections.Generic;
     using System.Linq;
     using System.Runtime.InteropServices.ComTypes;
@@ -177,6 +178,36 @@ namespace RedCow.Immutable
                             {
                                 // use reflection to set the property and trigger changed on the parent.
                                 draftType.GetProperty(propertyName).SetValue(draft, immutable);
+                            }
+                        }
+                    }
+                    else if (idraft.DraftState is CollectionDraftState collectionDraftState)
+                    {
+                        if (draft is IList list)
+                        {
+                            int index = 0;
+
+                            // todo: handle dictionaries and sets.
+                            foreach (object? child in list)
+                            {
+                                if (InternalIsDraft(child))
+                                {
+                                    var immutable = Reconcile(child);
+
+                                    // draft turned into immutable.
+                                    if (ReferenceEquals(immutable, child))
+                                    {
+                                        idraft.DraftState!.Changed = true;
+                                    }
+
+                                    // draft reverted to original.
+                                    else
+                                    {
+                                        list[index] = immutable;
+                                    }
+                                }
+
+                                index++;
                             }
                         }
                     }

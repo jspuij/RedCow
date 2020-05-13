@@ -17,8 +17,11 @@
 namespace RedCow.Immutable
 {
     using System;
+    using System.Collections;
+    using System.Collections.Generic;
     using System.Linq;
     using System.Reflection;
+    using RedCow.Immutable.Collections;
 
     /// <summary>
     /// Extension methods for drafts.
@@ -130,6 +133,38 @@ namespace RedCow.Immutable
         internal static Type? GetProxyType(object source)
         {
             Type? type = source.GetType();
+
+            if (source is IEnumerable)
+            {
+                if (type.IsGenericType)
+                {
+                    var genericTypeArguments = type.GetGenericArguments();
+
+                    if (genericTypeArguments.Length == 2)
+                    {
+                        throw new NotImplementedException();
+                    }
+                    else if (genericTypeArguments.Length == 1)
+                    {
+                        var setType = typeof(ISet<>).MakeGenericType(genericTypeArguments);
+                        if (type.IsAssignableFrom(setType))
+                        {
+                            throw new NotImplementedException();
+                        }
+                        else
+                        {
+                            return typeof(ProxyList<>).MakeGenericType(genericTypeArguments);
+                        }
+                    }
+                }
+                else
+                {
+                    if (source is IList || source is ICollection)
+                    {
+                        return typeof(ProxyList<object>);
+                    }
+                }
+            }
 
             Type? draftType = null;
 

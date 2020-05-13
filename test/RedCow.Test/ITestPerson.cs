@@ -52,6 +52,6 @@ namespace RedCow.Test
         /// <summary>
         /// Gets the cars.
         /// </summary>
-        public IReadOnlyCollection<ICar> Cars { get; }
+        public IReadOnlyList<ICar> Cars { get; }
     }
 }
