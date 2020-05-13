@@ -46,72 +46,296 @@
             <param name="modify">The modification to the collection.</param>
             <param name="copyOnWrite">The copy on write action.</param>
         </member>
+        <member name="T:RedCow.Immutable.Collections.ProxyDictionary`2">
+            <summary>
+            A dictionary that can act as a proxy around another dictionary.
+            </summary>
+            <typeparam name="TKey">The type of the keys held in the dictionary.</typeparam>
+            <typeparam name="TValue">The type of the values held in the dictionary.</typeparam>
+        </member>
+        <member name="F:RedCow.Immutable.Collections.ProxyDictionary`2.values">
+            <summary>
+            The values collection wrapper.
+            </summary>
+        </member>
+        <member name="P:RedCow.Immutable.Collections.ProxyDictionary`2.Keys">
+            <summary>
+            Gets a collection containing the keys in the <see cref="T:RedCow.Immutable.Collections.ProxyDictionary`2"/>.
+            </summary>
+        </member>
+        <member name="P:RedCow.Immutable.Collections.ProxyDictionary`2.Values">
+            <summary>
+            Gets a collection containing the values in the <see cref="T:RedCow.Immutable.Collections.ProxyDictionary`2"/>.
+            </summary>
+        </member>
+        <member name="P:RedCow.Immutable.Collections.ProxyDictionary`2.System#Collections#Generic#IReadOnlyDictionary{TKey,TValue}#Keys">
+            <summary>
+            Gets a collection containing the keys in the <see cref="T:RedCow.Immutable.Collections.ProxyDictionary`2"/>.
+            </summary>
+        </member>
+        <member name="P:RedCow.Immutable.Collections.ProxyDictionary`2.System#Collections#Generic#IReadOnlyDictionary{TKey,TValue}#Values">
+            <summary>
+            Gets a collection containing the values in the <see cref="T:RedCow.Immutable.Collections.ProxyDictionary`2"/>.
+            </summary>
+        </member>
+        <member name="P:RedCow.Immutable.Collections.ProxyDictionary`2.System#Collections#IDictionary#Keys">
+            <summary>
+            Gets a collection containing the keys in the <see cref="T:RedCow.Immutable.Collections.ProxyDictionary`2"/>.
+            </summary>
+        </member>
+        <member name="P:RedCow.Immutable.Collections.ProxyDictionary`2.System#Collections#IDictionary#Values">
+            <summary>
+            Gets a collection containing the values in the <see cref="T:RedCow.Immutable.Collections.ProxyDictionary`2"/>.
+            </summary>
+        </member>
+        <member name="P:RedCow.Immutable.Collections.ProxyDictionary`2.System#Collections#IDictionary#Item(System.Object)">
+            <summary>
+            Gets or sets the value associated with the specified key.
+            </summary>
+            <param name="key">The key of the value to get or set.</param>
+            <returns>
+            The value associated with the specified key. If the specified key is not found,
+            a get operation throws a System.Collections.Generic.KeyNotFoundException, and
+            a set operation creates a new element with the specified key.
+            </returns>
+        </member>
+        <member name="P:RedCow.Immutable.Collections.ProxyDictionary`2.Item(`0)">
+            <summary>
+            Gets or sets the value associated with the specified key.
+            </summary>
+            <param name="key">The key of the value to get or set.</param>
+            <returns>
+            The value associated with the specified key. If the specified key is not found,
+            a get operation throws a System.Collections.Generic.KeyNotFoundException, and
+            a set operation creates a new element with the specified key.
+            </returns>
+        </member>
+        <member name="M:RedCow.Immutable.Collections.ProxyDictionary`2.Add(`0,`1)">
+            <summary>
+            Adds the specified key and value to the dictionary.
+            </summary>
+            <param name="key">The key of the element to add.</param>
+            <param name="value">The value of the element to add. The value can be null for reference types.</param>
+        </member>
+        <member name="M:RedCow.Immutable.Collections.ProxyDictionary`2.ContainsKey(`0)">
+            <summary>
+            Determines whether the <see cref="T:RedCow.Immutable.Collections.ProxyDictionary`2"/> contains the specified key.
+            </summary>
+            <param name="key">The key to locate in the <see cref="T:RedCow.Immutable.Collections.ProxyDictionary`2"/>.</param>
+            <returns>true if the <see cref="T:RedCow.Immutable.Collections.ProxyDictionary`2"/> contains an element with the specified key; otherwise, false.</returns>
+        </member>
+        <member name="M:RedCow.Immutable.Collections.ProxyDictionary`2.Remove(`0)">
+            <summary>
+            Removes the value with the specified key from the <see cref="T:RedCow.Immutable.Collections.ProxyDictionary`2"/>.
+            </summary>
+            <param name="key">The key of the element to remove.</param>
+            <returns>
+            true if the element is successfully found and removed; otherwise, false. This
+            method returns false if key is not found in the <see cref="T:RedCow.Immutable.Collections.ProxyDictionary`2"/>.
+            </returns>
+        </member>
+        <member name="M:RedCow.Immutable.Collections.ProxyDictionary`2.TryGetValue(`0,`1@)">
+            <summary>
+            Gets the value associated with the specified key.
+            </summary>
+            <param name="key">The key whose value to get.</param>
+            <param name="value">When this method returns, the value associated with the specified key, if the
+            key is found; otherwise, the default value for the type of the value parameter.
+            This parameter is passed uninitialized.</param>
+            <returns>true if the object that implements <see cref="T:RedCow.Immutable.Collections.ProxyDictionary`2"/> contains
+            an element with the specified key; otherwise, false.</returns>
+        </member>
+        <member name="M:RedCow.Immutable.Collections.ProxyDictionary`2.System#Collections#IDictionary#Add(System.Object,System.Object)">
+            <summary>
+            Adds the specified key and value to the dictionary.
+            </summary>
+            <param name="key">The key of the element to add.</param>
+            <param name="value">The value of the element to add. The value can be null for reference types.</param>
+        </member>
+        <member name="M:RedCow.Immutable.Collections.ProxyDictionary`2.System#Collections#IDictionary#Clear">
+            <summary>
+             Removes all elements from the <see cref="T:RedCow.Immutable.Collections.ProxyDictionary`2"/>.
+            </summary>
+        </member>
+        <member name="M:RedCow.Immutable.Collections.ProxyDictionary`2.System#Collections#IDictionary#Contains(System.Object)">
+            <summary>
+            Determines whether the System.Collections.Generic.Dictionary`2 contains the specified key.
+            </summary>
+            <param name="key">The key to locate in the System.Collections.Generic.Dictionary`2.</param>
+            <returns>true if the System.Collections.Generic.Dictionary`2 contains an element with the specified key; otherwise, false.</returns>
+        </member>
+        <member name="M:RedCow.Immutable.Collections.ProxyDictionary`2.System#Collections#IDictionary#GetEnumerator">
+            <summary>
+            Returns an enumerator that iterates through the <see cref="T:RedCow.Immutable.Collections.ProxyDictionary`2"/>.
+            </summary>
+            <returns>An enumerator that can be used to iterate through the <see cref="T:RedCow.Immutable.Collections.ProxyDictionary`2"/>.</returns>
+        </member>
+        <member name="M:RedCow.Immutable.Collections.ProxyDictionary`2.System#Collections#IDictionary#Remove(System.Object)">
+            <summary>
+            Removes the value with the specified key from the System.Collections.Generic.Dictionary`2.
+            </summary>
+            <param name="key">The key of the element to remove.</param>
+        </member>
+        <member name="M:RedCow.Immutable.Collections.ProxyDictionary`2.GetDraftEnumerator(System.Collections.Generic.IEnumerator{System.Collections.Generic.KeyValuePair{`0,`1}})">
+            <summary>
+            Gets an enumerator that creates drafts while enumerating.
+            </summary>
+            <param name="enumerator">The source enumerator.</param>
+            <returns>An enumerator that creates drafts.</returns>
+        </member>
+        <member name="M:RedCow.Immutable.Collections.ProxyDictionary`2.CopyOnWrite">
+            <summary>
+            Executes the Copy on write on the inner list.
+            </summary>
+        </member>
+        <member name="M:RedCow.Immutable.Collections.ProxyDictionary`2.GetInnerValueEnumerator">
+            <summary>
+            Gets an enumerator of the inner values.
+            </summary>
+            <returns>An enumerator with inner values.</returns>
+        </member>
+        <member name="T:RedCow.Immutable.Collections.ProxyDictionary`2.ProxyDictionaryEnumerator">
+            <summary>
+            Nongeneric enumerator wrapper for <see cref="T:RedCow.Immutable.Collections.ProxyDictionary`2"/>.
+            </summary>
+        </member>
+        <member name="M:RedCow.Immutable.Collections.ProxyDictionary`2.ProxyDictionaryEnumerator.#ctor(System.Collections.Generic.IEnumerator{System.Collections.Generic.KeyValuePair{`0,`1}})">
+            <summary>
+            Initializes a new instance of the <see cref="T:RedCow.Immutable.Collections.ProxyDictionary`2.ProxyDictionaryEnumerator"/> class.
+            </summary>
+            <param name="enumerator">The enumerator to wrap.</param>
+        </member>
+        <member name="P:RedCow.Immutable.Collections.ProxyDictionary`2.ProxyDictionaryEnumerator.Entry">
+            <summary>
+            Gets the Dictionary Entry.
+            </summary>
+        </member>
+        <member name="P:RedCow.Immutable.Collections.ProxyDictionary`2.ProxyDictionaryEnumerator.Key">
+            <summary>
+            Gets the key.
+            </summary>
+        </member>
+        <member name="P:RedCow.Immutable.Collections.ProxyDictionary`2.ProxyDictionaryEnumerator.Value">
+            <summary>
+            Gets the value.
+            </summary>
+        </member>
+        <member name="P:RedCow.Immutable.Collections.ProxyDictionary`2.ProxyDictionaryEnumerator.Current">
+            <summary>
+            Gets the current item.
+            </summary>
+        </member>
+        <member name="M:RedCow.Immutable.Collections.ProxyDictionary`2.ProxyDictionaryEnumerator.MoveNext">
+            <summary>
+            Advances the enumerator to the next element of the collection.
+            </summary>
+            <returns>True when the advancement succeeded, false otherwise.</returns>
+        </member>
+        <member name="M:RedCow.Immutable.Collections.ProxyDictionary`2.ProxyDictionaryEnumerator.Reset">
+            <summary>
+            Sets the enumerator to its initial position, which is before the first element
+            in the collection.
+            </summary>
+        </member>
+        <member name="T:RedCow.Immutable.Collections.ProxyDictionary`2.ProxyValueCollection">
+            <summary>
+            Wraps the collection of values inside the <see cref="T:RedCow.Immutable.Collections.ProxyDictionary`2"/>.
+            </summary>
+        </member>
+        <member name="M:RedCow.Immutable.Collections.ProxyDictionary`2.ProxyValueCollection.#ctor(RedCow.Immutable.Collections.ProxyDictionary{`0,`1})">
+            <summary>
+            Initializes a new instance of the <see cref="T:RedCow.Immutable.Collections.ProxyDictionary`2.ProxyValueCollection"/> class.
+            </summary>
+            <param name="dictionary">The dictionary.</param>
+        </member>
+        <member name="P:RedCow.Immutable.Collections.ProxyDictionary`2.ProxyValueCollection.Count">
+            <summary>
+            Gets the number of elements contained in the collection.
+            </summary>
+        </member>
+        <member name="P:RedCow.Immutable.Collections.ProxyDictionary`2.ProxyValueCollection.System#Collections#Generic#ICollection{TValue}#IsReadOnly">
+            <summary>
+            Gets a value indicating whether the collection is read only.
+            </summary>
+        </member>
+        <member name="P:RedCow.Immutable.Collections.ProxyDictionary`2.ProxyValueCollection.System#Collections#ICollection#IsSynchronized">
+            <summary>
+            Gets a value indicating whether access to the collection is synchronized (thread safe).
+            </summary>
+        </member>
+        <member name="P:RedCow.Immutable.Collections.ProxyDictionary`2.ProxyValueCollection.System#Collections#ICollection#SyncRoot">
+            <summary>
+            Gets an object that can be used to synchronize access to the collection.
+            </summary>
+        </member>
+        <member name="M:RedCow.Immutable.Collections.ProxyDictionary`2.ProxyValueCollection.System#Collections#Generic#ICollection{TValue}#Add(`1)">
+            <summary>
+            Adds an item to the collection.
+            </summary>
+            <param name="item">The item to add.</param>
+        </member>
+        <member name="M:RedCow.Immutable.Collections.ProxyDictionary`2.ProxyValueCollection.System#Collections#Generic#ICollection{TValue}#Remove(`1)">
+            <summary>
+            Removes the first occurrence of a specific object from the collection.
+            </summary>
+            <param name="item">The object to remove from the collection.</param>
+            <returns>
+            true if item was successfully removed from the collection;
+            otherwise, false. This method also returns false if item is not found in the
+            original collection.</returns>
+        </member>
+        <member name="M:RedCow.Immutable.Collections.ProxyDictionary`2.ProxyValueCollection.System#Collections#Generic#ICollection{TValue}#Clear">
+            <summary>
+             Removes all items from the collection.
+            </summary>
+        </member>
+        <member name="M:RedCow.Immutable.Collections.ProxyDictionary`2.ProxyValueCollection.System#Collections#Generic#ICollection{TValue}#Contains(`1)">
+            <summary>
+            Determines whether the collection contains a specific value.
+            </summary>
+            <param name="item">The object to locate in the collection.</param>
+            <returns>true if item is found in the collection; otherwise, false.</returns>
+        </member>
+        <member name="M:RedCow.Immutable.Collections.ProxyDictionary`2.ProxyValueCollection.System#Collections#IEnumerable#GetEnumerator">
+            <summary>
+            Returns an enumerator that iterates through the collection.
+            </summary>
+            <returns>An enumerator that can be used to iterate through the collection.</returns>
+        </member>
+        <member name="M:RedCow.Immutable.Collections.ProxyDictionary`2.ProxyValueCollection.GetEnumerator">
+            <summary>
+            Returns an enumerator that iterates through the collection.
+            </summary>
+            <returns>An enumerator that can be used to iterate through the collection.</returns>
+        </member>
+        <member name="M:RedCow.Immutable.Collections.ProxyDictionary`2.ProxyValueCollection.CopyTo(`1[],System.Int32)">
+            <summary>
+            Copies the elements of the collection. to an System.Array,
+            starting at a particular System.Array index.
+            </summary>
+            <param name="array">The destination array.</param>
+            <param name="arrayIndex">The array index.</param>
+        </member>
+        <member name="M:RedCow.Immutable.Collections.ProxyDictionary`2.ProxyValueCollection.System#Collections#ICollection#CopyTo(System.Array,System.Int32)">
+            <summary>
+            Copies the elements of the collection. to an System.Array,
+            starting at a particular System.Array index.
+            </summary>
+            <param name="array">The destination array.</param>
+            <param name="index">The array index.</param>
+        </member>
+        <member name="M:RedCow.Immutable.Collections.ProxyDictionary`2.ProxyValueCollection.GetDraftEnumerator(System.Collections.Generic.Dictionary{`0,`1}.Enumerator)">
+            <summary>
+            Gets an enumerator that creates drafts while enumerating.
+            </summary>
+            <param name="enumerator">The source enumerator.</param>
+            <returns>An enumerator that creates drafts.</returns>
+        </member>
         <member name="T:RedCow.Immutable.Collections.ProxyList`1">
             <summary>
             A list that can act as a proxy around another list.
             </summary>
             <typeparam name="T">The type that is held in the list.</typeparam>
-        </member>
-        <member name="F:RedCow.Immutable.Collections.ProxyList`1.collectionDraftState">
-            <summary>
-            The draft state for this list.
-            </summary>
-        </member>
-        <member name="F:RedCow.Immutable.Collections.ProxyList`1.innerList">
-            <summary>
-            The inner list.
-            </summary>
-        </member>
-        <member name="F:RedCow.Immutable.Collections.ProxyList`1.locked">
-            <summary>
-            A variable indicating whether this list is locked.
-            </summary>
-        </member>
-        <member name="P:RedCow.Immutable.Collections.ProxyList`1.Count">
-            <summary>
-            Gets the number of elements contained in the <see cref="T:RedCow.Immutable.Collections.ProxyList`1"/>.
-            </summary>
-        </member>
-        <member name="P:RedCow.Immutable.Collections.ProxyList`1.IsReadOnly">
-            <summary>
-            Gets a value indicating whether <see cref="T:RedCow.Immutable.Collections.ProxyList`1"/> is read only.
-            </summary>
-        </member>
-        <member name="P:RedCow.Immutable.Collections.ProxyList`1.Original">
-            <summary>
-            Gets the original collection if available.
-            </summary>
-            <remarks>May return null when this proxy is not in draft state.</remarks>
-        </member>
-        <member name="P:RedCow.Immutable.Collections.ProxyList`1.IsSynchronized">
-            <summary>
-            Gets a value indicating whether access to the <see cref="T:RedCow.Immutable.Collections.ProxyList`1" /> is synchronized (thread safe).
-            </summary>
-        </member>
-        <member name="P:RedCow.Immutable.Collections.ProxyList`1.SyncRoot">
-            <summary>
-            Gets an object that can be used to synchronize access to the <see cref="T:RedCow.Immutable.Collections.ProxyList`1" />.
-            </summary>
-        </member>
-        <member name="P:RedCow.Immutable.Collections.ProxyList`1.RedCow#Immutable#IDraft#DraftState">
-            <summary>
-            Gets or sets the <see cref="T:RedCow.Immutable.DraftState"/> for this draft.
-            </summary>
-        </member>
-        <member name="P:RedCow.Immutable.Collections.ProxyList`1.RedCow#ILockable#Locked">
-            <summary>
-            Gets a value indicating whether the immutable is locked.
-            </summary>
-        </member>
-        <member name="P:RedCow.Immutable.Collections.ProxyList`1.System#Collections#IList#IsFixedSize">
-            <summary>
-            Gets a value indicating whether the <see cref="T:RedCow.Immutable.Collections.ProxyList`1"/> has a fixed size.
-            </summary>
-        </member>
-        <member name="P:RedCow.Immutable.Collections.ProxyList`1.InnerList">
-            <summary>
-            Gets or sets the inner list and creates one if it does not exist.
-            </summary>
         </member>
         <member name="P:RedCow.Immutable.Collections.ProxyList`1.Item(System.Int32)">
             <summary>
@@ -126,48 +350,6 @@
             </summary>
             <param name="index">The zero-based index of the element to get or set.</param>
             <returns>The element at the specified index.</returns>
-        </member>
-        <member name="M:RedCow.Immutable.Collections.ProxyList`1.GetEnumerator">
-            <summary>
-            Returns an enumerator that iterates through the collection.
-            </summary>
-            <returns>An enumerator that can be used to iterate through the collection.</returns>
-        </member>
-        <member name="M:RedCow.Immutable.Collections.ProxyList`1.Add(`0)">
-            <summary>
-            Adds an item to the <see cref="T:RedCow.Immutable.Collections.ProxyList`1"/>.
-            </summary>
-            <param name="item">The object to add to the <see cref="T:RedCow.Immutable.Collections.ProxyList`1"/>.</param>
-        </member>
-        <member name="M:RedCow.Immutable.Collections.ProxyList`1.Clear">
-            <summary>
-             Removes all items from the <see cref="T:RedCow.Immutable.Collections.ProxyList`1"/>.
-            </summary>
-        </member>
-        <member name="M:RedCow.Immutable.Collections.ProxyList`1.Contains(`0)">
-            <summary>
-            Determines whether the <see cref="T:RedCow.Immutable.Collections.ProxyList`1"/> contains a specific value.
-            </summary>
-            <param name="item">The object to locate in the <see cref="T:RedCow.Immutable.Collections.ProxyList`1"/>.</param>
-            <returns>true if item is found in the <see cref="T:RedCow.Immutable.Collections.ProxyList`1"/>; otherwise, false.</returns>
-        </member>
-        <member name="M:RedCow.Immutable.Collections.ProxyList`1.CopyTo(`0[],System.Int32)">
-            <summary>
-            Copies the elements of the <see cref="T:RedCow.Immutable.Collections.ProxyList`1"/> to an System.Array,
-            starting at a particular System.Array index.
-            </summary>
-            <param name="array">The destination array.</param>
-            <param name="arrayIndex">The array index.</param>
-        </member>
-        <member name="M:RedCow.Immutable.Collections.ProxyList`1.Remove(`0)">
-            <summary>
-            Removes the first occurrence of a specific object from the <see cref="T:RedCow.Immutable.Collections.ProxyList`1"/>.
-            </summary>
-            <param name="item">The object to remove from the <see cref="T:RedCow.Immutable.Collections.ProxyList`1"/>.</param>
-            <returns>
-            true if item was successfully removed from the <see cref="T:RedCow.Immutable.Collections.ProxyList`1"/>;
-            otherwise, false. This method also returns false if item is not found in the
-            original <see cref="T:RedCow.Immutable.Collections.ProxyList`1"/>.</returns>
         </member>
         <member name="M:RedCow.Immutable.Collections.ProxyList`1.IndexOf(`0)">
             <summary>
@@ -190,32 +372,6 @@
             Removes the <see cref="T:RedCow.Immutable.Collections.ProxyList`1"/> item at the specified index.
             </summary>
             <param name="index">The zero-based index of the item to remove.</param>
-        </member>
-        <member name="M:RedCow.Immutable.Collections.ProxyList`1.RedCow#Immutable#IDraft#Clone">
-            <summary>
-            Clones the draft from the original.
-            </summary>
-        </member>
-        <member name="M:RedCow.Immutable.Collections.ProxyList`1.System#Collections#IEnumerable#GetEnumerator">
-            <summary>
-            Returns an enumerator that iterates through the collection.
-            </summary>
-            <returns>An enumerator that can be used to iterate through the collection.</returns>
-        </member>
-        <member name="M:RedCow.Immutable.Collections.ProxyList`1.RedCow#ILockable#Lock">
-            <summary>
-            Locks the Immutable.
-            </summary>
-        </member>
-        <member name="M:RedCow.Immutable.Collections.ProxyList`1.System#Collections#ICollection#CopyTo(System.Array,System.Int32)">
-            <summary>
-            Copies the elements of the <see cref="T:RedCow.Immutable.Collections.ProxyList`1"/> to an System.Array, starting at a particular System.Array index.
-            </summary>
-            <param name="array">
-            The one-dimensional System.Array that is the destination of the elements copied
-            from System.Collections.ICollection. The System.Array must have zero-based indexing.
-            </param>
-            <param name="index">The zero-based index in array at which copying begins.</param>
         </member>
         <member name="M:RedCow.Immutable.Collections.ProxyList`1.System#Collections#IList#Add(System.Object)">
             <summary>
@@ -253,6 +409,11 @@
             </summary>
             <param name="value">The object to remove from the <see cref="T:RedCow.Immutable.Collections.ProxyList`1"/>.</param>
         </member>
+        <member name="M:RedCow.Immutable.Collections.ProxyList`1.CopyOnWrite">
+            <summary>
+            Executes the Copy on write on the inner list.
+            </summary>
+        </member>
         <member name="M:RedCow.Immutable.Collections.ProxyList`1.GetDraftEnumerator(System.Collections.Generic.IEnumerator{`0})">
             <summary>
             Gets an enumerator that creates drafts while enumerating.
@@ -260,20 +421,11 @@
             <param name="enumerator">The source enumerator.</param>
             <returns>An enumerator that creates drafts.</returns>
         </member>
-        <member name="M:RedCow.Immutable.Collections.ProxyList`1.ThrowIfReadonly">
+        <member name="M:RedCow.Immutable.Collections.ProxyList`1.GetInnerValueEnumerator">
             <summary>
-            Throws an exception <see cref="T:RedCow.Immutable.Collections.ProxyList`1"/> is readonly.
+            Gets an enumerator of the inner values.
             </summary>
-        </member>
-        <member name="M:RedCow.Immutable.Collections.ProxyList`1.ThrowIfRevoked">
-            <summary>
-            Throws an exception  <see cref="T:RedCow.Immutable.Collections.ProxyList`1"/> is revoked.
-            </summary>
-        </member>
-        <member name="M:RedCow.Immutable.Collections.ProxyList`1.CopyOnWrite">
-            <summary>
-            Executes the Copy on write on the inner list.
-            </summary>
+            <returns>An enumerator with inner values.</returns>
         </member>
         <member name="T:RedCow.Immutable.DraftExtensions">
             <summary>
@@ -576,6 +728,170 @@
             <param name="source">The source.</param>
             <param name="destination">The destination object.</param>
             <param name="assignmentFunction">The assignment function to use to assign the source value properties to the destination.</param>
+        </member>
+        <member name="T:RedCow.Collections.ProxyCollectionBase`2">
+            <summary>
+            Base class for collection types.
+            </summary>
+            <typeparam name="T">The collection type.</typeparam>
+            <typeparam name="TValue">The inner value type.</typeparam>
+        </member>
+        <member name="F:RedCow.Collections.ProxyCollectionBase`2.innerCollection">
+            <summary>
+            The inner collection.
+            </summary>
+        </member>
+        <member name="P:RedCow.Collections.ProxyCollectionBase`2.IsReadOnly">
+            <summary>
+            Gets a value indicating whether the collection is read only.
+            </summary>
+        </member>
+        <member name="P:RedCow.Collections.ProxyCollectionBase`2.IsFixedSize">
+            <summary>
+            Gets a value indicating whether the collection has a fixed size.
+            </summary>
+        </member>
+        <member name="P:RedCow.Collections.ProxyCollectionBase`2.IsSynchronized">
+            <summary>
+            Gets a value indicating whether access to the collection is synchronized (thread safe).
+            </summary>
+        </member>
+        <member name="P:RedCow.Collections.ProxyCollectionBase`2.Count">
+            <summary>
+            Gets the number of elements contained in the collection.
+            </summary>
+        </member>
+        <member name="P:RedCow.Collections.ProxyCollectionBase`2.Original">
+            <summary>
+            Gets the original collection if available.
+            </summary>
+            <remarks>May return null when this proxy is not in draft state.</remarks>
+        </member>
+        <member name="P:RedCow.Collections.ProxyCollectionBase`2.RedCow#Immutable#IDraft#DraftState">
+            <summary>
+            Gets or sets the <see cref="T:RedCow.Immutable.DraftState"/> for this draft.
+            </summary>
+        </member>
+        <member name="P:RedCow.Collections.ProxyCollectionBase`2.RedCow#ILockable#Locked">
+            <summary>
+            Gets a value indicating whether the immutable is locked.
+            </summary>
+        </member>
+        <member name="P:RedCow.Collections.ProxyCollectionBase`2.System#Collections#ICollection#SyncRoot">
+            <summary>
+            Gets an object that can be used to synchronize access to the collection.
+            </summary>
+        </member>
+        <member name="P:RedCow.Collections.ProxyCollectionBase`2.CollectionDraftState">
+            <summary>
+            Gets or sets the draft state for this collection.
+            </summary>
+        </member>
+        <member name="P:RedCow.Collections.ProxyCollectionBase`2.InnerCollection">
+            <summary>
+            Gets or sets the inner collection and creates one if it does not exist.
+            </summary>
+        </member>
+        <member name="P:RedCow.Collections.ProxyCollectionBase`2.Locked">
+            <summary>
+            Gets a value indicating whether this collection is locked.
+            </summary>
+        </member>
+        <member name="M:RedCow.Collections.ProxyCollectionBase`2.GetEnumerator">
+            <summary>
+            Returns an enumerator that iterates through the collection.
+            </summary>
+            <returns>An enumerator that can be used to iterate through the collection.</returns>
+        </member>
+        <member name="M:RedCow.Collections.ProxyCollectionBase`2.RedCow#ILockable#Lock">
+            <summary>
+            Locks the Immutable.
+            </summary>
+        </member>
+        <member name="M:RedCow.Collections.ProxyCollectionBase`2.RedCow#Immutable#IDraft#Clone">
+            <summary>
+            Clones the draft from the original.
+            </summary>
+        </member>
+        <member name="M:RedCow.Collections.ProxyCollectionBase`2.System#Collections#IEnumerable#GetEnumerator">
+            <summary>
+            Returns an enumerator that iterates through the collection.
+            </summary>
+            <returns>An enumerator that can be used to iterate through the collection.</returns>
+        </member>
+        <member name="M:RedCow.Collections.ProxyCollectionBase`2.System#Collections#ICollection#CopyTo(System.Array,System.Int32)">
+            <summary>
+            Copies the elements of the collection to an System.Array, starting at a particular System.Array index.
+            </summary>
+            <param name="array">
+            The one-dimensional System.Array that is the destination of the elements copied
+            from System.Collections.ICollection. The System.Array must have zero-based indexing.
+            </param>
+            <param name="index">The zero-based index in array at which copying begins.</param>
+        </member>
+        <member name="M:RedCow.Collections.ProxyCollectionBase`2.Add(`1)">
+            <summary>
+            Adds an item to the collection.
+            </summary>
+            <param name="item">The object to add to the collection.</param>
+        </member>
+        <member name="M:RedCow.Collections.ProxyCollectionBase`2.Clear">
+            <summary>
+             Removes all items from the collection.
+            </summary>
+        </member>
+        <member name="M:RedCow.Collections.ProxyCollectionBase`2.Contains(`1)">
+            <summary>
+            Determines whether the collection contains a specific value.
+            </summary>
+            <param name="item">The object to locate in the collection.</param>
+            <returns>true if item is found in the collection; otherwise, false.</returns>
+        </member>
+        <member name="M:RedCow.Collections.ProxyCollectionBase`2.CopyTo(`1[],System.Int32)">
+            <summary>
+            Copies the elements of the collection. to an System.Array,
+            starting at a particular System.Array index.
+            </summary>
+            <param name="array">The destination array.</param>
+            <param name="arrayIndex">The array index.</param>
+        </member>
+        <member name="M:RedCow.Collections.ProxyCollectionBase`2.Remove(`1)">
+            <summary>
+            Removes the first occurrence of a specific object from the collection.
+            </summary>
+            <param name="item">The object to remove from the collection.</param>
+            <returns>
+            true if item was successfully removed from the collection;
+            otherwise, false. This method also returns false if item is not found in the
+            original collection.</returns>
+        </member>
+        <member name="M:RedCow.Collections.ProxyCollectionBase`2.ThrowIfReadonly">
+            <summary>
+            Throws an exception that this collection is readonly.
+            </summary>
+        </member>
+        <member name="M:RedCow.Collections.ProxyCollectionBase`2.ThrowIfRevoked">
+            <summary>
+            Throws an exception that this collection is revoked.
+            </summary>
+        </member>
+        <member name="M:RedCow.Collections.ProxyCollectionBase`2.GetInnerValueEnumerator">
+            <summary>
+            Gets the value enumerator.
+            </summary>
+            <returns>An enumerator with values.</returns>
+        </member>
+        <member name="M:RedCow.Collections.ProxyCollectionBase`2.GetDraftEnumerator(System.Collections.Generic.IEnumerator{`1})">
+            <summary>
+            Gets an enumerator that creates drafts while enumerating.
+            </summary>
+            <param name="enumerator">The source enumerator.</param>
+            <returns>An enumerator that creates drafts.</returns>
+        </member>
+        <member name="M:RedCow.Collections.ProxyCollectionBase`2.CopyOnWrite">
+            <summary>
+            Executes the Copy on write on the inner list.
+            </summary>
         </member>
         <member name="T:RedCow.DraftException">
             <summary>
