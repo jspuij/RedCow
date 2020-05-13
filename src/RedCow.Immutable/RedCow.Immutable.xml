@@ -16,6 +16,23 @@
             <param name="draft">The draft object that was involved in the exception.</param>
             <param name="message">The message.</param>
         </member>
+        <member name="T:RedCow.CollectionDraftState">
+            <summary>
+            A draft state for Collections.
+            </summary>
+        </member>
+        <member name="M:RedCow.CollectionDraftState.#ctor(RedCow.Immutable.DraftScope,System.Object)">
+            <summary>
+            Initializes a new instance of the <see cref="T:RedCow.CollectionDraftState"/> class.
+            </summary>
+            <param name="scope">The scope this draft state belongs to.</param>
+            <param name="original">The original.</param>
+        </member>
+        <member name="M:RedCow.CollectionDraftState.Revoke">
+            <summary>
+            Revokes the draft.
+            </summary>
+        </member>
         <member name="T:RedCow.Collections.ProxyList`1">
             <summary>
             A list that can act as a proxy around another list.
@@ -193,7 +210,7 @@
         </member>
         <member name="P:RedCow.Immutable.DraftState.Revoked">
             <summary>
-            Gets a value indicating whether or not this draft is revoked.
+            Gets or sets a value indicating whether or not this draft is revoked.
             </summary>
         </member>
         <member name="P:RedCow.Immutable.DraftState.Changed">
@@ -206,39 +223,12 @@
             Gets the scope this draft belongs to.
             </summary>
         </member>
-        <member name="P:RedCow.Immutable.DraftState.Children">
-            <summary>
-            Gets child draft proxies.
-            </summary>
-        </member>
         <member name="M:RedCow.Immutable.DraftState.GetOriginal``1">
             <summary>
             Gets the original.
             </summary>
             <typeparam name="T">The type to cast the original to.</typeparam>
             <returns>The original.</returns>
-        </member>
-        <member name="M:RedCow.Immutable.DraftState.Get``1(System.String,System.Func{``0},System.Func{``0},System.Action{``0})">
-            <summary>
-            Gets a property value, possibly drafting it while getting it.
-            </summary>
-            <typeparam name="T">The type of the Property.</typeparam>
-            <param name="propertyName">The property name.</param>
-            <param name="getter">The getter.</param>
-            <param name="originalGetter">The getter to get the original property.</param>
-            <param name="setter">The setter.</param>
-            <exception cref="T:System.InvalidOperationException">thrown when the draft is revoked.</exception>
-            <returns>The property value.</returns>
-        </member>
-        <member name="M:RedCow.Immutable.DraftState.Set``1(System.String,System.Action,System.Action)">
-            <summary>
-            Sets a property value.
-            </summary>
-            <typeparam name="T">The type of the Property.</typeparam>
-            <param name="propertyName">The property name.</param>
-            <param name="setter">The setter.</param>
-            <param name="copyOnWrite">The copy on write action.</param>
-            <exception cref="T:System.InvalidOperationException">thrown when the draft is revoked.</exception>
         </member>
         <member name="M:RedCow.Immutable.DraftState.Revoke">
             <summary>
@@ -429,6 +419,50 @@
         <member name="P:RedCow.IProducerOptions.MaxDepth">
             <summary>
             Gets the maximum recursion depth during Reconciliation.
+            </summary>
+        </member>
+        <member name="T:RedCow.ObjectDraftState">
+            <summary>
+            A draft state for objects.
+            </summary>
+        </member>
+        <member name="M:RedCow.ObjectDraftState.#ctor(RedCow.Immutable.DraftScope,System.Object)">
+            <summary>
+            Initializes a new instance of the <see cref="T:RedCow.ObjectDraftState"/> class.
+            </summary>
+            <param name="scope">The scope this draft state belongs to.</param>
+            <param name="original">The original.</param>
+        </member>
+        <member name="P:RedCow.ObjectDraftState.Children">
+            <summary>
+            Gets child draft proxies.
+            </summary>
+        </member>
+        <member name="M:RedCow.ObjectDraftState.Get``1(System.String,System.Func{``0},System.Func{``0},System.Action{``0})">
+            <summary>
+            Gets a property value, possibly drafting it while getting it.
+            </summary>
+            <typeparam name="T">The type of the Property.</typeparam>
+            <param name="propertyName">The property name.</param>
+            <param name="getter">The getter.</param>
+            <param name="originalGetter">The getter to get the original property.</param>
+            <param name="setter">The setter.</param>
+            <exception cref="T:System.InvalidOperationException">thrown when the draft is revoked.</exception>
+            <returns>The property value.</returns>
+        </member>
+        <member name="M:RedCow.ObjectDraftState.Set``1(System.String,System.Action,System.Action)">
+            <summary>
+            Sets a property value.
+            </summary>
+            <typeparam name="T">The type of the Property.</typeparam>
+            <param name="propertyName">The property name.</param>
+            <param name="setter">The setter.</param>
+            <param name="copyOnWrite">The copy on write action.</param>
+            <exception cref="T:System.InvalidOperationException">thrown when the draft is revoked.</exception>
+        </member>
+        <member name="M:RedCow.ObjectDraftState.Revoke">
+            <summary>
+            Revokes the draft.
             </summary>
         </member>
         <member name="T:RedCow.ProducerOptions">

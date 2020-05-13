@@ -579,7 +579,7 @@ namespace RedCow.Generators
                 /// <summary>
                 /// the draftState field.
                 /// </summary>
-                private DraftState draftState;
+                private ObjectDraftState draftState;
             ";
 
             return ParseMemberDeclaration(field)
@@ -599,7 +599,7 @@ namespace RedCow.Generators
                 DraftState IDraft.DraftState
                 {{
                     get => this.draftState;
-                    set => this.draftState = value;
+                    set => this.draftState = (ObjectDraftState)value;
                 }}
             ";
 

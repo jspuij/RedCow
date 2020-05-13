@@ -108,7 +108,9 @@ namespace RedCow.Immutable
                 throw new DraftException(source, "The object is not draftable.");
             }
 
-            var draftState = new DraftState(this, source);
+            var draftState = (source is System.Collections.IEnumerable) ?
+                new CollectionDraftState(this, source) :
+                (DraftState)new ObjectDraftState(this, source);
 
             // TODO: pluggable object creation.
             object result = Activator.CreateInstance(proxyType);
@@ -159,13 +161,16 @@ namespace RedCow.Immutable
 
                     if (draft is IDraft idraft)
                     {
-                        foreach ((string propertyName, object child) in idraft.DraftState!.Children)
+                        if (idraft.DraftState is ObjectDraftState objectDraftState)
                         {
-                            var immutable = Reconcile(child);
-                            if (ReferenceEquals(immutable, child))
+                            foreach ((string propertyName, object child) in objectDraftState.Children)
                             {
-                                // use reflection to set the property and trigger changed on the parent.
-                                draftType.GetProperty(propertyName).SetValue(draft, immutable);
+                                var immutable = Reconcile(child);
+                                if (ReferenceEquals(immutable, child))
+                                {
+                                    // use reflection to set the property and trigger changed on the parent.
+                                    draftType.GetProperty(propertyName).SetValue(draft, immutable);
+                                }
                             }
                         }
 

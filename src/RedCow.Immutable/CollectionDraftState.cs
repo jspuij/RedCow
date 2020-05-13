@@ -1,4 +1,4 @@
-﻿// <copyright file="DraftState.cs" company="Jan-Willem Spuij">
+﻿// <copyright file="CollectionDraftState.cs" company="Jan-Willem Spuij">
 // Copyright 2020 Jan-Willem Spuij
 //
 // Permission is hereby granted, free of charge, to any person obtaining a copy of this software and associated documentation
@@ -14,57 +14,34 @@
 // ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 // </copyright>
 
-namespace RedCow.Immutable
+namespace RedCow
 {
     using System;
     using System.Collections.Generic;
+    using System.Text;
+    using RedCow.Immutable;
 
     /// <summary>
-    /// State for drafts.
+    /// A draft state for Collections.
     /// </summary>
-    public abstract class DraftState
+    public class CollectionDraftState : DraftState
     {
         /// <summary>
-        /// The original object.
-        /// </summary>
-        private readonly object original;
-
-        /// <summary>
-        /// Initializes a new instance of the <see cref="DraftState"/> class.
+        /// Initializes a new instance of the <see cref="CollectionDraftState"/> class.
         /// </summary>
         /// <param name="scope">The scope this draft state belongs to.</param>
         /// <param name="original">The original.</param>
-        public DraftState(DraftScope scope, object original)
+        public CollectionDraftState(DraftScope scope, object original)
+            : base(scope, original)
         {
-            this.Scope = scope ?? throw new ArgumentNullException(nameof(scope));
-            this.original = original ?? throw new ArgumentNullException(nameof(original));
         }
-
-        /// <summary>
-        /// Gets or sets a value indicating whether or not this draft is revoked.
-        /// </summary>
-        public bool Revoked { get; protected set; }
-
-        /// <summary>
-        /// Gets a value indicating whether or not this draft is changed.
-        /// </summary>
-        public bool Changed { get; internal set; }
-
-        /// <summary>
-        /// Gets the scope this draft belongs to.
-        /// </summary>
-        public DraftScope Scope { get; }
-
-        /// <summary>
-        /// Gets the original.
-        /// </summary>
-        /// <typeparam name="T">The type to cast the original to.</typeparam>
-        /// <returns>The original.</returns>
-        public T GetOriginal<T>() => (T)this.original;
 
         /// <summary>
         /// Revokes the draft.
         /// </summary>
-        public abstract void Revoke();
+        public override void Revoke()
+        {
+            throw new NotImplementedException();
+        }
     }
 }
