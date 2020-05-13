@@ -21,7 +21,6 @@ namespace RedCow.Immutable.Collections
     using System.Collections.Generic;
     using System.Resources;
     using System.Text;
-    using RedCow.Collections;
     using RedCow.Immutable;
 
     /// <summary>

@@ -22,7 +22,6 @@ namespace RedCow.Immutable.Collections
     using System.Diagnostics;
     using System.Runtime.Serialization;
     using System.Text;
-    using RedCow.Collections;
 
     /// <summary>
     /// A dictionary that can act as a proxy around another dictionary.

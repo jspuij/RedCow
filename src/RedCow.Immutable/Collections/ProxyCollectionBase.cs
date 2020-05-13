@@ -14,7 +14,7 @@
 // ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 // </copyright>
 
-namespace RedCow.Collections
+namespace RedCow.Immutable.Collections
 {
     using System;
     using System.Collections;

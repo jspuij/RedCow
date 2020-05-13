@@ -18,6 +18,7 @@ namespace RedCow.Test
 {
     using System;
     using System.Collections.Generic;
+    using System.Diagnostics.CodeAnalysis;
     using System.Linq;
     using System.Text;
     using RedCow.Immutable;
@@ -26,6 +27,7 @@ namespace RedCow.Test
     /// <summary>
     /// Unit tests for collections.
     /// </summary>
+    [ExcludeFromCodeCoverage]
     public class CollectionTests
     {
         /// <summary>
