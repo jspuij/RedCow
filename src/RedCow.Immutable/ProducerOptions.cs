@@ -43,10 +43,5 @@ namespace RedCow
             typeof(string),
             typeof(Type),
         };
-
-        /// <summary>
-        /// Gets or sets maximum recursion depth during Reconciliation.
-        /// </summary>
-        public int MaxDepth { get; set; } = 1000;
     }
 }

@@ -16,50 +16,263 @@
             <param name="draft">The draft object that was involved in the exception.</param>
             <param name="message">The message.</param>
         </member>
-        <member name="T:RedCow.CollectionDraftState">
+        <member name="T:RedCow.Immutable.CollectionDraftState">
             <summary>
             A draft state for Collections.
             </summary>
         </member>
-        <member name="M:RedCow.CollectionDraftState.#ctor(RedCow.Immutable.DraftScope,System.Object)">
+        <member name="M:RedCow.Immutable.CollectionDraftState.#ctor(RedCow.Immutable.DraftScope,System.Object)">
             <summary>
-            Initializes a new instance of the <see cref="T:RedCow.CollectionDraftState"/> class.
+            Initializes a new instance of the <see cref="T:RedCow.Immutable.CollectionDraftState"/> class.
             </summary>
             <param name="scope">The scope this draft state belongs to.</param>
             <param name="original">The original.</param>
         </member>
-        <member name="M:RedCow.CollectionDraftState.Revoke">
+        <member name="M:RedCow.Immutable.CollectionDraftState.Get``1(System.Func{``0},System.Action{``0},System.Action)">
             <summary>
-            Revokes the draft.
+            Gets a proxy based on the get and set functions provided.
             </summary>
+            <typeparam name="T">The proxy type.</typeparam>
+            <param name="getter">The getter.</param>
+            <param name="setter">The setter.</param>
+            <param name="copyOnWrite">The copy on write method.</param>
+            <returns>The proxied value.</returns>
         </member>
-        <member name="T:RedCow.Collections.ProxyList`1">
+        <member name="M:RedCow.Immutable.CollectionDraftState.Modify(System.Action,System.Action)">
+            <summary>
+            Modifies the attached collection using the specified modify action,
+            optionally first executing the copy on write action.
+            </summary>
+            <param name="modify">The modification to the collection.</param>
+            <param name="copyOnWrite">The copy on write action.</param>
+        </member>
+        <member name="T:RedCow.Immutable.Collections.ProxyList`1">
             <summary>
             A list that can act as a proxy around another list.
             </summary>
             <typeparam name="T">The type that is held in the list.</typeparam>
         </member>
-        <member name="M:RedCow.Collections.ProxyList`1.#ctor(System.Collections.Generic.IList{`0})">
+        <member name="F:RedCow.Immutable.Collections.ProxyList`1.collectionDraftState">
             <summary>
-            Initializes a new instance of the <see cref="T:RedCow.Collections.ProxyList`1"/> class.
-            </summary>
-            <param name="innerlist">The list to enclose.</param>
-        </member>
-        <member name="T:RedCow.DraftException">
-            <summary>
-            An exception for drafts.
+            The draft state for this list.
             </summary>
         </member>
-        <member name="M:RedCow.DraftException.#ctor(System.Object,System.String)">
+        <member name="F:RedCow.Immutable.Collections.ProxyList`1.innerList">
             <summary>
-            Initializes a new instance of the <see cref="T:RedCow.DraftException"/> class.
+            The inner list.
             </summary>
-            <param name="draft">The draft object that was involved in the exception.</param>
-            <param name="message">The message.</param>
         </member>
-        <member name="P:RedCow.DraftException.Draft">
+        <member name="F:RedCow.Immutable.Collections.ProxyList`1.locked">
             <summary>
-            Gets the draft object.
+            A variable indicating whether this list is locked.
+            </summary>
+        </member>
+        <member name="P:RedCow.Immutable.Collections.ProxyList`1.Count">
+            <summary>
+            Gets the number of elements contained in the <see cref="T:RedCow.Immutable.Collections.ProxyList`1"/>.
+            </summary>
+        </member>
+        <member name="P:RedCow.Immutable.Collections.ProxyList`1.IsReadOnly">
+            <summary>
+            Gets a value indicating whether <see cref="T:RedCow.Immutable.Collections.ProxyList`1"/> is read only.
+            </summary>
+        </member>
+        <member name="P:RedCow.Immutable.Collections.ProxyList`1.Original">
+            <summary>
+            Gets the original collection if available.
+            </summary>
+            <remarks>May return null when this proxy is not in draft state.</remarks>
+        </member>
+        <member name="P:RedCow.Immutable.Collections.ProxyList`1.IsSynchronized">
+            <summary>
+            Gets a value indicating whether access to the <see cref="T:RedCow.Immutable.Collections.ProxyList`1" /> is synchronized (thread safe).
+            </summary>
+        </member>
+        <member name="P:RedCow.Immutable.Collections.ProxyList`1.SyncRoot">
+            <summary>
+            Gets an object that can be used to synchronize access to the <see cref="T:RedCow.Immutable.Collections.ProxyList`1" />.
+            </summary>
+        </member>
+        <member name="P:RedCow.Immutable.Collections.ProxyList`1.RedCow#Immutable#IDraft#DraftState">
+            <summary>
+            Gets or sets the <see cref="T:RedCow.Immutable.DraftState"/> for this draft.
+            </summary>
+        </member>
+        <member name="P:RedCow.Immutable.Collections.ProxyList`1.RedCow#ILockable#Locked">
+            <summary>
+            Gets a value indicating whether the immutable is locked.
+            </summary>
+        </member>
+        <member name="P:RedCow.Immutable.Collections.ProxyList`1.System#Collections#IList#IsFixedSize">
+            <summary>
+            Gets a value indicating whether the <see cref="T:RedCow.Immutable.Collections.ProxyList`1"/> has a fixed size.
+            </summary>
+        </member>
+        <member name="P:RedCow.Immutable.Collections.ProxyList`1.InnerList">
+            <summary>
+            Gets or sets the inner list and creates one if it does not exist.
+            </summary>
+        </member>
+        <member name="P:RedCow.Immutable.Collections.ProxyList`1.Item(System.Int32)">
+            <summary>
+            Gets or sets the element at the specified index.
+            </summary>
+            <param name="index">The zero-based index of the element to get or set.</param>
+            <returns>The element at the specified index.</returns>
+        </member>
+        <member name="P:RedCow.Immutable.Collections.ProxyList`1.System#Collections#IList#Item(System.Int32)">
+            <summary>
+            Gets or sets the element at the specified index.
+            </summary>
+            <param name="index">The zero-based index of the element to get or set.</param>
+            <returns>The element at the specified index.</returns>
+        </member>
+        <member name="M:RedCow.Immutable.Collections.ProxyList`1.GetEnumerator">
+            <summary>
+            Returns an enumerator that iterates through the collection.
+            </summary>
+            <returns>An enumerator that can be used to iterate through the collection.</returns>
+        </member>
+        <member name="M:RedCow.Immutable.Collections.ProxyList`1.Add(`0)">
+            <summary>
+            Adds an item to the <see cref="T:RedCow.Immutable.Collections.ProxyList`1"/>.
+            </summary>
+            <param name="item">The object to add to the <see cref="T:RedCow.Immutable.Collections.ProxyList`1"/>.</param>
+        </member>
+        <member name="M:RedCow.Immutable.Collections.ProxyList`1.Clear">
+            <summary>
+             Removes all items from the <see cref="T:RedCow.Immutable.Collections.ProxyList`1"/>.
+            </summary>
+        </member>
+        <member name="M:RedCow.Immutable.Collections.ProxyList`1.Contains(`0)">
+            <summary>
+            Determines whether the <see cref="T:RedCow.Immutable.Collections.ProxyList`1"/> contains a specific value.
+            </summary>
+            <param name="item">The object to locate in the <see cref="T:RedCow.Immutable.Collections.ProxyList`1"/>.</param>
+            <returns>true if item is found in the <see cref="T:RedCow.Immutable.Collections.ProxyList`1"/>; otherwise, false.</returns>
+        </member>
+        <member name="M:RedCow.Immutable.Collections.ProxyList`1.CopyTo(`0[],System.Int32)">
+            <summary>
+            Copies the elements of the <see cref="T:RedCow.Immutable.Collections.ProxyList`1"/> to an System.Array,
+            starting at a particular System.Array index.
+            </summary>
+            <param name="array">The destination array.</param>
+            <param name="arrayIndex">The array index.</param>
+        </member>
+        <member name="M:RedCow.Immutable.Collections.ProxyList`1.Remove(`0)">
+            <summary>
+            Removes the first occurrence of a specific object from the <see cref="T:RedCow.Immutable.Collections.ProxyList`1"/>.
+            </summary>
+            <param name="item">The object to remove from the <see cref="T:RedCow.Immutable.Collections.ProxyList`1"/>.</param>
+            <returns>
+            true if item was successfully removed from the <see cref="T:RedCow.Immutable.Collections.ProxyList`1"/>;
+            otherwise, false. This method also returns false if item is not found in the
+            original <see cref="T:RedCow.Immutable.Collections.ProxyList`1"/>.</returns>
+        </member>
+        <member name="M:RedCow.Immutable.Collections.ProxyList`1.IndexOf(`0)">
+            <summary>
+            Determines the index of a specific item in the <see cref="T:RedCow.Immutable.Collections.ProxyList`1"/>.
+            </summary>
+            <param name="item">The object to locate in the <see cref="T:RedCow.Immutable.Collections.ProxyList`1"/>.</param>
+            <returns>
+            The index of item if found in the list; otherwise, -1.
+            </returns>
+        </member>
+        <member name="M:RedCow.Immutable.Collections.ProxyList`1.Insert(System.Int32,`0)">
+            <summary>
+            Inserts an item to the <see cref="T:RedCow.Immutable.Collections.ProxyList`1"/> at the specified index.
+            </summary>
+            <param name="index">The zero-based index at which item should be inserted.</param>
+            <param name="item">The object to insert into the <see cref="T:RedCow.Immutable.Collections.ProxyList`1"/>.</param>
+        </member>
+        <member name="M:RedCow.Immutable.Collections.ProxyList`1.RemoveAt(System.Int32)">
+            <summary>
+            Removes the <see cref="T:RedCow.Immutable.Collections.ProxyList`1"/> item at the specified index.
+            </summary>
+            <param name="index">The zero-based index of the item to remove.</param>
+        </member>
+        <member name="M:RedCow.Immutable.Collections.ProxyList`1.RedCow#Immutable#IDraft#Clone">
+            <summary>
+            Clones the draft from the original.
+            </summary>
+        </member>
+        <member name="M:RedCow.Immutable.Collections.ProxyList`1.System#Collections#IEnumerable#GetEnumerator">
+            <summary>
+            Returns an enumerator that iterates through the collection.
+            </summary>
+            <returns>An enumerator that can be used to iterate through the collection.</returns>
+        </member>
+        <member name="M:RedCow.Immutable.Collections.ProxyList`1.RedCow#ILockable#Lock">
+            <summary>
+            Locks the Immutable.
+            </summary>
+        </member>
+        <member name="M:RedCow.Immutable.Collections.ProxyList`1.System#Collections#ICollection#CopyTo(System.Array,System.Int32)">
+            <summary>
+            Copies the elements of the <see cref="T:RedCow.Immutable.Collections.ProxyList`1"/> to an System.Array, starting at a particular System.Array index.
+            </summary>
+            <param name="array">
+            The one-dimensional System.Array that is the destination of the elements copied
+            from System.Collections.ICollection. The System.Array must have zero-based indexing.
+            </param>
+            <param name="index">The zero-based index in array at which copying begins.</param>
+        </member>
+        <member name="M:RedCow.Immutable.Collections.ProxyList`1.System#Collections#IList#Add(System.Object)">
+            <summary>
+            Adds an item to the <see cref="T:RedCow.Immutable.Collections.ProxyList`1"/>.
+            </summary>
+            <param name="value">The object to add to the <see cref="T:RedCow.Immutable.Collections.ProxyList`1"/>.</param>
+            <returns>The index of the item that was added.</returns>
+        </member>
+        <member name="M:RedCow.Immutable.Collections.ProxyList`1.System#Collections#IList#Contains(System.Object)">
+            <summary>
+            Determines whether the <see cref="T:RedCow.Immutable.Collections.ProxyList`1"/> contains a specific value.
+            </summary>
+            <param name="value">The object to locate in the <see cref="T:RedCow.Immutable.Collections.ProxyList`1"/>.</param>
+            <returns>true if item is found in the <see cref="T:RedCow.Immutable.Collections.ProxyList`1"/>; otherwise, false.</returns>
+        </member>
+        <member name="M:RedCow.Immutable.Collections.ProxyList`1.System#Collections#IList#IndexOf(System.Object)">
+            <summary>
+            Determines the index of a specific item in the <see cref="T:RedCow.Immutable.Collections.ProxyList`1"/>.
+            </summary>
+            <param name="value">The object to locate in the <see cref="T:RedCow.Immutable.Collections.ProxyList`1"/>.</param>
+            <returns>
+            The index of item if found in the list; otherwise, -1.
+            </returns>
+        </member>
+        <member name="M:RedCow.Immutable.Collections.ProxyList`1.System#Collections#IList#Insert(System.Int32,System.Object)">
+            <summary>
+            Inserts an item to the <see cref="T:RedCow.Immutable.Collections.ProxyList`1"/> at the specified index.
+            </summary>
+            <param name="index">The zero-based index at which item should be inserted.</param>
+            <param name="value">The object to insert into the <see cref="T:RedCow.Immutable.Collections.ProxyList`1"/>.</param>
+        </member>
+        <member name="M:RedCow.Immutable.Collections.ProxyList`1.System#Collections#IList#Remove(System.Object)">
+            <summary>
+            Removes the first occurrence of a specific object from the <see cref="T:RedCow.Immutable.Collections.ProxyList`1"/>.
+            </summary>
+            <param name="value">The object to remove from the <see cref="T:RedCow.Immutable.Collections.ProxyList`1"/>.</param>
+        </member>
+        <member name="M:RedCow.Immutable.Collections.ProxyList`1.GetDraftEnumerator(System.Collections.Generic.IEnumerator{`0})">
+            <summary>
+            Gets an enumerator that creates drafts while enumerating.
+            </summary>
+            <param name="enumerator">The source enumerator.</param>
+            <returns>An enumerator that creates drafts.</returns>
+        </member>
+        <member name="M:RedCow.Immutable.Collections.ProxyList`1.ThrowIfReadonly">
+            <summary>
+            Throws an exception <see cref="T:RedCow.Immutable.Collections.ProxyList`1"/> is readonly.
+            </summary>
+        </member>
+        <member name="M:RedCow.Immutable.Collections.ProxyList`1.ThrowIfRevoked">
+            <summary>
+            Throws an exception  <see cref="T:RedCow.Immutable.Collections.ProxyList`1"/> is revoked.
+            </summary>
+        </member>
+        <member name="M:RedCow.Immutable.Collections.ProxyList`1.CopyOnWrite">
+            <summary>
+            Executes the Copy on write on the inner list.
             </summary>
         </member>
         <member name="T:RedCow.Immutable.DraftExtensions">
@@ -134,6 +347,11 @@
         <member name="F:RedCow.Immutable.DraftScope.producerOptions">
             <summary>
             The producer options.
+            </summary>
+        </member>
+        <member name="F:RedCow.Immutable.DraftScope.drafts">
+            <summary>
+            The list of drafts that this scope maintains.
             </summary>
         </member>
         <member name="M:RedCow.Immutable.DraftScope.#ctor(RedCow.IProducerOptions)">
@@ -289,6 +507,45 @@
             Gets the original immutable object.
             </summary>
         </member>
+        <member name="T:RedCow.Immutable.ObjectDraftState">
+            <summary>
+            A draft state for objects.
+            </summary>
+        </member>
+        <member name="M:RedCow.Immutable.ObjectDraftState.#ctor(RedCow.Immutable.DraftScope,System.Object)">
+            <summary>
+            Initializes a new instance of the <see cref="T:RedCow.Immutable.ObjectDraftState"/> class.
+            </summary>
+            <param name="scope">The scope this draft state belongs to.</param>
+            <param name="original">The original.</param>
+        </member>
+        <member name="P:RedCow.Immutable.ObjectDraftState.ChildDrafts">
+            <summary>
+            Gets child draft proxies.
+            </summary>
+        </member>
+        <member name="M:RedCow.Immutable.ObjectDraftState.Get``1(System.String,System.Func{``0},System.Func{``0},System.Action{``0})">
+            <summary>
+            Gets a property value, possibly drafting it while getting it.
+            </summary>
+            <typeparam name="T">The type of the Property.</typeparam>
+            <param name="propertyName">The property name.</param>
+            <param name="getter">The getter.</param>
+            <param name="originalGetter">The getter to get the original property.</param>
+            <param name="setter">The setter.</param>
+            <exception cref="T:System.InvalidOperationException">thrown when the draft is revoked.</exception>
+            <returns>The property value.</returns>
+        </member>
+        <member name="M:RedCow.Immutable.ObjectDraftState.Set``1(System.String,System.Action,System.Action)">
+            <summary>
+            Sets a property value.
+            </summary>
+            <typeparam name="T">The type of the Property.</typeparam>
+            <param name="propertyName">The property name.</param>
+            <param name="setter">The setter.</param>
+            <param name="copyOnWrite">The copy on write action.</param>
+            <exception cref="T:System.InvalidOperationException">thrown when the draft is revoked.</exception>
+        </member>
         <member name="T:RedCow.Immutable.ProxyTypeAttribute">
             <summary>
             Proxy type attribute. Indicates which class is the proxy type for this type.
@@ -319,6 +576,23 @@
             <param name="source">The source.</param>
             <param name="destination">The destination object.</param>
             <param name="assignmentFunction">The assignment function to use to assign the source value properties to the destination.</param>
+        </member>
+        <member name="T:RedCow.DraftException">
+            <summary>
+            An exception for drafts.
+            </summary>
+        </member>
+        <member name="M:RedCow.DraftException.#ctor(System.Object,System.String)">
+            <summary>
+            Initializes a new instance of the <see cref="T:RedCow.DraftException"/> class.
+            </summary>
+            <param name="draft">The draft object that was involved in the exception.</param>
+            <param name="message">The message.</param>
+        </member>
+        <member name="P:RedCow.DraftException.Draft">
+            <summary>
+            Gets the draft object.
+            </summary>
         </member>
         <member name="T:RedCow.DraftRevokedException">
             <summary>
@@ -416,55 +690,6 @@
             Gets the immutable reference types that are allowed as Properties.
             </summary>
         </member>
-        <member name="P:RedCow.IProducerOptions.MaxDepth">
-            <summary>
-            Gets the maximum recursion depth during Reconciliation.
-            </summary>
-        </member>
-        <member name="T:RedCow.ObjectDraftState">
-            <summary>
-            A draft state for objects.
-            </summary>
-        </member>
-        <member name="M:RedCow.ObjectDraftState.#ctor(RedCow.Immutable.DraftScope,System.Object)">
-            <summary>
-            Initializes a new instance of the <see cref="T:RedCow.ObjectDraftState"/> class.
-            </summary>
-            <param name="scope">The scope this draft state belongs to.</param>
-            <param name="original">The original.</param>
-        </member>
-        <member name="P:RedCow.ObjectDraftState.Children">
-            <summary>
-            Gets child draft proxies.
-            </summary>
-        </member>
-        <member name="M:RedCow.ObjectDraftState.Get``1(System.String,System.Func{``0},System.Func{``0},System.Action{``0})">
-            <summary>
-            Gets a property value, possibly drafting it while getting it.
-            </summary>
-            <typeparam name="T">The type of the Property.</typeparam>
-            <param name="propertyName">The property name.</param>
-            <param name="getter">The getter.</param>
-            <param name="originalGetter">The getter to get the original property.</param>
-            <param name="setter">The setter.</param>
-            <exception cref="T:System.InvalidOperationException">thrown when the draft is revoked.</exception>
-            <returns>The property value.</returns>
-        </member>
-        <member name="M:RedCow.ObjectDraftState.Set``1(System.String,System.Action,System.Action)">
-            <summary>
-            Sets a property value.
-            </summary>
-            <typeparam name="T">The type of the Property.</typeparam>
-            <param name="propertyName">The property name.</param>
-            <param name="setter">The setter.</param>
-            <param name="copyOnWrite">The copy on write action.</param>
-            <exception cref="T:System.InvalidOperationException">thrown when the draft is revoked.</exception>
-        </member>
-        <member name="M:RedCow.ObjectDraftState.Revoke">
-            <summary>
-            Revokes the draft.
-            </summary>
-        </member>
         <member name="T:RedCow.ProducerOptions">
             <summary>
             The producer options to use.
@@ -483,11 +708,6 @@
         <member name="P:RedCow.ProducerOptions.AllowedImmutableReferenceTypes">
             <summary>
             Gets the set of allowed immutable reference types.
-            </summary>
-        </member>
-        <member name="P:RedCow.ProducerOptions.MaxDepth">
-            <summary>
-            Gets or sets maximum recursion depth during Reconciliation.
             </summary>
         </member>
     </members>

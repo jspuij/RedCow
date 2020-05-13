@@ -193,40 +193,6 @@ namespace RedCow.Test
         }
 
         /// <summary>
-        /// Tests for max level of draft references.
-        /// </summary>
-        [Fact]
-        public void DraftExceedsMaxLevelTest()
-        {
-            var initial = new TestPerson()
-            {
-                FirstName = "John",
-                LastName = "Doe",
-                IsAdult = true,
-            };
-
-            ITestPerson person = ITestPerson.Produce(initial);
-
-            Assert.Throws<CircularReferenceException>(() =>
-            {
-                var result = person.Produce(p =>
-                {
-                    var person = p;
-                    for (int i = 0; i < ProducerOptions.Default.MaxDepth + 1; i++)
-                    {
-                        person.FirstChild = new TestPerson()
-                        {
-                            FirstName = $"John {i}",
-                            LastName = "Doe",
-                            IsAdult = true,
-                        };
-                        person = person.FirstChild;
-                    }
-                });
-            });
-        }
-
-        /// <summary>
         /// Tests the that the produced immutable cannot be altered.
         /// </summary>
         [Fact]

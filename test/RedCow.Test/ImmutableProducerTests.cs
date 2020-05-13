@@ -19,6 +19,7 @@ namespace RedCow.Test
     using System;
     using System.Diagnostics.CodeAnalysis;
     using System.Linq;
+    using RedCow.Immutable;
     using Xunit;
 
     /// <summary>
@@ -298,6 +299,33 @@ namespace RedCow.Test
             Assert.Throws<DraftRevokedException>(() =>
             {
                 Assert.Equal(draft!.FirstName, person.FirstName);
+            });
+        }
+
+        /// <summary>
+        /// Tests that during produce new state is not drafted.
+        /// </summary>
+        [Fact]
+        public void DontDraftNewState()
+        {
+            ITestPerson initial = ITestPerson.Produce(new TestPerson()
+            {
+                FirstName = "John",
+                LastName = "Doe",
+                IsAdult = true,
+            });
+
+            initial.Produce(p =>
+            {
+                var child = new TestPerson()
+                {
+                    FirstName = "Baby",
+                    LastName = "Joe,",
+                    IsAdult = false,
+                };
+                p.FirstChild = child;
+                Assert.Same(child, p.FirstChild);
+                Assert.False(p.FirstChild.IsDraft());
             });
         }
     }

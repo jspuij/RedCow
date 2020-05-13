@@ -34,6 +34,11 @@ namespace RedCow.Immutable
         private readonly IProducerOptions producerOptions;
 
         /// <summary>
+        /// The list of drafts that this scope maintains.
+        /// </summary>
+        private readonly List<IDraft> drafts = new List<IDraft>();
+
+        /// <summary>
         /// Initializes a new instance of the <see cref="DraftScope"/> class.
         /// </summary>
         /// <param name = "producerOptions">The producer options to use. If you leave them null, the default options will be used.</param>
@@ -68,7 +73,17 @@ namespace RedCow.Immutable
         /// </summary>
         public void Dispose()
         {
-            // TODO: Implement sane disposal.
+            foreach (var iDraft in this.drafts)
+            {
+                iDraft.DraftState?.Revoke();
+
+                if (iDraft is IDisposable disposable)
+                {
+                    disposable.Dispose();
+                }
+            }
+
+            this.drafts.Clear();
         }
 
         /// <summary>
@@ -116,6 +131,7 @@ namespace RedCow.Immutable
             object result = Activator.CreateInstance(proxyType);
             if (result is IDraft draft)
             {
+                this.drafts.Add(draft);
                 draft.DraftState = draftState;
             }
 
@@ -129,68 +145,53 @@ namespace RedCow.Immutable
         /// <returns>The immutable variant of the instance.</returns>
         private object? FinishInstance(object? draft)
         {
-            int level = 0;
-
             object? Reconcile(object? draft)
             {
-                try
+                if (draft == null)
                 {
-                    if (draft == null)
-                    {
-                        return null;
-                    }
+                    return null;
+                }
 
-                    if (++level > this.producerOptions.MaxDepth)
-                    {
-                        throw new CircularReferenceException(draft, $"Max depth of {level - 1} exceeded during Finishing the draft");
-                    }
+                var draftType = draft.GetType();
 
-                    var draftType = draft.GetType();
-
-                    if (draftType.IsValueType || this.AllowedImmutableReferenceTypes.Contains(draftType))
-                    {
-                        return draft;
-                    }
-
-                    var proxyType = GetProxyType(draft);
-
-                    if (proxyType == null)
-                    {
-                        throw new DraftException(draft, $"The object of type {draftType} cannot be made immutable.");
-                    }
-
-                    if (draft is IDraft idraft)
-                    {
-                        if (idraft.DraftState is ObjectDraftState objectDraftState)
-                        {
-                            foreach ((string propertyName, object child) in objectDraftState.Children)
-                            {
-                                var immutable = Reconcile(child);
-                                if (ReferenceEquals(immutable, child))
-                                {
-                                    // use reflection to set the property and trigger changed on the parent.
-                                    draftType.GetProperty(propertyName).SetValue(draft, immutable);
-                                }
-                            }
-                        }
-
-                        if (idraft.DraftState!.Changed)
-                        {
-                            idraft.DraftState = null;
-                        }
-                        else
-                        {
-                            draft = idraft.DraftState.GetOriginal<object?>();
-                            idraft.DraftState.Revoke();
-                        }
-                    }
-
+                if (draftType.IsValueType || this.AllowedImmutableReferenceTypes.Contains(draftType))
+                {
                     return draft;
                 }
-                finally
+
+                var proxyType = GetProxyType(draft);
+
+                if (proxyType == null)
                 {
-                    --level;
+                    throw new DraftException(draft, $"The object of type {draftType} cannot be made immutable.");
                 }
+
+                if (draft is IDraft idraft)
+                {
+                    if (idraft.DraftState is ObjectDraftState objectDraftState)
+                    {
+                        foreach ((string propertyName, object child) in objectDraftState.ChildDrafts)
+                        {
+                            var immutable = Reconcile(child);
+                            if (ReferenceEquals(immutable, child))
+                            {
+                                // use reflection to set the property and trigger changed on the parent.
+                                draftType.GetProperty(propertyName).SetValue(draft, immutable);
+                            }
+                        }
+                    }
+
+                    if (idraft.DraftState!.Changed)
+                    {
+                        idraft.DraftState = null;
+                    }
+                    else
+                    {
+                        draft = idraft.DraftState.GetOriginal<object?>();
+                    }
+                }
+
+                return draft;
             }
 
             this.IsFinishing = true;
@@ -208,6 +209,7 @@ namespace RedCow.Immutable
             finally
             {
                 this.IsFinishing = false;
+                this.Dispose();
             }
         }
     }

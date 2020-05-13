@@ -14,12 +14,13 @@
 // ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 // </copyright>
 
-namespace RedCow
+namespace RedCow.Immutable
 {
     using System;
     using System.Collections.Generic;
     using System.Text;
     using RedCow.Immutable;
+    using static DraftExtensions;
 
     /// <summary>
     /// A draft state for Collections.
@@ -37,11 +38,66 @@ namespace RedCow
         }
 
         /// <summary>
-        /// Revokes the draft.
+        /// Gets a proxy based on the get and set functions provided.
         /// </summary>
-        public override void Revoke()
+        /// <typeparam name="T">The proxy type.</typeparam>
+        /// <param name="getter">The getter.</param>
+        /// <param name="setter">The setter.</param>
+        /// <param name="copyOnWrite">The copy on write method.</param>
+        /// <returns>The proxied value.</returns>
+        public T Get<T>(Func<T> getter, Action<T> setter, Action copyOnWrite)
         {
-            throw new NotImplementedException();
+            if (this.Revoked)
+            {
+                throw new DraftRevokedException(this, "Exception while getting element: The draft is out of scope and has been revoked.");
+            }
+
+            var result = getter();
+
+            if (result == null)
+            {
+                return result;
+            }
+
+            var resultType = result.GetType();
+
+            if (resultType.IsValueType || this.Scope.AllowedImmutableReferenceTypes.Contains(resultType))
+            {
+                return result;
+            }
+
+            if (InternalIsDraft(result) || this.Scope.IsFinishing)
+            {
+                return result;
+            }
+
+            result = (T)this.Scope.CreateProxy(result);
+            copyOnWrite();
+            setter(result);
+
+            return result;
+        }
+
+        /// <summary>
+        /// Modifies the attached collection using the specified modify action,
+        /// optionally first executing the copy on write action.
+        /// </summary>
+        /// <param name="modify">The modification to the collection.</param>
+        /// <param name="copyOnWrite">The copy on write action.</param>
+        public void Modify(Action modify, Action copyOnWrite)
+        {
+            if (this.Revoked)
+            {
+                throw new DraftRevokedException(this, "Exception while modifying element: The draft is out of scope and has been revoked.");
+            }
+
+            if (!this.Changed)
+            {
+                this.Changed = true;
+                copyOnWrite();
+            }
+
+            modify();
         }
     }
 }

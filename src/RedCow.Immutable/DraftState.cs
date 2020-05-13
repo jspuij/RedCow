@@ -65,6 +65,9 @@ namespace RedCow.Immutable
         /// <summary>
         /// Revokes the draft.
         /// </summary>
-        public abstract void Revoke();
+        public void Revoke()
+        {
+            this.Revoked = true;
+        }
     }
 }

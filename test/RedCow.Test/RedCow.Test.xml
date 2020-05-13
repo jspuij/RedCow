@@ -205,6 +205,11 @@
             Tests that a draft is revoked after the immutable is produced.
             </summary>
         </member>
+        <member name="M:RedCow.Test.ImmutableProducerTests.DontDraftNewState">
+            <summary>
+            Tests that during produce new state is not drafted.
+            </summary>
+        </member>
         <member name="T:RedCow.Test.ITestPerson">
             <summary>
             Interface for an Immutable Test Person.
@@ -345,11 +350,6 @@
         <member name="M:RedCow.Test.NestedTests.NestedCircularReferenceTest">
             <summary>
             Tests for CoW of nested circular references.
-            </summary>
-        </member>
-        <member name="M:RedCow.Test.NestedTests.DraftExceedsMaxLevelTest">
-            <summary>
-            Tests for max level of draft references.
             </summary>
         </member>
         <member name="M:RedCow.Test.NestedTests.NestedLockedTest">

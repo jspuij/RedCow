@@ -479,7 +479,17 @@ namespace RedCow.Generators
         /// Clones the object from the original.
         /// </summary>
         void IDraft.Clone()
-        {{";
+        {{
+            if (this.draftState == null)
+            {{
+                throw new DraftException(this, ""Draft state not set."");
+            }}
+
+            if (((ILockable)this).Locked)
+            {{
+                throw new ImmutableException(this, ""This instance is immutable and cannot be the destination of a clone operation."");
+            }}
+";
 
             var stringBuilder = new StringBuilder(methodStart);
 
@@ -599,7 +609,21 @@ namespace RedCow.Generators
                 DraftState IDraft.DraftState
                 {{
                     get => this.draftState;
-                    set => this.draftState = (ObjectDraftState)value;
+                    set
+                    {{
+
+                        if (this.draftState != null && value != null)
+                        {{
+                            throw new DraftException(this, ""Draft state already set."");
+                        }}
+
+                        if (((ILockable)this).Locked)
+                        {{
+                            throw new ImmutableException(this, ""This instance is immutable and cannot be assigned a new Draft state."");
+                        }}
+
+                        this.draftState = (ObjectDraftState)value;
+                    }}
                 }}
             ";
 

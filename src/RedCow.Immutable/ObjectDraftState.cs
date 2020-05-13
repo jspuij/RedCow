@@ -14,14 +14,14 @@
 // ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 // </copyright>
 
-namespace RedCow
+namespace RedCow.Immutable
 {
     using System;
     using System.Collections.Generic;
     using System.Text;
     using RedCow;
     using RedCow.Immutable;
-    using static Immutable.DraftExtensions;
+    using static DraftExtensions;
 
     /// <summary>
     /// A draft state for objects.
@@ -41,7 +41,7 @@ namespace RedCow
         /// <summary>
         /// Gets child draft proxies.
         /// </summary>
-        public IDictionary<string, object> Children { get; private set; } = new Dictionary<string, object>();
+        public IDictionary<string, object> ChildDrafts { get; private set; } = new Dictionary<string, object>();
 
         /// <summary>
         /// Gets a property value, possibly drafting it while getting it.
@@ -83,13 +83,13 @@ namespace RedCow
                 }
             }
 
-            if (InternalIsDraft(result) || this.Scope.IsFinishing)
+            if (InternalIsDraft(result) || this.Scope.IsFinishing || (result is ILockable lockable && !lockable.Locked))
             {
                 return result;
             }
 
             result = (T)this.Scope.CreateProxy(result);
-            this.Children.Add(propertyName, result);
+            this.ChildDrafts.Add(propertyName, result);
             setter(result);
 
             return result;
@@ -117,18 +117,6 @@ namespace RedCow
             }
 
             setter();
-        }
-
-        /// <summary>
-        /// Revokes the draft.
-        /// </summary>
-        public override void Revoke()
-        {
-            this.Revoked = true;
-            foreach (IDraft child in this.Children.Values)
-            {
-                child.DraftState?.Revoke();
-            }
         }
     }
 }
