@@ -29,10 +29,10 @@ namespace RedCow.Test
     public class NestedTests
     {
         /// <summary>
-        /// Tests a nested produce.
+        /// Tests a nested change.
         /// </summary>
         [Fact]
-        public void NestedProduceTest()
+        public void NestedChangeTest()
         {
             var initial = new TestPerson()
             {
@@ -74,11 +74,11 @@ namespace RedCow.Test
         }
 
         /// <summary>
-        /// Tests a nested produce where an inner draft is changed.
+        /// Tests a nested change where an inner draft is changed.
         /// This should also change all parent drafts up to the root.
         /// </summary>
         [Fact]
-        public void InnerNestedProduceTest()
+        public void InnerNestedChangeTest()
         {
             var initial = new TestPerson()
             {
@@ -156,6 +156,36 @@ namespace RedCow.Test
         }
 
         /// <summary>
+        /// Tests for CoW of circular references with a pointer update to close the loop.
+        /// </summary>
+        [Fact]
+        public void CircularReferenceWithPointerUpdateTest()
+        {
+            var initial = new TestPerson()
+            {
+                FirstName = "John",
+                LastName = "Doe",
+                IsAdult = true,
+            };
+
+            // this is really weird.
+            initial.FirstChild = initial;
+
+            ITestPerson person = ITestPerson.Produce(initial);
+
+            var result = person.Produce(p =>
+            {
+                p.LastName = "Bravo";
+                p.FirstChild = p;
+            });
+
+            Assert.NotSame(initial, result);
+            Assert.Equal("Bravo", result.LastName);
+            Assert.Same(result, result.FirstChild);
+            Assert.Equal("Bravo", result.FirstChild.LastName);
+        }
+
+        /// <summary>
         /// Tests for CoW of nested circular references.
         /// </summary>
         [Fact]
@@ -186,10 +216,49 @@ namespace RedCow.Test
                 p.LastName = "Bravo";
             });
 
+            // A circular reference "unrolls" by forming a tree, pointing to the
+            // older version, whenever the draft containing the circular reference
+            // pointer is updated.  The older version will keep the circular reference.
             Assert.NotSame(initial, result);
             Assert.Equal("Bravo", result.LastName);
-            Assert.NotSame(result, result.FirstChild);
+            Assert.NotSame(result, result.FirstChild.FirstChild);
             Assert.Equal("Doe", result.FirstChild.FirstChild.LastName);
+        }
+
+        /// <summary>
+        /// Tests for CoW of nested circular references with a pointer update to close the loop.
+        /// </summary>
+        [Fact]
+        public void NestedCircularReferenceWithPointerUpdateTest()
+        {
+            var initial = new TestPerson()
+            {
+                FirstName = "John",
+                LastName = "Doe",
+                IsAdult = true,
+                FirstChild = new TestPerson()
+                {
+                    FirstName = "Baby",
+                    LastName = "Doe",
+                    IsAdult = false,
+                },
+            };
+
+            ITestPerson person = ITestPerson.Produce(initial);
+
+            var result = person.Produce(p =>
+            {
+                p.LastName = "Bravo";
+                p.FirstChild.FirstChild = p;
+            });
+
+            // A circular reference "unrolls" by forming a tree, pointing to the
+            // older version, whenever the draft containing the circular reference
+            // pointer is updated.  The older version will keep the circular reference.
+            Assert.NotSame(initial, result);
+            Assert.Equal("Bravo", result.LastName);
+            Assert.Same(result, result.FirstChild.FirstChild);
+            Assert.Equal("Bravo", result.FirstChild.FirstChild.LastName);
         }
 
         /// <summary>
@@ -280,6 +349,44 @@ namespace RedCow.Test
             Assert.Throws<DraftRevokedException>(() =>
             {
                 Assert.Equal(draftChild!.FirstName, person.FirstChild.FirstName);
+            });
+        }
+
+        /// <summary>
+        /// Test using nested producers.
+        /// </summary>
+        [Fact]
+        public void NestedProduceTest()
+        {
+            ITestPerson initial = ITestPerson.Produce(new TestPerson()
+            {
+                FirstName = "John",
+                LastName = "Doe",
+                IsAdult = true,
+                Cars = new List<Car>()
+                {
+                    new Car
+                    {
+                        Make = "Ferrari",
+                        Model = "250 LM",
+                    },
+                    new Car
+                    {
+                        Make = "Shelby",
+                        Model = "Daytona Cobra Coupe",
+                    },
+                },
+            });
+
+            var crasher = ICar.Producer(car =>
+            {
+                car.Crashed = true;
+            });
+
+            var result = initial.Produce(p =>
+            {
+                p.LastName = "SadDoe";
+                p.Cars[0] = (Car)crasher(p.Cars[0]);
             });
         }
     }

@@ -29,6 +29,16 @@
              Gets or sets Model.
             </summary>
         </member>
+        <member name="F:RedCow.Test.Car._Crashed">
+            <summary>
+             A boolean indicating whether Crashed is true.
+            </summary>
+        </member>
+        <member name="P:RedCow.Test.Car.Crashed">
+            <summary>
+             Gets or sets a value indicating whether Crashed is true.
+            </summary>
+        </member>
         <member name="F:RedCow.Test.Car.locked">
             <summary>
             Whether the instance is locked.
@@ -381,6 +391,11 @@
         <member name="P:RedCow.Test.ICar.Model">
             <summary>
             Gets model of the car.
+            </summary>
+        </member>
+        <member name="P:RedCow.Test.ICar.Crashed">
+            <summary>
+            Gets a value indicating whether the car has crashed.
             </summary>
         </member>
         <member name="M:RedCow.Test.ICar.Produce(RedCow.Test.Car,RedCow.IProducerOptions)">
@@ -736,14 +751,14 @@
             Unit tests for nested produce and immutability.
             </summary>
         </member>
-        <member name="M:RedCow.Test.NestedTests.NestedProduceTest">
+        <member name="M:RedCow.Test.NestedTests.NestedChangeTest">
             <summary>
-            Tests a nested produce.
+            Tests a nested change.
             </summary>
         </member>
-        <member name="M:RedCow.Test.NestedTests.InnerNestedProduceTest">
+        <member name="M:RedCow.Test.NestedTests.InnerNestedChangeTest">
             <summary>
-            Tests a nested produce where an inner draft is changed.
+            Tests a nested change where an inner draft is changed.
             This should also change all parent drafts up to the root.
             </summary>
         </member>
@@ -752,9 +767,19 @@
             Tests for CoW of circular references.
             </summary>
         </member>
+        <member name="M:RedCow.Test.NestedTests.CircularReferenceWithPointerUpdateTest">
+            <summary>
+            Tests for CoW of circular references with a pointer update to close the loop.
+            </summary>
+        </member>
         <member name="M:RedCow.Test.NestedTests.NestedCircularReferenceTest">
             <summary>
             Tests for CoW of nested circular references.
+            </summary>
+        </member>
+        <member name="M:RedCow.Test.NestedTests.NestedCircularReferenceWithPointerUpdateTest">
+            <summary>
+            Tests for CoW of nested circular references with a pointer update to close the loop.
             </summary>
         </member>
         <member name="M:RedCow.Test.NestedTests.NestedLockedTest">
@@ -765,6 +790,11 @@
         <member name="M:RedCow.Test.NestedTests.NestedDraftRevokedTest">
             <summary>
             Tests that a draft is revoked after the immutable is produced.
+            </summary>
+        </member>
+        <member name="M:RedCow.Test.NestedTests.NestedProduceTest">
+            <summary>
+            Test using nested producers.
             </summary>
         </member>
         <member name="T:RedCow.Test.PhoneBook">
@@ -925,6 +955,11 @@
         <member name="P:RedCow.Test.ProxyCar.Model">
             <summary>
              Gets or sets Model.
+            </summary>
+        </member>
+        <member name="P:RedCow.Test.ProxyCar.Crashed">
+            <summary>
+             Gets or sets a value indicating whether Crashed is true.
             </summary>
         </member>
         <member name="F:RedCow.Test.ProxyCar.draftState">

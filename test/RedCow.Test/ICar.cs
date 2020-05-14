@@ -35,5 +35,10 @@ namespace RedCow.Test
         /// Gets model of the car.
         /// </summary>
         public string Model { get; }
+
+        /// <summary>
+        /// Gets a value indicating whether the car has crashed.
+        /// </summary>
+        public bool Crashed { get; }
     }
 }
