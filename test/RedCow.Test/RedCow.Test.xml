@@ -132,6 +132,11 @@
             Tests the Remove method with key.
             </summary>
         </member>
+        <member name="M:RedCow.Test.Collections.ProxyDictionaryTests`2.ReadOnlyTest">
+            <summary>
+            Tests all operations for readonly.
+            </summary>
+        </member>
         <member name="M:RedCow.Test.Collections.ProxyDictionaryTests`2.FinishDraft">
             <summary>
             Finishes the draft for this dictionary.
@@ -253,6 +258,11 @@
         <member name="M:RedCow.Test.Collections.ProxyListTests`1.RemoveAtTest">
             <summary>
             Tests the RemoveAt method.
+            </summary>
+        </member>
+        <member name="M:RedCow.Test.Collections.ProxyListTests`1.ReadOnlyTest">
+            <summary>
+            Tests all operations for readonly.
             </summary>
         </member>
         <member name="M:RedCow.Test.Collections.ProxyListTests`1.FinishDraft">

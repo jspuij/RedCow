@@ -294,6 +294,24 @@ namespace RedCow.Test.Collections
         }
 
         /// <summary>
+        /// Tests all operations for readonly.
+        /// </summary>
+        [Fact]
+        public void ReadOnlyTest()
+        {
+            var testValue = this.TCreator();
+            this.ProxyList.Add(testValue);
+            var result = this.FinishDraft();
+
+            Assert.Throws<ImmutableException>(() => ((ProxyList<T>)result).Add(testValue));
+            Assert.Throws<ImmutableException>(() => ((ProxyList<T>)result)[0] = testValue);
+            Assert.Throws<ImmutableException>(() => ((ProxyList<T>)result).Clear());
+            Assert.Throws<ImmutableException>(() => ((ProxyList<T>)result).Insert(0, testValue));
+            Assert.Throws<ImmutableException>(() => ((ProxyList<T>)result).Remove(testValue));
+            Assert.Throws<ImmutableException>(() => ((ProxyList<T>)result).RemoveAt(0));
+        }
+
+        /// <summary>
         /// Finishes the draft for this list.
         /// </summary>
         /// <returns>A readonly list.</returns>

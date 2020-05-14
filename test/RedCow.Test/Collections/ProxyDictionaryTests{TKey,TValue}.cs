@@ -275,6 +275,24 @@ namespace RedCow.Test.Collections
         }
 
         /// <summary>
+        /// Tests all operations for readonly.
+        /// </summary>
+        [Fact]
+        public void ReadOnlyTest()
+        {
+            var keyValuePair = this.KeyValuePairCreator();
+            this.ProxyDictionary.Add(keyValuePair);
+            var result = this.FinishDraft();
+
+            Assert.Throws<ImmutableException>(() => ((ProxyDictionary<TKey, TValue>)result).Add(keyValuePair));
+            Assert.Throws<ImmutableException>(() => ((ProxyDictionary<TKey, TValue>)result).Add(keyValuePair.Key, keyValuePair.Value));
+            Assert.Throws<ImmutableException>(() => ((ProxyDictionary<TKey, TValue>)result)[keyValuePair.Key] = keyValuePair.Value);
+            Assert.Throws<ImmutableException>(() => ((ProxyDictionary<TKey, TValue>)result).Clear());
+            Assert.Throws<ImmutableException>(() => ((ProxyDictionary<TKey, TValue>)result).Remove(keyValuePair));
+            Assert.Throws<ImmutableException>(() => ((ProxyDictionary<TKey, TValue>)result).Remove(keyValuePair.Key));
+        }
+
+        /// <summary>
         /// Finishes the draft for this dictionary.
         /// </summary>
         /// <returns>A readonly dictionary.</returns>
