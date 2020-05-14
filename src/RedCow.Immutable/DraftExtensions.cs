@@ -81,15 +81,10 @@ namespace RedCow.Immutable
 
             try
             {
-                if (InternalIsDraft(state))
+                var draftState = InternalGetDraftState(state);
+                if (draftState != null)
                 {
-                    var draftState = ((IDraft)state).DraftState!;
                     scope.Parent = draftState.Scope;
-
-                    // lift draft into the current scope.
-                    draftState.UpdateScope(scope);
-                    draft = (T)state;
-                    return scope;
                 }
 
                 draft = (T)scope.CreateProxy(state);
@@ -103,11 +98,20 @@ namespace RedCow.Immutable
         }
 
         /// <summary>
+        /// Gets the Draft state or returns null otherwise.
+        /// </summary>
+        /// <param name="state">The state to test.</param>
+        /// <returns>The draft state for the object.</returns>
+        internal static DraftState? InternalGetDraftState(object state)
+        {
+            return (state as IDraft)?.DraftState;
+        }
+
+        /// <summary>
         /// Tests whether an object is a draft.
         /// </summary>
         /// <param name="state">The state to test.</param>
         /// <returns>A value indicating whether the object is a draft.</returns>
-        /// <exception cref="ArgumentNullException">when the state is null.</exception>
         internal static bool InternalIsDraft(object state)
         {
             return state is IDraft idraft && idraft.DraftState != null;

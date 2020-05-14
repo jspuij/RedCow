@@ -66,14 +66,8 @@ namespace RedCow.Immutable
                 return result;
             }
 
-            if (InternalIsDraft(result) || this.Scope.IsFinishing)
+            if (InternalGetDraftState(result)?.Scope == this.Scope || this.Scope.IsFinishing)
             {
-                if (result is IDraft draft)
-                {
-                    // lift scope for nested produce.
-                    draft.DraftState?.UpdateScope(this.Scope);
-                }
-
                 return result;
             }
 

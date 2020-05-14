@@ -628,13 +628,19 @@
             <param name="producerOptions">The producer options to use. If you leave them null, the default options will be used.</param>
             <returns>A scope that is used to either reconcile or dispose of the draft.</returns>
         </member>
+        <member name="M:RedCow.Immutable.DraftExtensions.InternalGetDraftState(System.Object)">
+            <summary>
+            Gets the Draft state or returns null otherwise.
+            </summary>
+            <param name="state">The state to test.</param>
+            <returns>The draft state for the object.</returns>
+        </member>
         <member name="M:RedCow.Immutable.DraftExtensions.InternalIsDraft(System.Object)">
             <summary>
             Tests whether an object is a draft.
             </summary>
             <param name="state">The state to test.</param>
             <returns>A value indicating whether the object is a draft.</returns>
-            <exception cref="T:System.ArgumentNullException">when the state is null.</exception>
         </member>
         <member name="M:RedCow.Immutable.DraftExtensions.InternalIsDraftable(System.Object)">
             <summary>
@@ -764,14 +770,6 @@
             <summary>
             Revokes the draft.
             </summary>
-        </member>
-        <member name="M:RedCow.Immutable.DraftState.UpdateScope(RedCow.Immutable.DraftScope)">
-            <summary>
-            Update to a new scope. This happens when a nested produce
-            is started. Child drafts will be proxied from this scope
-            from then on.
-            </summary>
-            <param name="scope">The new scope to update.</param>
         </member>
         <member name="T:RedCow.Immutable.ICloneProvider">
             <summary>

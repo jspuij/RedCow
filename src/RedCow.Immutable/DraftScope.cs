@@ -112,9 +112,9 @@ namespace RedCow.Immutable
         /// <returns>An instance of type T.</returns>
         public object CreateProxy(object source)
         {
-            if (InternalIsDraft(source))
+            if (InternalGetDraftState(source)?.Scope == this)
             {
-                throw new DraftException(source, "The object is already a draft.");
+                throw new DraftException(source, "The object is already a draft for this scope.");
             }
 
             Type? proxyType = GetProxyType(source);
@@ -167,7 +167,7 @@ namespace RedCow.Immutable
                     throw new DraftException(draft, $"The object of type {draftType} cannot be made immutable.");
                 }
 
-                if (draft is IDraft idraft)
+                if (draft is IDraft idraft && this.drafts.Contains(draft))
                 {
                     if (idraft.DraftState is ObjectDraftState objectDraftState)
                     {
@@ -188,7 +188,7 @@ namespace RedCow.Immutable
                             var updates = new List<Action>();
                             foreach (DictionaryEntry entry in dictionary)
                             {
-                                if (InternalIsDraft(entry.Value))
+                                if (InternalIsDraft(entry.Value) && this.drafts.Contains(entry.Value))
                                 {
                                     var immutable = Reconcile(entry.Value);
 
@@ -217,7 +217,7 @@ namespace RedCow.Immutable
                             for (int i = 0; i < list.Count; i++)
                             {
                                 object? child = list[i];
-                                if (InternalIsDraft(child))
+                                if (InternalIsDraft(child) && this.drafts.Contains(child))
                                 {
                                     var immutable = Reconcile(child);
 
