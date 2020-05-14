@@ -388,6 +388,63 @@ namespace RedCow.Test
                 p.LastName = "SadDoe";
                 p.Cars[0] = (Car)crasher(p.Cars[0]);
             });
+
+            Assert.NotSame(initial, result);
+            Assert.Equal("SadDoe", result.LastName);
+            Assert.True(result.Cars[0].Crashed);
+        }
+
+        /// <summary>
+        /// Test using nested producers.
+        /// </summary>
+        [Fact]
+        public void NestedProduceCanContinueTest()
+        {
+            ITestPerson initial = ITestPerson.Produce(new TestPerson()
+            {
+                FirstName = "John",
+                LastName = "Doe",
+                IsAdult = true,
+                Cars = new List<Car>()
+                {
+                    new Car
+                    {
+                        Make = "Ferrari",
+                        Model = "250 LM",
+                    },
+                    new Car
+                    {
+                        Make = "Shelby",
+                        Model = "Daytona Cobra Coupe",
+                    },
+                },
+            });
+
+            var crasher = ICar.Producer(car =>
+            {
+                car.Crashed = true;
+            });
+
+            var fixer = ICar.Producer(car =>
+            {
+                car.Crashed = false;
+            });
+
+            var result = initial.Produce(p =>
+            {
+                p.LastName = "SadDoe";
+                var crashedCar = (Car)crasher(p.Cars[0]);
+                p.Cars[0] = crashedCar;
+                p.Cars[0].Make = "Enzo Ferrari";
+                var fixedCar = (Car)fixer(p.Cars[0]);
+                Assert.NotSame(crashedCar, fixedCar);
+                p.Cars[0] = fixedCar;
+            });
+
+            Assert.NotSame(initial, result);
+            Assert.Equal("SadDoe", result.LastName);
+            Assert.False(result.Cars[0].Crashed);
+            Assert.Equal("Enzo Ferrari", result.Cars[0].Make);
         }
     }
 }

@@ -797,6 +797,11 @@
             Test using nested producers.
             </summary>
         </member>
+        <member name="M:RedCow.Test.NestedTests.NestedProduceCanContinueTest">
+            <summary>
+            Test using nested producers.
+            </summary>
+        </member>
         <member name="T:RedCow.Test.PhoneBook">
             <summary>
             A phone book.

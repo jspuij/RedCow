@@ -53,7 +53,7 @@ namespace RedCow.Immutable
         /// <summary>
         /// Gets the scope this draft belongs to.
         /// </summary>
-        public DraftScope Scope { get; }
+        public DraftScope Scope { get; private set;  }
 
         /// <summary>
         /// Gets the original.
@@ -68,6 +68,27 @@ namespace RedCow.Immutable
         public void Revoke()
         {
             this.Revoked = true;
+        }
+
+        /// <summary>
+        /// Update to a new scope. This happens when a nested produce
+        /// is started. Child drafts will be proxied from this scope
+        /// from then on.
+        /// </summary>
+        /// <param name="scope">The new scope to update.</param>
+        internal virtual void UpdateScope(DraftScope scope)
+        {
+            if (scope == this.Scope)
+            {
+                return;
+            }
+
+            if (this.Revoked)
+            {
+                throw new DraftRevokedException(this.original, "Cannot update scope when draft is revoked.");
+            }
+
+            this.Scope = scope;
         }
     }
 }

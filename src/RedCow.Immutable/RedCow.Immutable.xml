@@ -765,6 +765,14 @@
             Revokes the draft.
             </summary>
         </member>
+        <member name="M:RedCow.Immutable.DraftState.UpdateScope(RedCow.Immutable.DraftScope)">
+            <summary>
+            Update to a new scope. This happens when a nested produce
+            is started. Child drafts will be proxied from this scope
+            from then on.
+            </summary>
+            <param name="scope">The new scope to update.</param>
+        </member>
         <member name="T:RedCow.Immutable.ICloneProvider">
             <summary>
             Interface for Clone Providers. Clone Providers can clone the public properties of an object

@@ -83,7 +83,11 @@ namespace RedCow.Immutable
             {
                 if (InternalIsDraft(state))
                 {
-                    scope.Parent = ((IDraft)state).DraftState!.Scope;
+                    var draftState = ((IDraft)state).DraftState!;
+                    scope.Parent = draftState.Scope;
+
+                    // lift draft into the current scope.
+                    draftState.UpdateScope(scope);
                     draft = (T)state;
                     return scope;
                 }
