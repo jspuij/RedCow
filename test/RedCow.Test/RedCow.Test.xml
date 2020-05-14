@@ -44,6 +44,130 @@
             Locks the immutable.
             </summary>
         </member>
+        <member name="T:RedCow.Test.Collections.ProxyDictionaryTests`2">
+            <summary>
+            Unit tests for the <see cref="T:RedCow.Test.Collections.ProxyDictionaryTests`2"/> class.
+            </summary>
+            <typeparam name="TKey">The type for keys inside the proxydictionary.</typeparam>
+            <typeparam name="TValue">The type for values inside the proxydictionary.</typeparam>
+        </member>
+        <member name="M:RedCow.Test.Collections.ProxyDictionaryTests`2.#ctor(System.Func{System.Collections.Generic.KeyValuePair{`0,`1}})">
+            <summary>
+            Initializes a new instance of the <see cref="T:RedCow.Test.Collections.ProxyDictionaryTests`2"/> class.
+            </summary>
+            <param name="keyValuePairCreator">The function to create a new T.</param>
+        </member>
+        <member name="P:RedCow.Test.Collections.ProxyDictionaryTests`2.ProxyDictionary">
+            <summary>
+            Gets proxy dictionary.
+            </summary>
+        </member>
+        <member name="P:RedCow.Test.Collections.ProxyDictionaryTests`2.DraftScope">
+            <summary>
+            Gets draft scope.
+            </summary>
+        </member>
+        <member name="P:RedCow.Test.Collections.ProxyDictionaryTests`2.KeyValuePairCreator">
+            <summary>
+            Gets creator function.
+            </summary>
+        </member>
+        <member name="M:RedCow.Test.Collections.ProxyDictionaryTests`2.AddTest">
+            <summary>
+            Tests the Add method.
+            </summary>
+        </member>
+        <member name="M:RedCow.Test.Collections.ProxyDictionaryTests`2.DecomposedAddTest">
+            <summary>
+            Tests the Decomposed Add method.
+            </summary>
+        </member>
+        <member name="M:RedCow.Test.Collections.ProxyDictionaryTests`2.ClearTest">
+            <summary>
+            Tests the Clear method.
+            </summary>
+        </member>
+        <member name="M:RedCow.Test.Collections.ProxyDictionaryTests`2.ContainsTest">
+            <summary>
+            Tests the Clear method.
+            </summary>
+        </member>
+        <member name="M:RedCow.Test.Collections.ProxyDictionaryTests`2.ContainsKeyTest">
+            <summary>
+            Tests the Clear method.
+            </summary>
+        </member>
+        <member name="M:RedCow.Test.Collections.ProxyDictionaryTests`2.CopyToTest">
+            <summary>
+            Tests the CopyTo method.
+            </summary>
+        </member>
+        <member name="M:RedCow.Test.Collections.ProxyDictionaryTests`2.GenericEnumeratorTest">
+            <summary>
+            Tests the generic enumerator.
+            </summary>
+        </member>
+        <member name="M:RedCow.Test.Collections.ProxyDictionaryTests`2.NonGenericEnumeratorTest">
+            <summary>
+            Tests the non-generic enumerator.
+            </summary>
+        </member>
+        <member name="M:RedCow.Test.Collections.ProxyDictionaryTests`2.IsPropertiesTest">
+            <summary>
+            Tests the Is... properties on the <see cref="T:RedCow.Immutable.Collections.ProxyDictionary`2"/>.
+            </summary>
+        </member>
+        <member name="M:RedCow.Test.Collections.ProxyDictionaryTests`2.OriginalTest">
+            <summary>
+            Tests for the original.
+            </summary>
+        </member>
+        <member name="M:RedCow.Test.Collections.ProxyDictionaryTests`2.RemoveTest">
+            <summary>
+            Tests the Remove method.
+            </summary>
+        </member>
+        <member name="M:RedCow.Test.Collections.ProxyDictionaryTests`2.RemoveWithKeyTest">
+            <summary>
+            Tests the Remove method with key.
+            </summary>
+        </member>
+        <member name="M:RedCow.Test.Collections.ProxyDictionaryTests`2.FinishDraft">
+            <summary>
+            Finishes the draft for this dictionary.
+            </summary>
+            <returns>A readonly dictionary.</returns>
+        </member>
+        <member name="T:RedCow.Test.Collections.ProxyDictionaryTestPersonTests">
+            <summary>
+            Unit tests for the <see cref="T:RedCow.Immutable.Collections.ProxyDictionary`2"/> class with TestPerson draftable content.
+            </summary>
+        </member>
+        <member name="M:RedCow.Test.Collections.ProxyDictionaryTestPersonTests.#ctor">
+            <summary>
+            Initializes a new instance of the <see cref="T:RedCow.Test.Collections.ProxyDictionaryTestPersonTests"/> class.
+            </summary>
+        </member>
+        <member name="T:RedCow.Test.Collections.ProxyDictionaryStringTests">
+            <summary>
+            Unit tests for the <see cref="T:RedCow.Immutable.Collections.ProxyDictionary`2"/> class with TestPerson draftable content.
+            </summary>
+        </member>
+        <member name="M:RedCow.Test.Collections.ProxyDictionaryStringTests.#ctor">
+            <summary>
+            Initializes a new instance of the <see cref="T:RedCow.Test.Collections.ProxyDictionaryStringTests"/> class.
+            </summary>
+        </member>
+        <member name="T:RedCow.Test.Collections.ProxyDictionaryIntegerTests">
+            <summary>
+            Unit tests for the <see cref="T:RedCow.Immutable.Collections.ProxyDictionary`2"/> class with TestPerson draftable content.
+            </summary>
+        </member>
+        <member name="M:RedCow.Test.Collections.ProxyDictionaryIntegerTests.#ctor">
+            <summary>
+            Initializes a new instance of the <see cref="T:RedCow.Test.Collections.ProxyDictionaryIntegerTests"/> class.
+            </summary>
+        </member>
         <member name="T:RedCow.Test.Collections.ProxyListTests`1">
             <summary>
             Unit tests for the <see cref="T:RedCow.Immutable.Collections.ProxyList`1"/> class.

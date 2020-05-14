@@ -33,6 +33,7 @@ namespace RedCow.Immutable.Collections
         ICollection<KeyValuePair<TKey, TValue>>, IEnumerable<KeyValuePair<TKey, TValue>>, IEnumerable,
         IDictionary<TKey, TValue>, IReadOnlyCollection<KeyValuePair<TKey, TValue>>,
         IReadOnlyDictionary<TKey, TValue>, ICollection, IDictionary
+        where TKey : notnull
 
         // todo add serialization, IDeserializationCallback, ISerializable
     {
