@@ -44,6 +44,21 @@
             Locks the immutable.
             </summary>
         </member>
+        <member name="T:RedCow.Test.Collections.ProxyListTests">
+            <summary>
+            Unit tests for the <see cref="T:RedCow.Immutable.Collections.ProxyList`1"/> class.
+            </summary>
+        </member>
+        <member name="M:RedCow.Test.Collections.ProxyListTests.#ctor">
+            <summary>
+            Initializes a new instance of the <see cref="T:RedCow.Test.Collections.ProxyListTests"/> class.
+            </summary>
+        </member>
+        <member name="M:RedCow.Test.Collections.ProxyListTests.AddTest">
+            <summary>
+            Tests the Add method.
+            </summary>
+        </member>
         <member name="T:RedCow.Test.CollectionTests">
             <summary>
             Unit tests for collections.

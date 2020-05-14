@@ -26,9 +26,11 @@ namespace RedCow.Immutable.Collections
     /// Base class for collection types.
     /// </summary>
     /// <typeparam name="T">The collection type.</typeparam>
+    /// <typeparam name="TNew">The concreate implementation in case we have to create a new one.</typeparam>
     /// <typeparam name="TValue">The inner value type.</typeparam>
-    public abstract class ProxyCollectionBase<T, TValue> : ILockable, IDraft, IEnumerable, ICollection
-        where T : class, ICollection<TValue>, IEnumerable, ICollection, new()
+    public abstract class ProxyCollectionBase<T, TNew, TValue> : ILockable, IDraft, IEnumerable, ICollection
+        where T : class, ICollection<TValue>, IEnumerable
+        where TNew : T, new()
     {
         /// <summary>
         /// The inner collection.
@@ -137,7 +139,7 @@ namespace RedCow.Immutable.Collections
             {
                 if (this.innerCollection == null)
                 {
-                    this.innerCollection = new T();
+                    this.innerCollection = (T)new TNew();
                 }
 
                 return this.innerCollection;

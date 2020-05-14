@@ -29,7 +29,7 @@ namespace RedCow.Immutable.Collections
     /// <typeparam name="TKey">The type of the keys held in the dictionary.</typeparam>
     /// <typeparam name="TValue">The type of the values held in the dictionary.</typeparam>
     public class ProxyDictionary<TKey, TValue>
-        : ProxyCollectionBase<Dictionary<TKey, TValue>, KeyValuePair<TKey, TValue>>, IDraft, ILockable,
+        : ProxyCollectionBase<IDictionary<TKey, TValue>, Dictionary<TKey, TValue>, KeyValuePair<TKey, TValue>>, IDraft, ILockable,
         ICollection<KeyValuePair<TKey, TValue>>, IEnumerable<KeyValuePair<TKey, TValue>>, IEnumerable,
         IDictionary<TKey, TValue>, IReadOnlyCollection<KeyValuePair<TKey, TValue>>,
         IReadOnlyDictionary<TKey, TValue>, ICollection, IDictionary
@@ -64,7 +64,7 @@ namespace RedCow.Immutable.Collections
         /// <summary>
         /// Gets a collection containing the keys in the <see cref="ProxyDictionary{TKey, TValue}"/>.
         /// </summary>
-        ICollection IDictionary.Keys => this.InnerCollection.Keys;
+        ICollection IDictionary.Keys => (ICollection)this.InnerCollection.Keys;
 
         /// <summary>
         /// Gets a collection containing the values in the <see cref="ProxyDictionary{TKey, TValue}"/>.
@@ -436,7 +436,7 @@ namespace RedCow.Immutable.Collections
             /// </summary>
             /// <param name="enumerator">The source enumerator.</param>
             /// <returns>An enumerator that creates drafts.</returns>
-            private IEnumerator<TValue> GetDraftEnumerator(Dictionary<TKey, TValue>.Enumerator enumerator)
+            private IEnumerator<TValue> GetDraftEnumerator(IEnumerator<KeyValuePair<TKey, TValue>> enumerator)
             {
                 while (enumerator.MoveNext())
                 {

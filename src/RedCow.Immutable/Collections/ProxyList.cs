@@ -28,7 +28,7 @@ namespace RedCow.Immutable.Collections
     /// </summary>
     /// <typeparam name="T">The type that is held in the list.</typeparam>
     public class ProxyList<T>
-        : ProxyCollectionBase<List<T>, T>, IDraft, ILockable, ICollection<T>, IEnumerable<T>, IEnumerable, IList<T>, IReadOnlyCollection<T>, IReadOnlyList<T>, ICollection, IList
+        : ProxyCollectionBase<IList<T>, List<T>, T>, IDraft, ILockable, ICollection<T>, IEnumerable<T>, IEnumerable, IList<T>, IReadOnlyCollection<T>, IReadOnlyList<T>, ICollection, IList
     {
         /// <summary>
         /// Gets or sets the element at the specified index.
