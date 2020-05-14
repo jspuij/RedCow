@@ -802,6 +802,11 @@
             Test using nested producers.
             </summary>
         </member>
+        <member name="M:RedCow.Test.NestedTests.NestedProduceRollbackTest">
+            <summary>
+            Test using nested producers with a rollback in the middle.
+            </summary>
+        </member>
         <member name="T:RedCow.Test.PhoneBook">
             <summary>
             A phone book.

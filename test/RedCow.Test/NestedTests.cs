@@ -446,5 +446,60 @@ namespace RedCow.Test
             Assert.False(result.Cars[0].Crashed);
             Assert.Equal("Enzo Ferrari", result.Cars[0].Make);
         }
+
+        /// <summary>
+        /// Test using nested producers with a rollback in the middle.
+        /// </summary>
+        [Fact]
+        public void NestedProduceRollbackTest()
+        {
+            ITestPerson initial = ITestPerson.Produce(new TestPerson()
+            {
+                FirstName = "John",
+                LastName = "Doe",
+                IsAdult = true,
+                Cars = new List<Car>()
+                {
+                    new Car
+                    {
+                        Make = "Ferrari",
+                        Model = "250 LM",
+                    },
+                    new Car
+                    {
+                        Make = "Shelby",
+                        Model = "Daytona Cobra Coupe",
+                    },
+                },
+            });
+
+            Car? car = null;
+
+            var result = initial.Produce(p =>
+            {
+                p.Cars[0].Make = "Ford";
+                p.Cars[0].Model = "Fiesta";
+                try
+                {
+                    p.Cars[0] = (Car)ICar.Produce(p.Cars[0], c =>
+                    {
+                        c.Make = "Tesla";
+                        c.Model = "Model 3";
+                        car = c;
+                        throw new InvalidOperationException("Cars cannot be changed.");
+                    });
+                } catch (InvalidOperationException)
+                {
+                    // car is revoked as it was inside the nested produce.
+                    Assert.Throws<DraftRevokedException>(() => car!.Make);
+                }
+            });
+
+            Assert.NotSame(initial, result);
+
+            // We rolled back the changes on the inner produce, but we did keep the drafts for the outer changes.
+            Assert.Equal("Ford", result.Cars[0].Make);
+            Assert.Equal("Fiesta", result.Cars[0].Model);
+        }
     }
 }
