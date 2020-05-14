@@ -101,7 +101,7 @@ namespace RedCow.Immutable
                 throw new ArgumentNullException(nameof(draft));
             }
 
-            return (TInterface)this.FinishInstance(draft) !;
+            return (TInterface)this.FinishInstance(draft)!;
         }
 
         /// <summary>
