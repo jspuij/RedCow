@@ -50,7 +50,7 @@ namespace RedCow.Immutable.Collections
             get
             {
                 this.ThrowIfRevoked();
-                return ((IList)this.InnerCollection).IsFixedSize || this.IsReadOnly;
+                return this.IsReadOnly;
             }
         }
 

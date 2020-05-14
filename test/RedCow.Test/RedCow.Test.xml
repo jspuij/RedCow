@@ -44,19 +44,127 @@
             Locks the immutable.
             </summary>
         </member>
-        <member name="T:RedCow.Test.Collections.ProxyListTests">
+        <member name="T:RedCow.Test.Collections.ProxyListTests`1">
             <summary>
             Unit tests for the <see cref="T:RedCow.Immutable.Collections.ProxyList`1"/> class.
             </summary>
+            <typeparam name="T">The type inside the proxylist.</typeparam>
         </member>
-        <member name="M:RedCow.Test.Collections.ProxyListTests.#ctor">
+        <member name="M:RedCow.Test.Collections.ProxyListTests`1.#ctor(System.Func{`0})">
             <summary>
-            Initializes a new instance of the <see cref="T:RedCow.Test.Collections.ProxyListTests"/> class.
+            Initializes a new instance of the <see cref="T:RedCow.Test.Collections.ProxyListTests`1"/> class.
+            </summary>
+            <param name="tCreator">The function to create a new T.</param>
+        </member>
+        <member name="P:RedCow.Test.Collections.ProxyListTests`1.ProxyList">
+            <summary>
+            Gets proxy list.
             </summary>
         </member>
-        <member name="M:RedCow.Test.Collections.ProxyListTests.AddTest">
+        <member name="P:RedCow.Test.Collections.ProxyListTests`1.DraftScope">
+            <summary>
+            Gets draft scope.
+            </summary>
+        </member>
+        <member name="P:RedCow.Test.Collections.ProxyListTests`1.TCreator">
+            <summary>
+            Gets creator function.
+            </summary>
+        </member>
+        <member name="M:RedCow.Test.Collections.ProxyListTests`1.AddTest">
             <summary>
             Tests the Add method.
+            </summary>
+        </member>
+        <member name="M:RedCow.Test.Collections.ProxyListTests`1.ClearTest">
+            <summary>
+            Tests the Clear method.
+            </summary>
+        </member>
+        <member name="M:RedCow.Test.Collections.ProxyListTests`1.ContainsTest">
+            <summary>
+            Tests the Clear method.
+            </summary>
+        </member>
+        <member name="M:RedCow.Test.Collections.ProxyListTests`1.CopyToTest">
+            <summary>
+            Tests the CopyTo method.
+            </summary>
+        </member>
+        <member name="M:RedCow.Test.Collections.ProxyListTests`1.GenericEnumeratorTest">
+            <summary>
+            Tests the generic enumerator.
+            </summary>
+        </member>
+        <member name="M:RedCow.Test.Collections.ProxyListTests`1.NonGenericEnumeratorTest">
+            <summary>
+            Tests the non-generic enumerator.
+            </summary>
+        </member>
+        <member name="M:RedCow.Test.Collections.ProxyListTests`1.IndexOfTest">
+            <summary>
+            Tests the IndexOf method.
+            </summary>
+        </member>
+        <member name="M:RedCow.Test.Collections.ProxyListTests`1.InsertTest">
+            <summary>
+            Tests the Insert method.
+            </summary>
+        </member>
+        <member name="M:RedCow.Test.Collections.ProxyListTests`1.IsPropertiesTest">
+            <summary>
+            Tests the Is... properties on the <see cref="T:RedCow.Immutable.Collections.ProxyList`1"/>.
+            </summary>
+        </member>
+        <member name="M:RedCow.Test.Collections.ProxyListTests`1.OriginalTest">
+            <summary>
+            Tests for the original.
+            </summary>
+        </member>
+        <member name="M:RedCow.Test.Collections.ProxyListTests`1.RemoveTest">
+            <summary>
+            Tests the Remove method.
+            </summary>
+        </member>
+        <member name="M:RedCow.Test.Collections.ProxyListTests`1.RemoveAtTest">
+            <summary>
+            Tests the RemoveAt method.
+            </summary>
+        </member>
+        <member name="M:RedCow.Test.Collections.ProxyListTests`1.FinishDraft">
+            <summary>
+            Finishes the draft for this list.
+            </summary>
+            <returns>A readonly list.</returns>
+        </member>
+        <member name="T:RedCow.Test.Collections.ProxyListTestPersonTests">
+            <summary>
+            Unit tests for the <see cref="T:RedCow.Immutable.Collections.ProxyList`1"/> class with TestPerson draftable content.
+            </summary>
+        </member>
+        <member name="M:RedCow.Test.Collections.ProxyListTestPersonTests.#ctor">
+            <summary>
+            Initializes a new instance of the <see cref="T:RedCow.Test.Collections.ProxyListTestPersonTests"/> class.
+            </summary>
+        </member>
+        <member name="T:RedCow.Test.Collections.ProxyListStringTests">
+            <summary>
+            Unit tests for the <see cref="T:RedCow.Immutable.Collections.ProxyList`1"/> class with TestPerson draftable content.
+            </summary>
+        </member>
+        <member name="M:RedCow.Test.Collections.ProxyListStringTests.#ctor">
+            <summary>
+            Initializes a new instance of the <see cref="T:RedCow.Test.Collections.ProxyListStringTests"/> class.
+            </summary>
+        </member>
+        <member name="T:RedCow.Test.Collections.ProxyListIntegerTests">
+            <summary>
+            Unit tests for the <see cref="T:RedCow.Immutable.Collections.ProxyList`1"/> class with TestPerson draftable content.
+            </summary>
+        </member>
+        <member name="M:RedCow.Test.Collections.ProxyListIntegerTests.#ctor">
+            <summary>
+            Initializes a new instance of the <see cref="T:RedCow.Test.Collections.ProxyListIntegerTests"/> class.
             </summary>
         </member>
         <member name="T:RedCow.Test.CollectionTests">
