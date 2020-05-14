@@ -72,6 +72,21 @@ namespace RedCow.Test.Collections
         }
 
         /// <summary>
+        /// Tests the Update method.
+        /// </summary>
+        [Fact]
+        public void UpdateTest()
+        {
+            var testValue1 = this.TCreator();
+            var testValue2 = this.TCreator();
+            this.ProxyList.Add(testValue1);
+            this.ProxyList[0] = testValue2;
+            var result = this.FinishDraft();
+            Assert.Equal(1, result.Count);
+            Assert.Equal<T>(testValue2, result[0]);
+        }
+
+        /// <summary>
         /// Tests the Clear method.
         /// </summary>
         [Fact]
@@ -309,6 +324,31 @@ namespace RedCow.Test.Collections
             Assert.Throws<ImmutableException>(() => ((ProxyList<T>)result).Insert(0, testValue));
             Assert.Throws<ImmutableException>(() => ((ProxyList<T>)result).Remove(testValue));
             Assert.Throws<ImmutableException>(() => ((ProxyList<T>)result).RemoveAt(0));
+        }
+
+        /// <summary>
+        /// Tests all operations for revoked.
+        /// </summary>
+        [Fact]
+        public void RevokedTest()
+        {
+            var testValue = this.TCreator();
+
+            // don't add the testvalue. The draft collection will be revoked.
+            var result = this.FinishDraft();
+
+            Assert.Throws<DraftRevokedException>(() => this.ProxyList.Add(testValue));
+            Assert.Throws<DraftRevokedException>(() => Assert.Equal(this.ProxyList[0], testValue));
+            Assert.Throws<DraftRevokedException>(() => this.ProxyList[0]);
+            Assert.Throws<DraftRevokedException>(() => this.ProxyList.Contains(testValue));
+            Assert.Throws<DraftRevokedException>(() => this.ProxyList.Clear());
+            Assert.Throws<DraftRevokedException>(() => this.ProxyList.Count);
+            Assert.Throws<DraftRevokedException>(() => this.ProxyList.GetEnumerator().MoveNext());
+            Assert.Throws<DraftRevokedException>(() => this.ProxyList.IndexOf(testValue));
+            Assert.Throws<DraftRevokedException>(() => this.ProxyList.Insert(0, testValue));
+            Assert.Throws<DraftRevokedException>(() => this.ProxyList.Original);
+            Assert.Throws<DraftRevokedException>(() => this.ProxyList.Remove(testValue));
+            Assert.Throws<DraftRevokedException>(() => this.ProxyList.RemoveAt(0));
         }
 
         /// <summary>

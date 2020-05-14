@@ -45,32 +45,46 @@ namespace RedCow.Immutable.Collections
         /// <summary>
         /// Gets a collection containing the keys in the <see cref="ProxyDictionary{TKey, TValue}"/>.
         /// </summary>
-        public ICollection<TKey> Keys => this.InnerCollection.Keys;
+        public ICollection<TKey> Keys
+        {
+            get
+            {
+                this.ThrowIfRevoked();
+                return this.InnerCollection.Keys;
+            }
+        }
 
         /// <summary>
         /// Gets a collection containing the values in the <see cref="ProxyDictionary{TKey, TValue}"/>.
         /// </summary>
-        public ICollection<TValue> Values => this.values ??= new ProxyValueCollection(this);
+        public ICollection<TValue> Values
+        {
+            get
+            {
+                this.ThrowIfRevoked();
+                return this.values ??= new ProxyValueCollection(this);
+            }
+        }
 
         /// <summary>
         /// Gets a collection containing the keys in the <see cref="ProxyDictionary{TKey, TValue}"/>.
         /// </summary>
-        IEnumerable<TKey> IReadOnlyDictionary<TKey, TValue>.Keys => this.InnerCollection.Keys;
+        IEnumerable<TKey> IReadOnlyDictionary<TKey, TValue>.Keys => this.Keys;
 
         /// <summary>
         /// Gets a collection containing the values in the <see cref="ProxyDictionary{TKey, TValue}"/>.
         /// </summary>
-        IEnumerable<TValue> IReadOnlyDictionary<TKey, TValue>.Values => this.values ??= new ProxyValueCollection(this);
+        IEnumerable<TValue> IReadOnlyDictionary<TKey, TValue>.Values => this.Values;
 
         /// <summary>
         /// Gets a collection containing the keys in the <see cref="ProxyDictionary{TKey, TValue}"/>.
         /// </summary>
-        ICollection IDictionary.Keys => (ICollection)this.InnerCollection.Keys;
+        ICollection IDictionary.Keys => (ICollection)this.Keys;
 
         /// <summary>
         /// Gets a collection containing the values in the <see cref="ProxyDictionary{TKey, TValue}"/>.
         /// </summary>
-        ICollection IDictionary.Values => this.values ??= new ProxyValueCollection(this);
+        ICollection IDictionary.Values => (ICollection)this.Values;
 
         /// <summary>
         /// Gets or sets the value associated with the specified key.
@@ -190,14 +204,6 @@ namespace RedCow.Immutable.Collections
         void IDictionary.Add(object key, object value)
         {
             this.Add((TKey)key, (TValue)value);
-        }
-
-        /// <summary>
-        ///  Removes all elements from the <see cref="ProxyDictionary{TKey, TValue}"/>.
-        /// </summary>
-        void IDictionary.Clear()
-        {
-            this.Clear();
         }
 
         /// <summary>

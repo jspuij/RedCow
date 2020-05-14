@@ -77,6 +77,11 @@
             Tests the Add method.
             </summary>
         </member>
+        <member name="M:RedCow.Test.Collections.ProxyDictionaryTests`2.UpdateTest">
+            <summary>
+            Tests the Update method.
+            </summary>
+        </member>
         <member name="M:RedCow.Test.Collections.ProxyDictionaryTests`2.DecomposedAddTest">
             <summary>
             Tests the Decomposed Add method.
@@ -135,6 +140,11 @@
         <member name="M:RedCow.Test.Collections.ProxyDictionaryTests`2.ReadOnlyTest">
             <summary>
             Tests all operations for readonly.
+            </summary>
+        </member>
+        <member name="M:RedCow.Test.Collections.ProxyDictionaryTests`2.RevokedTest">
+            <summary>
+            Tests all operations for revoked.
             </summary>
         </member>
         <member name="M:RedCow.Test.Collections.ProxyDictionaryTests`2.FinishDraft">
@@ -205,6 +215,11 @@
             Tests the Add method.
             </summary>
         </member>
+        <member name="M:RedCow.Test.Collections.ProxyListTests`1.UpdateTest">
+            <summary>
+            Tests the Update method.
+            </summary>
+        </member>
         <member name="M:RedCow.Test.Collections.ProxyListTests`1.ClearTest">
             <summary>
             Tests the Clear method.
@@ -263,6 +278,11 @@
         <member name="M:RedCow.Test.Collections.ProxyListTests`1.ReadOnlyTest">
             <summary>
             Tests all operations for readonly.
+            </summary>
+        </member>
+        <member name="M:RedCow.Test.Collections.ProxyListTests`1.RevokedTest">
+            <summary>
+            Tests all operations for revoked.
             </summary>
         </member>
         <member name="M:RedCow.Test.Collections.ProxyListTests`1.FinishDraft">

@@ -317,11 +317,6 @@
             <param name="key">The key of the element to add.</param>
             <param name="value">The value of the element to add. The value can be null for reference types.</param>
         </member>
-        <member name="M:RedCow.Immutable.Collections.ProxyDictionary`2.System#Collections#IDictionary#Clear">
-            <summary>
-             Removes all elements from the <see cref="T:RedCow.Immutable.Collections.ProxyDictionary`2"/>.
-            </summary>
-        </member>
         <member name="M:RedCow.Immutable.Collections.ProxyDictionary`2.System#Collections#IDictionary#Contains(System.Object)">
             <summary>
             Determines whether the System.Collections.Generic.Dictionary`2 contains the specified key.

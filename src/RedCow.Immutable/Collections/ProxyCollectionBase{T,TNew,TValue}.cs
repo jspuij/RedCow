@@ -299,6 +299,7 @@ namespace RedCow.Immutable.Collections
         /// </summary>
         protected void ThrowIfReadonly()
         {
+            this.ThrowIfRevoked();
             if (this.IsReadOnly)
             {
                 throw new ImmutableException(this, $"This {this.GetType()} is immutable and cannot be modified.");

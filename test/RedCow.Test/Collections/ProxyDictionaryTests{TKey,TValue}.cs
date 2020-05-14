@@ -75,6 +75,21 @@ namespace RedCow.Test.Collections
         }
 
         /// <summary>
+        /// Tests the Update method.
+        /// </summary>
+        [Fact]
+        public void UpdateTest()
+        {
+            var testValue1 = this.KeyValuePairCreator();
+            var testValue2 = this.KeyValuePairCreator();
+            this.ProxyDictionary.Add(testValue1);
+            this.ProxyDictionary[testValue1.Key] = testValue2.Value;
+            var result = this.FinishDraft();
+            Assert.Equal(1, result.Count);
+            Assert.Equal(testValue2.Value, result.First().Value);
+        }
+
+        /// <summary>
         /// Tests the Decomposed Add method.
         /// </summary>
         [Fact]
@@ -290,6 +305,33 @@ namespace RedCow.Test.Collections
             Assert.Throws<ImmutableException>(() => ((ProxyDictionary<TKey, TValue>)result).Clear());
             Assert.Throws<ImmutableException>(() => ((ProxyDictionary<TKey, TValue>)result).Remove(keyValuePair));
             Assert.Throws<ImmutableException>(() => ((ProxyDictionary<TKey, TValue>)result).Remove(keyValuePair.Key));
+        }
+
+        /// <summary>
+        /// Tests all operations for revoked.
+        /// </summary>
+        [Fact]
+        public void RevokedTest()
+        {
+            var testValue = this.KeyValuePairCreator();
+
+            // don't add the testvalue. The draft collection will be revoked.
+            var result = this.FinishDraft();
+
+            Assert.Throws<DraftRevokedException>(() => this.ProxyDictionary.Add(testValue));
+            Assert.Throws<DraftRevokedException>(() => this.ProxyDictionary.Add(testValue.Key, testValue.Value));
+            Assert.Throws<DraftRevokedException>(() => Assert.Equal(this.ProxyDictionary[testValue.Key], testValue.Value));
+            Assert.Throws<DraftRevokedException>(() => this.ProxyDictionary[testValue.Key]);
+            Assert.Throws<DraftRevokedException>(() => this.ProxyDictionary.Contains(testValue));
+            Assert.Throws<DraftRevokedException>(() => this.ProxyDictionary.ContainsKey(testValue.Key));
+            Assert.Throws<DraftRevokedException>(() => this.ProxyDictionary.Clear());
+            Assert.Throws<DraftRevokedException>(() => this.ProxyDictionary.Count);
+            Assert.Throws<DraftRevokedException>(() => this.ProxyDictionary.GetEnumerator().MoveNext());
+            Assert.Throws<DraftRevokedException>(() => this.ProxyDictionary.Original);
+            Assert.Throws<DraftRevokedException>(() => this.ProxyDictionary.Remove(testValue));
+            Assert.Throws<DraftRevokedException>(() => this.ProxyDictionary.Remove(testValue.Key));
+            Assert.Throws<DraftRevokedException>(() => this.ProxyDictionary.Keys);
+            Assert.Throws<DraftRevokedException>(() => this.ProxyDictionary.Values);
         }
 
         /// <summary>
