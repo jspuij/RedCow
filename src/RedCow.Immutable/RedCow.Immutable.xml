@@ -678,11 +678,6 @@
             </summary>
             <param name = "producerOptions">The producer options to use. If you leave them null, the default options will be used.</param>
         </member>
-        <member name="P:RedCow.Immutable.DraftScope.CloneProvider">
-            <summary>
-            Gets the Clone Provider for this scope.
-            </summary>
-        </member>
         <member name="P:RedCow.Immutable.DraftScope.Parent">
             <summary>
             Gets or sets the parent <see cref="T:RedCow.Immutable.DraftScope"/>.
@@ -771,20 +766,6 @@
             Revokes the draft.
             </summary>
         </member>
-        <member name="T:RedCow.Immutable.ICloneProvider">
-            <summary>
-            Interface for Clone Providers. Clone Providers can clone the public properties of an object
-            to another object.
-            </summary>
-        </member>
-        <member name="M:RedCow.Immutable.ICloneProvider.Clone(System.Object,System.Object,System.Func{System.Object,System.Object})">
-            <summary>
-            Clones the public properties of an object to another object.
-            </summary>
-            <param name="source">The source.</param>
-            <param name="destination">The destination object.</param>
-            <param name="assignmentFunction">The assignment function to use to assign the source value properties to the destination.</param>
-        </member>
         <member name="T:RedCow.Immutable.IDraft">
             <summary>
             Non generic part of the Draft interface.
@@ -864,6 +845,36 @@
             <param name="copyOnWrite">The copy on write action.</param>
             <exception cref="T:System.InvalidOperationException">thrown when the draft is revoked.</exception>
         </member>
+        <member name="T:RedCow.Immutable.Patches.IPatchGenerator">
+            <summary>
+            Interface for generating patches.
+            </summary>
+        </member>
+        <member name="M:RedCow.Immutable.Patches.IPatchGenerator.Generate(RedCow.Immutable.IDraft,System.String,Microsoft.AspNetCore.JsonPatch.JsonPatchDocument,Microsoft.AspNetCore.JsonPatch.JsonPatchDocument)">
+            <summary>
+            Generates JSON Patches for a draft for changes and inverse changes and
+            adds them to the specified JsonPatchDocuments.
+            </summary>
+            <param name="draft">The draft to process.</param>
+            <param name="basePath">The base path for the patches.</param>
+            <param name="patches">The patches.</param>
+            <param name="inversePatches">The inverse patches.</param>
+        </member>
+        <member name="T:RedCow.Immutable.Patches.ObjectPatchGenerator">
+            <summary>
+            Generates JSON Patches and inverse Patches for the differences between two objects.
+            </summary>
+        </member>
+        <member name="M:RedCow.Immutable.Patches.ObjectPatchGenerator.Generate(RedCow.Immutable.IDraft,System.String,Microsoft.AspNetCore.JsonPatch.JsonPatchDocument,Microsoft.AspNetCore.JsonPatch.JsonPatchDocument)">
+            <summary>
+            Generates JSON Patches for a draft for changes and inverse changes and
+            adds them to the specified JsonPatchDocuments.
+            </summary>
+            <param name="draft">The draft to process.</param>
+            <param name="basePath">The base path for the patches.</param>
+            <param name="patches">The patches.</param>
+            <param name="inversePatches">The inverse patches.</param>
+        </member>
         <member name="T:RedCow.Immutable.ProxyTypeAttribute">
             <summary>
             Proxy type attribute. Indicates which class is the proxy type for this type.
@@ -881,19 +892,6 @@
             <summary>
             Gets the proxy type.
             </summary>
-        </member>
-        <member name="T:RedCow.Immutable.ReflectionCloneProvider">
-            <summary>
-            Provides cloning using reflection.
-            </summary>
-        </member>
-        <member name="M:RedCow.Immutable.ReflectionCloneProvider.Clone(System.Object,System.Object,System.Func{System.Object,System.Object})">
-            <summary>
-            Clones the public properties of an object to another object.
-            </summary>
-            <param name="source">The source.</param>
-            <param name="destination">The destination object.</param>
-            <param name="assignmentFunction">The assignment function to use to assign the source value properties to the destination.</param>
         </member>
         <member name="T:RedCow.DraftException">
             <summary>
@@ -998,15 +996,34 @@
             The options used by the producer.
             </summary>
         </member>
-        <member name="P:RedCow.IProducerOptions.CloneProvider">
-            <summary>
-            Gets the clone provider to use.
-            </summary>
-        </member>
         <member name="P:RedCow.IProducerOptions.AllowedImmutableReferenceTypes">
             <summary>
             Gets the immutable reference types that are allowed as Properties.
             </summary>
+        </member>
+        <member name="T:RedCow.Patches.PatchException">
+            <summary>
+            An exception that occurs during patching.
+            </summary>
+        </member>
+        <member name="M:RedCow.Patches.PatchException.#ctor(System.Object,System.String)">
+            <summary>
+            Initializes a new instance of the <see cref="T:RedCow.Patches.PatchException"/> class.
+            </summary>
+            <param name="draft">The draft that is patched.</param>
+            <param name="message">The message.</param>
+        </member>
+        <member name="T:RedCow.Patches.PatchGenerationException">
+            <summary>
+            An exception that occurs during patch generation.
+            </summary>
+        </member>
+        <member name="M:RedCow.Patches.PatchGenerationException.#ctor(System.Object,System.String)">
+            <summary>
+            Initializes a new instance of the <see cref="T:RedCow.Patches.PatchGenerationException"/> class.
+            </summary>
+            <param name="draft">The draft that is patched.</param>
+            <param name="message">The message.</param>
         </member>
         <member name="T:RedCow.ProducerOptions">
             <summary>
@@ -1016,11 +1033,6 @@
         <member name="P:RedCow.ProducerOptions.Default">
             <summary>
             Gets the default Producer options.
-            </summary>
-        </member>
-        <member name="P:RedCow.ProducerOptions.CloneProvider">
-            <summary>
-            Gets or sets the Clone Provider.
             </summary>
         </member>
         <member name="P:RedCow.ProducerOptions.AllowedImmutableReferenceTypes">

@@ -1,4 +1,4 @@
-﻿// <copyright file="IProducerOptions.cs" company="Jan-Willem Spuij">
+﻿// <copyright file="IPatchGenerator.cs" company="Jan-Willem Spuij">
 // Copyright 2020 Jan-Willem Spuij
 //
 // Permission is hereby granted, free of charge, to any person obtaining a copy of this software and associated documentation
@@ -14,20 +14,27 @@
 // ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 // </copyright>
 
-namespace RedCow
+namespace RedCow.Immutable.Patches
 {
     using System;
     using System.Collections.Generic;
+    using System.Text;
+    using Microsoft.AspNetCore.JsonPatch;
     using RedCow.Immutable;
 
     /// <summary>
-    /// The options used by the producer.
+    /// Interface for generating patches.
     /// </summary>
-    public interface IProducerOptions
+    public interface IPatchGenerator
     {
         /// <summary>
-        /// Gets the immutable reference types that are allowed as Properties.
+        /// Generates JSON Patches for a draft for changes and inverse changes and
+        /// adds them to the specified JsonPatchDocuments.
         /// </summary>
-        public ISet<Type> AllowedImmutableReferenceTypes { get; }
+        /// <param name="draft">The draft to process.</param>
+        /// <param name="basePath">The base path for the patches.</param>
+        /// <param name="patches">The patches.</param>
+        /// <param name="inversePatches">The inverse patches.</param>
+        public void Generate(IDraft draft, string basePath, JsonPatchDocument patches, JsonPatchDocument inversePatches);
     }
 }

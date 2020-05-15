@@ -1,4 +1,4 @@
-﻿// <copyright file="ICloneProvider.cs" company="Jan-Willem Spuij">
+﻿// <copyright file="PatchGenerationException.cs" company="Jan-Willem Spuij">
 // Copyright 2020 Jan-Willem Spuij
 //
 // Permission is hereby granted, free of charge, to any person obtaining a copy of this software and associated documentation
@@ -14,22 +14,25 @@
 // ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 // </copyright>
 
-namespace RedCow.Immutable
+namespace RedCow.Patches
 {
     using System;
+    using System.Collections.Generic;
+    using System.Text;
 
     /// <summary>
-    /// Interface for Clone Providers. Clone Providers can clone the public properties of an object
-    /// to another object.
+    /// An exception that occurs during patch generation.
     /// </summary>
-    public interface ICloneProvider
+    public class PatchGenerationException : DraftException
     {
         /// <summary>
-        /// Clones the public properties of an object to another object.
+        /// Initializes a new instance of the <see cref="PatchGenerationException"/> class.
         /// </summary>
-        /// <param name="source">The source.</param>
-        /// <param name="destination">The destination object.</param>
-        /// <param name="assignmentFunction">The assignment function to use to assign the source value properties to the destination.</param>
-        public void Clone(object source, object destination, Func<object?, object?> assignmentFunction);
+        /// <param name="draft">The draft that is patched.</param>
+        /// <param name="message">The message.</param>
+        public PatchGenerationException(object draft, string message)
+            : base(draft, message)
+        {
+        }
     }
 }

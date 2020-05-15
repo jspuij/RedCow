@@ -17,6 +17,7 @@
 namespace RedCow.Generators
 {
     using System;
+    using System.Collections.Generic;
     using System.Diagnostics.CodeAnalysis;
     using System.Linq;
     using System.Threading;
@@ -63,6 +64,10 @@ namespace RedCow.Generators
                             IdentifierName("System")),
                         UsingDirective(
                             QualifiedName(
+                                IdentifierName("System"),
+                                IdentifierName("Reflection"))),
+                        UsingDirective(
+                            QualifiedName(
                                 QualifiedName(
                                 IdentifierName("System"),
                                 IdentifierName("Collections")),
@@ -85,10 +90,31 @@ namespace RedCow.Generators
                             QualifiedName(
                                 IdentifierName("RedCow"),
                                 IdentifierName("Immutable"))),
+                        UsingDirective(
+                            QualifiedName(
+                                QualifiedName(
+                                IdentifierName("RedCow"),
+                                IdentifierName("Immutable")),
+                                IdentifierName("Collections"))),
                     }),
             };
 
             return result;
+        }
+
+        /// <summary>
+        /// Gets the public instance properties for the specified type.
+        /// </summary>
+        /// <param name="typeSymbol">The type symbol to use.</param>
+        /// <returns>The list of properties.</returns>
+        protected static IEnumerable<IPropertySymbol> GetPublicInstanceProperties(ITypeSymbol typeSymbol)
+        {
+            return typeSymbol.GetMembers().
+                Where(x => x is IPropertySymbol prop &&
+                !prop.IsStatic &&
+                !prop.IsIndexer &&
+                (prop.DeclaredAccessibility == Accessibility.Internal || prop.DeclaredAccessibility == Accessibility.Public)).
+                Cast<IPropertySymbol>();
         }
 
         /// <summary>

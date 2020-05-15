@@ -314,6 +314,64 @@ namespace RedCow.Generators
         }
 
         /// <summary>
+        /// Generates a Static PropertyMemberInfoField.
+        /// </summary>
+        /// <returns>A memeber declaration syntax.</returns>
+        private static MemberDeclarationSyntax GenerateStaticPropertyMemberInfo(IEnumerable<IPropertySymbol> enumerable)
+        {
+            var property = $@"
+                /// <summary>
+                /// Gets the Public Properties.
+                /// </summary>
+                public static IReadOnlyDictionary<string, MemberInfo> PublicProperties
+                {{
+                    get
+                    {{
+                        if (publicProperties == null)
+                        {{
+                            var type = typeof(Car);
+                            publicProperties = new ProxyDictionary<string, MemberInfo>
+                            {{";
+
+            var builder = new StringBuilder(property);
+
+            foreach (var propertySymbol in enumerable)
+            {
+                builder.AppendLine($@"[nameof({propertySymbol.Name})] = type.GetProperty(nameof({propertySymbol.Name})),");
+            }
+
+            builder.AppendLine($@"
+                            }};
+                            ((ILockable)PublicProperties).Lock();
+                        }}
+
+                        return publicProperties;
+                    }}
+                }}
+            ");
+
+            return ParseMemberDeclaration(builder.ToString())
+                .NormalizeWhitespace();
+        }
+
+        /// <summary>
+        /// Generates a Static PropertyMemberInfoField.
+        /// </summary>
+        /// <returns>A memeber declaration syntax.</returns>
+        private static MemberDeclarationSyntax GenerateStaticPropertyMemberInfoField()
+        {
+            var field = $@"
+                /// <summary>
+                /// Dictionary with public properties.
+                /// </summary>
+                private static IReadOnlyDictionary<string, MemberInfo> publicProperties;
+            ";
+
+            return ParseMemberDeclaration(field)
+                .NormalizeWhitespace();
+        }
+
+        /// <summary>
         /// Creates a property with getter and setter based on the readonly interface property.
         /// </summary>
         /// <param name="context">The transformation context.</param>
@@ -381,9 +439,8 @@ namespace RedCow.Generators
                                 SimpleBaseType(ParseTypeName("ILockable")));
 
             result = result.AddMembers(
-                this.interfaceType.GetMembers().
-                Where(x => x is IPropertySymbol).
-                Cast<IPropertySymbol>().SelectMany(p =>
+                GetPublicInstanceProperties(this.interfaceType)
+                .SelectMany(p =>
                 {
                     var field = CreateField(context, p);
                     var prop = CreateProperty(context, p);
@@ -412,13 +469,13 @@ namespace RedCow.Generators
                 }));
 
             result = result.AddMembers(
+             GenerateStaticPropertyMemberInfoField(),
+             GenerateStaticPropertyMemberInfo(GetPublicInstanceProperties(this.interfaceType)),
              GenerateLockedField(),
              GenerateLockedProperty(),
              GenerateLockMethod(
                 context,
-                this.interfaceType.GetMembers().
-                Where(x => x is IPropertySymbol).
-                Cast<IPropertySymbol>()));
+                GetPublicInstanceProperties(this.interfaceType)));
 
             return result;
         }
@@ -449,9 +506,8 @@ namespace RedCow.Generators
                                 SimpleBaseType(ParseTypeName($"IDraft<{sourceClassDeclaration.Identifier.Text}>")));
 
             result = result.AddMembers(
-                this.interfaceType.GetMembers().
-                Where(x => x is IPropertySymbol).
-                Cast<IPropertySymbol>().Select(p =>
+                GetPublicInstanceProperties(this.interfaceType)
+                .Select(p =>
                 {
                     return CreateProxyProperty(context, p);
                 }).ToArray());
@@ -470,9 +526,7 @@ namespace RedCow.Generators
               this.GenerateDraftStateProperty(),
               this.GenerateOriginalProperty(sourceClassDeclaration),
               this.GenerateImmutableOriginalProperty(),
-              this.GenerateCloneMethod(context, this.interfaceType.GetMembers().
-                Where(x => x is IPropertySymbol).
-                Cast<IPropertySymbol>()));
+              this.GenerateCloneMethod(context, GetPublicInstanceProperties(this.interfaceType)));
 
             return result;
         }

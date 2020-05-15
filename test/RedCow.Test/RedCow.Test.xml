@@ -39,6 +39,16 @@
              Gets or sets a value indicating whether Crashed is true.
             </summary>
         </member>
+        <member name="F:RedCow.Test.Car.publicProperties">
+            <summary>
+            Dictionary with public properties.
+            </summary>
+        </member>
+        <member name="P:RedCow.Test.Car.PublicProperties">
+            <summary>
+            Gets the Public Properties.
+            </summary>
+        </member>
         <member name="F:RedCow.Test.Car.locked">
             <summary>
             Whether the instance is locked.
@@ -827,6 +837,16 @@
             Gets Entries.
             </summary>
         </member>
+        <member name="F:RedCow.Test.PhoneBook.publicProperties">
+            <summary>
+            Dictionary with public properties.
+            </summary>
+        </member>
+        <member name="P:RedCow.Test.PhoneBook.PublicProperties">
+            <summary>
+            Gets the Public Properties.
+            </summary>
+        </member>
         <member name="F:RedCow.Test.PhoneBook.locked">
             <summary>
             Whether the instance is locked.
@@ -840,21 +860,6 @@
         <member name="M:RedCow.Test.PhoneBook.RedCow#ILockable#Lock">
             <summary>
             Locks the immutable.
-            </summary>
-        </member>
-        <member name="T:RedCow.Test.ReflectionCloneProviderTests">
-            <summary>
-            Unit tests for <see cref="T:RedCow.Immutable.ReflectionCloneProvider"/>.
-            </summary>
-        </member>
-        <member name="M:RedCow.Test.ReflectionCloneProviderTests.ClonesAllPublicProperties">
-            <summary>
-            Tests whether the Clone provider clones all properties.
-            </summary>
-        </member>
-        <member name="M:RedCow.Test.ReflectionCloneProviderTests.DoesNotClonePrivatePropertiesAndFields">
-            <summary>
-            Tests that the clone provider does not clone fields, private and readonly properties.
             </summary>
         </member>
         <member name="T:RedCow.Test.TestPerson">
@@ -935,6 +940,16 @@
         <member name="P:RedCow.Test.TestPerson.RedCow#Test#ITestPerson#Cars">
             <summary>
             Gets Cars.
+            </summary>
+        </member>
+        <member name="F:RedCow.Test.TestPerson.publicProperties">
+            <summary>
+            Dictionary with public properties.
+            </summary>
+        </member>
+        <member name="P:RedCow.Test.TestPerson.PublicProperties">
+            <summary>
+            Gets the Public Properties.
             </summary>
         </member>
         <member name="F:RedCow.Test.TestPerson.locked">

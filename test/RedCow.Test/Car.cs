@@ -18,7 +18,9 @@ namespace RedCow.Test
 {
     using System;
     using System.Collections.Generic;
+    using System.Reflection;
     using System.Text;
+    using RedCow.Immutable.Collections;
 
     /// <summary>
     /// Car class.

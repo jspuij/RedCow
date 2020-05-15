@@ -31,11 +31,6 @@ namespace RedCow
         public static IProducerOptions Default { get; } = new ProducerOptions();
 
         /// <summary>
-        /// Gets or sets the Clone Provider.
-        /// </summary>
-        public ICloneProvider CloneProvider { get; set; } = new ReflectionCloneProvider();
-
-        /// <summary>
         /// Gets the set of allowed immutable reference types.
         /// </summary>
         public ISet<Type> AllowedImmutableReferenceTypes { get; } = new HashSet<Type>()

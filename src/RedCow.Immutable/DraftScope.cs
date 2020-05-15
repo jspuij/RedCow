@@ -49,11 +49,6 @@ namespace RedCow.Immutable
         }
 
         /// <summary>
-        /// Gets the Clone Provider for this scope.
-        /// </summary>
-        public ICloneProvider CloneProvider => this.producerOptions.CloneProvider;
-
-        /// <summary>
         /// Gets or sets the parent <see cref="DraftScope"/>.
         /// </summary>
         public DraftScope? Parent { get; set; }

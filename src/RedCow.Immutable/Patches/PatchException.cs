@@ -1,4 +1,4 @@
-﻿// <copyright file="IProducerOptions.cs" company="Jan-Willem Spuij">
+﻿// <copyright file="PatchException.cs" company="Jan-Willem Spuij">
 // Copyright 2020 Jan-Willem Spuij
 //
 // Permission is hereby granted, free of charge, to any person obtaining a copy of this software and associated documentation
@@ -14,20 +14,25 @@
 // ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 // </copyright>
 
-namespace RedCow
+namespace RedCow.Patches
 {
     using System;
     using System.Collections.Generic;
-    using RedCow.Immutable;
+    using System.Text;
 
     /// <summary>
-    /// The options used by the producer.
+    /// An exception that occurs during patching.
     /// </summary>
-    public interface IProducerOptions
+    public class PatchException : DraftException
     {
         /// <summary>
-        /// Gets the immutable reference types that are allowed as Properties.
+        /// Initializes a new instance of the <see cref="PatchException"/> class.
         /// </summary>
-        public ISet<Type> AllowedImmutableReferenceTypes { get; }
+        /// <param name="draft">The draft that is patched.</param>
+        /// <param name="message">The message.</param>
+        public PatchException(object draft, string message)
+            : base(draft, message)
+        {
+        }
     }
 }

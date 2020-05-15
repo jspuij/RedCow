@@ -27,6 +27,13 @@
             <param name="cancellationToken">A cancellation token.</param>
             <returns>The generated syntax nodes to be added to the compilation unit added to the project.</returns>
         </member>
+        <member name="M:RedCow.Generators.BaseGenerator.GetPublicInstanceProperties(Microsoft.CodeAnalysis.ITypeSymbol)">
+            <summary>
+            Gets the public instance properties for the specified type.
+            </summary>
+            <param name="typeSymbol">The type symbol to use.</param>
+            <returns>The list of properties.</returns>
+        </member>
         <member name="M:RedCow.Generators.BaseGenerator.WrapInAncestor(Microsoft.CodeAnalysis.SyntaxList{Microsoft.CodeAnalysis.CSharp.Syntax.MemberDeclarationSyntax},Microsoft.CodeAnalysis.SyntaxNode)">
             <summary>
             Wraps these members in their ancestor namespace.
@@ -137,6 +144,18 @@
             Generates the Locked property on the immutable class.
             </summary>
             <returns>The property declaration.</returns>
+        </member>
+        <member name="M:RedCow.Generators.MutableClassGenerator.GenerateStaticPropertyMemberInfo(System.Collections.Generic.IEnumerable{Microsoft.CodeAnalysis.IPropertySymbol})">
+            <summary>
+            Generates a Static PropertyMemberInfoField.
+            </summary>
+            <returns>A memeber declaration syntax.</returns>
+        </member>
+        <member name="M:RedCow.Generators.MutableClassGenerator.GenerateStaticPropertyMemberInfoField">
+            <summary>
+            Generates a Static PropertyMemberInfoField.
+            </summary>
+            <returns>A memeber declaration syntax.</returns>
         </member>
         <member name="M:RedCow.Generators.MutableClassGenerator.CreateInterfaceProperty(CodeGeneration.Roslyn.TransformationContext,Microsoft.CodeAnalysis.IPropertySymbol)">
             <summary>
