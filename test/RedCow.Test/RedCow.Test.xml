@@ -39,14 +39,24 @@
              Gets or sets a value indicating whether Crashed is true.
             </summary>
         </member>
-        <member name="F:RedCow.Test.Car.publicProperties">
+        <member name="F:RedCow.Test.Car.publicPropertyGetters">
             <summary>
-            Dictionary with public properties.
+            Dictionary with public property getters.
             </summary>
         </member>
-        <member name="P:RedCow.Test.Car.PublicProperties">
+        <member name="P:RedCow.Test.Car.RedCow#IPropertyAccessors#PublicPropertyGetters">
             <summary>
-            Gets the Public Properties.
+            Gets the Public Property Getters.
+            </summary>
+        </member>
+        <member name="F:RedCow.Test.Car.publicPropertySetters">
+            <summary>
+            Dictionary with public property setters.
+            </summary>
+        </member>
+        <member name="P:RedCow.Test.Car.RedCow#IPropertyAccessors#PublicPropertySetters">
+            <summary>
+            Gets the Public Property Setters.
             </summary>
         </member>
         <member name="F:RedCow.Test.Car.locked">
@@ -837,14 +847,24 @@
             Gets Entries.
             </summary>
         </member>
-        <member name="F:RedCow.Test.PhoneBook.publicProperties">
+        <member name="F:RedCow.Test.PhoneBook.publicPropertyGetters">
             <summary>
-            Dictionary with public properties.
+            Dictionary with public property getters.
             </summary>
         </member>
-        <member name="P:RedCow.Test.PhoneBook.PublicProperties">
+        <member name="P:RedCow.Test.PhoneBook.RedCow#IPropertyAccessors#PublicPropertyGetters">
             <summary>
-            Gets the Public Properties.
+            Gets the Public Property Getters.
+            </summary>
+        </member>
+        <member name="F:RedCow.Test.PhoneBook.publicPropertySetters">
+            <summary>
+            Dictionary with public property setters.
+            </summary>
+        </member>
+        <member name="P:RedCow.Test.PhoneBook.RedCow#IPropertyAccessors#PublicPropertySetters">
+            <summary>
+            Gets the Public Property Setters.
             </summary>
         </member>
         <member name="F:RedCow.Test.PhoneBook.locked">
@@ -942,14 +962,24 @@
             Gets Cars.
             </summary>
         </member>
-        <member name="F:RedCow.Test.TestPerson.publicProperties">
+        <member name="F:RedCow.Test.TestPerson.publicPropertyGetters">
             <summary>
-            Dictionary with public properties.
+            Dictionary with public property getters.
             </summary>
         </member>
-        <member name="P:RedCow.Test.TestPerson.PublicProperties">
+        <member name="P:RedCow.Test.TestPerson.RedCow#IPropertyAccessors#PublicPropertyGetters">
             <summary>
-            Gets the Public Properties.
+            Gets the Public Property Getters.
+            </summary>
+        </member>
+        <member name="F:RedCow.Test.TestPerson.publicPropertySetters">
+            <summary>
+            Dictionary with public property setters.
+            </summary>
+        </member>
+        <member name="P:RedCow.Test.TestPerson.RedCow#IPropertyAccessors#PublicPropertySetters">
+            <summary>
+            Gets the Public Property Setters.
             </summary>
         </member>
         <member name="F:RedCow.Test.TestPerson.locked">

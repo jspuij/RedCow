@@ -314,38 +314,37 @@ namespace RedCow.Generators
         }
 
         /// <summary>
-        /// Generates a Static PropertyMemberInfoField.
+        /// Generates PublicPropertyGetters.
         /// </summary>
         /// <returns>A memeber declaration syntax.</returns>
-        private static MemberDeclarationSyntax GenerateStaticPropertyMemberInfo(IEnumerable<IPropertySymbol> enumerable)
+        private static MemberDeclarationSyntax GenerateStaticPropertyAccessorsGetters(IEnumerable<IPropertySymbol> enumerable)
         {
             var property = $@"
                 /// <summary>
-                /// Gets the Public Properties.
+                /// Gets the Public Property Getters.
                 /// </summary>
-                public static IReadOnlyDictionary<string, MemberInfo> PublicProperties
+                IReadOnlyDictionary<string, Func<object>> IPropertyAccessors.PublicPropertyGetters
                 {{
                     get
                     {{
-                        if (publicProperties == null)
+                        if (publicPropertyGetters == null)
                         {{
-                            var type = typeof(Car);
-                            publicProperties = new ProxyDictionary<string, MemberInfo>
+                            publicPropertyGetters = new ProxyDictionary<string, Func<object>>
                             {{";
 
             var builder = new StringBuilder(property);
 
             foreach (var propertySymbol in enumerable)
             {
-                builder.AppendLine($@"[nameof({propertySymbol.Name})] = type.GetProperty(nameof({propertySymbol.Name})),");
+                builder.AppendLine($@"[nameof({propertySymbol.Name})] = () => {propertySymbol.Name},");
             }
 
             builder.AppendLine($@"
                             }};
-                            ((ILockable)PublicProperties).Lock();
+                            ((ILockable)publicPropertyGetters).Lock();
                         }}
 
-                        return publicProperties;
+                        return publicPropertyGetters;
                     }}
                 }}
             ");
@@ -355,16 +354,74 @@ namespace RedCow.Generators
         }
 
         /// <summary>
-        /// Generates a Static PropertyMemberInfoField.
+        /// Generates a Static PublicPropertyGetters field.
         /// </summary>
         /// <returns>A memeber declaration syntax.</returns>
-        private static MemberDeclarationSyntax GenerateStaticPropertyMemberInfoField()
+        private static MemberDeclarationSyntax GenerateStaticPropertyAccessorsGettersField()
         {
             var field = $@"
                 /// <summary>
-                /// Dictionary with public properties.
+                /// Dictionary with public property getters.
                 /// </summary>
-                private static IReadOnlyDictionary<string, MemberInfo> publicProperties;
+                private static IReadOnlyDictionary<string, Func<object>> publicPropertyGetters;
+            ";
+
+            return ParseMemberDeclaration(field)
+                .NormalizeWhitespace();
+        }
+
+        /// <summary>
+        /// Generates PublicPropertySetters.
+        /// </summary>
+        /// <returns>A memeber declaration syntax.</returns>
+        private static MemberDeclarationSyntax GenerateStaticPropertyAccessorsSetters(TransformationContext context, IEnumerable<IPropertySymbol> enumerable)
+        {
+            var property = $@"
+                /// <summary>
+                /// Gets the Public Property Setters.
+                /// </summary>
+                IReadOnlyDictionary<string, Action<object>> IPropertyAccessors.PublicPropertySetters
+                {{
+                    get
+                    {{
+                        if (publicPropertySetters == null)
+                        {{
+                            publicPropertySetters = new ProxyDictionary<string, Action<object>>
+                            {{";
+
+            var builder = new StringBuilder(property);
+
+            foreach (var propertySymbol in enumerable)
+            {
+                var mutableType = GetMutableType(context, propertySymbol.Type);
+                builder.AppendLine($@"[nameof({propertySymbol.Name})] = value => {propertySymbol.Name} = ({mutableType})value,");
+            }
+
+            builder.AppendLine($@"
+                            }};
+                            ((ILockable)publicPropertySetters).Lock();
+                        }}
+
+                        return publicPropertySetters;
+                    }}
+                }}
+            ");
+
+            return ParseMemberDeclaration(builder.ToString())
+                .NormalizeWhitespace();
+        }
+
+        /// <summary>
+        /// Generates a Static PublicPropertySetters field.
+        /// </summary>
+        /// <returns>A memeber declaration syntax.</returns>
+        private static MemberDeclarationSyntax GenerateStaticPropertyAccessorsSettersField()
+        {
+            var field = $@"
+                /// <summary>
+                /// Dictionary with public property setters.
+                /// </summary>
+                private static IReadOnlyDictionary<string, Action<object>> publicPropertySetters;
             ";
 
             return ParseMemberDeclaration(field)
@@ -436,6 +493,7 @@ namespace RedCow.Generators
                             .AddModifiers(sourceClassDeclaration.Modifiers.ToArray())
                              .AddBaseListTypes(
                                 SimpleBaseType(ParseTypeName(this.interfaceType.Name)),
+                                SimpleBaseType(ParseTypeName("IPropertyAccessors")),
                                 SimpleBaseType(ParseTypeName("ILockable")));
 
             result = result.AddMembers(
@@ -469,8 +527,10 @@ namespace RedCow.Generators
                 }));
 
             result = result.AddMembers(
-             GenerateStaticPropertyMemberInfoField(),
-             GenerateStaticPropertyMemberInfo(GetPublicInstanceProperties(this.interfaceType)),
+             GenerateStaticPropertyAccessorsGettersField(),
+             GenerateStaticPropertyAccessorsGetters(GetPublicInstanceProperties(this.interfaceType)),
+             GenerateStaticPropertyAccessorsSettersField(),
+             GenerateStaticPropertyAccessorsSetters(context, GetPublicInstanceProperties(this.interfaceType)),
              GenerateLockedField(),
              GenerateLockedProperty(),
              GenerateLockMethod(

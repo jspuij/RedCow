@@ -875,6 +875,36 @@
             <param name="patches">The patches.</param>
             <param name="inversePatches">The inverse patches.</param>
         </member>
+        <member name="T:RedCow.Immutable.Patches.PatchException">
+            <summary>
+            An exception that occurs during patching.
+            </summary>
+        </member>
+        <member name="M:RedCow.Immutable.Patches.PatchException.#ctor(System.Object,System.String)">
+            <summary>
+            Initializes a new instance of the <see cref="T:RedCow.Immutable.Patches.PatchException"/> class.
+            </summary>
+            <param name="draft">The draft that is patched.</param>
+            <param name="message">The message.</param>
+        </member>
+        <member name="T:RedCow.Immutable.Patches.PatchGenerationException">
+            <summary>
+            An exception that occurs during patch generation.
+            </summary>
+        </member>
+        <member name="M:RedCow.Immutable.Patches.PatchGenerationException.#ctor(System.Object,System.String)">
+            <summary>
+            Initializes a new instance of the <see cref="T:RedCow.Immutable.Patches.PatchGenerationException"/> class.
+            </summary>
+            <param name="draft">The draft that is patched.</param>
+            <param name="message">The message.</param>
+        </member>
+        <member name="T:RedCow.Immutable.Patches.PathExtensions">
+            <summary>
+            Extension methods for JSON Paths.
+            </summary>
+        </member>
+        <!-- Badly formed XML comment ignored for member "M:RedCow.Immutable.Patches.PathExtensions.PathJoin(System.String,System.String)" -->
         <member name="T:RedCow.Immutable.ProxyTypeAttribute">
             <summary>
             Proxy type attribute. Indicates which class is the proxy type for this type.
@@ -1001,29 +1031,20 @@
             Gets the immutable reference types that are allowed as Properties.
             </summary>
         </member>
-        <member name="T:RedCow.Patches.PatchException">
+        <member name="T:RedCow.IPropertyAccessors">
             <summary>
-            An exception that occurs during patching.
+            Provides the public property accessors of a class.
             </summary>
         </member>
-        <member name="M:RedCow.Patches.PatchException.#ctor(System.Object,System.String)">
+        <member name="P:RedCow.IPropertyAccessors.PublicPropertyGetters">
             <summary>
-            Initializes a new instance of the <see cref="T:RedCow.Patches.PatchException"/> class.
-            </summary>
-            <param name="draft">The draft that is patched.</param>
-            <param name="message">The message.</param>
-        </member>
-        <member name="T:RedCow.Patches.PatchGenerationException">
-            <summary>
-            An exception that occurs during patch generation.
+            Gets the property getters.
             </summary>
         </member>
-        <member name="M:RedCow.Patches.PatchGenerationException.#ctor(System.Object,System.String)">
+        <member name="P:RedCow.IPropertyAccessors.PublicPropertySetters">
             <summary>
-            Initializes a new instance of the <see cref="T:RedCow.Patches.PatchGenerationException"/> class.
+            Gets the property setters.
             </summary>
-            <param name="draft">The draft that is patched.</param>
-            <param name="message">The message.</param>
         </member>
         <member name="T:RedCow.ProducerOptions">
             <summary>

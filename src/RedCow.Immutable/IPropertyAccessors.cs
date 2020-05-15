@@ -1,4 +1,4 @@
-﻿// <copyright file="PatchException.cs" company="Jan-Willem Spuij">
+﻿// <copyright file="IPropertyAccessors.cs" company="Jan-Willem Spuij">
 // Copyright 2020 Jan-Willem Spuij
 //
 // Permission is hereby granted, free of charge, to any person obtaining a copy of this software and associated documentation
@@ -14,25 +14,26 @@
 // ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 // </copyright>
 
-namespace RedCow.Immutable.Patches
+namespace RedCow
 {
     using System;
     using System.Collections.Generic;
+    using System.Reflection;
     using System.Text;
 
     /// <summary>
-    /// An exception that occurs during patching.
+    /// Provides the public property accessors of a class.
     /// </summary>
-    public class PatchException : DraftException
+    public interface IPropertyAccessors
     {
         /// <summary>
-        /// Initializes a new instance of the <see cref="PatchException"/> class.
+        /// Gets the property getters.
         /// </summary>
-        /// <param name="draft">The draft that is patched.</param>
-        /// <param name="message">The message.</param>
-        public PatchException(object draft, string message)
-            : base(draft, message)
-        {
-        }
+        public IReadOnlyDictionary<string, Func<object>> PublicPropertyGetters { get; }
+
+        /// <summary>
+        /// Gets the property setters.
+        /// </summary>
+        public IReadOnlyDictionary<string, Action<object>> PublicPropertySetters { get; }
     }
 }

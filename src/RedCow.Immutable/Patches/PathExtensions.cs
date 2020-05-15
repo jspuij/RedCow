@@ -1,4 +1,4 @@
-﻿// <copyright file="PatchException.cs" company="Jan-Willem Spuij">
+﻿// <copyright file="PathExtensions.cs" company="Jan-Willem Spuij">
 // Copyright 2020 Jan-Willem Spuij
 //
 // Permission is hereby granted, free of charge, to any person obtaining a copy of this software and associated documentation
@@ -21,18 +21,19 @@ namespace RedCow.Immutable.Patches
     using System.Text;
 
     /// <summary>
-    /// An exception that occurs during patching.
+    /// Extension methods for JSON Paths.
     /// </summary>
-    public class PatchException : DraftException
+    public static class PathExtensions
     {
         /// <summary>
-        /// Initializes a new instance of the <see cref="PatchException"/> class.
+        /// Joins two paths together with the slash as separator.
         /// </summary>
-        /// <param name="draft">The draft that is patched.</param>
-        /// <param name="message">The message.</param>
-        public PatchException(object draft, string message)
-            : base(draft, message)
+        /// <param name="basePath">The base path.</param>
+        /// <param name="subPath">The sub path.</param>
+        /// <returns>The joined path.</returns>
+        public static string PathJoin(this string basePath, string subPath)
         {
+            return $"{basePath.TrimEnd('/')}/{subPath.Trim('/')}";
         }
     }
 }

@@ -18,9 +18,9 @@ namespace RedCow.Immutable.Patches
 {
     using System;
     using System.Collections.Generic;
+    using System.IO;
     using System.Text;
     using Microsoft.AspNetCore.JsonPatch;
-    using RedCow.Patches;
 
     /// <summary>
     /// Generates JSON Patches and inverse Patches for the differences between two objects.
@@ -62,8 +62,54 @@ namespace RedCow.Immutable.Patches
                 throw new PatchGenerationException(draft, "The draft has no draft state.");
             }
 
-            object destination = draft;
+            // nothing to do.
+            if (!draft.DraftState.Changed)
+            {
+                return;
+            }
+
             object source = draft.DraftState.GetOriginal<object>();
+
+            if (source is null)
+            {
+                throw new PatchGenerationException(draft, "The draft has no original state.");
+            }
+
+            if (!(draft is IPropertyAccessors draftProperties))
+            {
+                throw new PatchGenerationException(draft, "The draft has no propertyinfo.");
+            }
+
+            if (!(source is IPropertyAccessors sourceProperties))
+            {
+                throw new PatchGenerationException(draft, "The source has no propertyinfo.");
+            }
+
+            foreach (string propertyName in draftProperties.PublicPropertyGetters.Keys)
+            {
+                object? oldValue = sourceProperties.PublicPropertyGetters[propertyName]();
+                object? newValue = draftProperties.PublicPropertyGetters[propertyName]();
+
+                if (Equals(oldValue, newValue))
+                {
+                    continue;
+                }
+                else if (oldValue == null && newValue != null)
+                {
+                    patches.Add(basePath.PathJoin(propertyName), newValue);
+                    inversePatches.Remove(basePath.PathJoin(propertyName));
+                }
+                else if (oldValue == null && newValue != null)
+                {
+                    patches.Remove(basePath.PathJoin(propertyName));
+                    inversePatches.Add(basePath.PathJoin(propertyName), oldValue);
+                }
+                else
+                {
+                    patches.Replace(basePath.PathJoin(propertyName), newValue);
+                    inversePatches.Replace(basePath.PathJoin(propertyName), oldValue);
+                }
+            }
         }
     }
 }

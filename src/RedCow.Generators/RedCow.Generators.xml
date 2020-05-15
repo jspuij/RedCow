@@ -145,15 +145,27 @@
             </summary>
             <returns>The property declaration.</returns>
         </member>
-        <member name="M:RedCow.Generators.MutableClassGenerator.GenerateStaticPropertyMemberInfo(System.Collections.Generic.IEnumerable{Microsoft.CodeAnalysis.IPropertySymbol})">
+        <member name="M:RedCow.Generators.MutableClassGenerator.GenerateStaticPropertyAccessorsGetters(System.Collections.Generic.IEnumerable{Microsoft.CodeAnalysis.IPropertySymbol})">
             <summary>
-            Generates a Static PropertyMemberInfoField.
+            Generates PublicPropertyGetters.
             </summary>
             <returns>A memeber declaration syntax.</returns>
         </member>
-        <member name="M:RedCow.Generators.MutableClassGenerator.GenerateStaticPropertyMemberInfoField">
+        <member name="M:RedCow.Generators.MutableClassGenerator.GenerateStaticPropertyAccessorsGettersField">
             <summary>
-            Generates a Static PropertyMemberInfoField.
+            Generates a Static PublicPropertyGetters field.
+            </summary>
+            <returns>A memeber declaration syntax.</returns>
+        </member>
+        <member name="M:RedCow.Generators.MutableClassGenerator.GenerateStaticPropertyAccessorsSetters(CodeGeneration.Roslyn.TransformationContext,System.Collections.Generic.IEnumerable{Microsoft.CodeAnalysis.IPropertySymbol})">
+            <summary>
+            Generates PublicPropertySetters.
+            </summary>
+            <returns>A memeber declaration syntax.</returns>
+        </member>
+        <member name="M:RedCow.Generators.MutableClassGenerator.GenerateStaticPropertyAccessorsSettersField">
+            <summary>
+            Generates a Static PublicPropertySetters field.
             </summary>
             <returns>A memeber declaration syntax.</returns>
         </member>

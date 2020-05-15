@@ -14,7 +14,7 @@
 // ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 // </copyright>
 
-namespace RedCow.Patches
+namespace RedCow.Immutable.Patches
 {
     using System;
     using System.Collections.Generic;
