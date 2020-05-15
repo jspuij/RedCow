@@ -329,7 +329,7 @@ namespace RedCow.Generators
                     {{
                         if (publicPropertyGetters == null)
                         {{
-                            publicPropertyGetters = new ProxyDictionary<string, Func<object>>
+                            publicPropertyGetters = new Dictionary<string, Func<object>>
                             {{";
 
             var builder = new StringBuilder(property);
@@ -341,7 +341,6 @@ namespace RedCow.Generators
 
             builder.AppendLine($@"
                             }};
-                            ((ILockable)publicPropertyGetters).Lock();
                         }}
 
                         return publicPropertyGetters;
@@ -363,7 +362,7 @@ namespace RedCow.Generators
                 /// <summary>
                 /// Dictionary with public property getters.
                 /// </summary>
-                private static IReadOnlyDictionary<string, Func<object>> publicPropertyGetters;
+                private IReadOnlyDictionary<string, Func<object>> publicPropertyGetters;
             ";
 
             return ParseMemberDeclaration(field)
@@ -386,7 +385,7 @@ namespace RedCow.Generators
                     {{
                         if (publicPropertySetters == null)
                         {{
-                            publicPropertySetters = new ProxyDictionary<string, Action<object>>
+                            publicPropertySetters = new Dictionary<string, Action<object>>
                             {{";
 
             var builder = new StringBuilder(property);
@@ -399,7 +398,6 @@ namespace RedCow.Generators
 
             builder.AppendLine($@"
                             }};
-                            ((ILockable)publicPropertySetters).Lock();
                         }}
 
                         return publicPropertySetters;
@@ -421,7 +419,7 @@ namespace RedCow.Generators
                 /// <summary>
                 /// Dictionary with public property setters.
                 /// </summary>
-                private static IReadOnlyDictionary<string, Action<object>> publicPropertySetters;
+                private IReadOnlyDictionary<string, Action<object>> publicPropertySetters;
             ";
 
             return ParseMemberDeclaration(field)

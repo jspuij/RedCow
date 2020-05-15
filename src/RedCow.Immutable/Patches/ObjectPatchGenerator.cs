@@ -85,6 +85,8 @@ namespace RedCow.Immutable.Patches
                 throw new PatchGenerationException(draft, "The source has no propertyinfo.");
             }
 
+            var innerInversePatches = new JsonPatchDocument(new List<Microsoft.AspNetCore.JsonPatch.Operations.Operation>(), inversePatches.ContractResolver);
+
             foreach (string propertyName in draftProperties.PublicPropertyGetters.Keys)
             {
                 object? oldValue = sourceProperties.PublicPropertyGetters[propertyName]();
@@ -97,19 +99,23 @@ namespace RedCow.Immutable.Patches
                 else if (oldValue == null && newValue != null)
                 {
                     patches.Add(basePath.PathJoin(propertyName), newValue);
-                    inversePatches.Remove(basePath.PathJoin(propertyName));
+                    innerInversePatches.Remove(basePath.PathJoin(propertyName));
                 }
-                else if (oldValue == null && newValue != null)
+                else if (oldValue != null && newValue == null)
                 {
                     patches.Remove(basePath.PathJoin(propertyName));
-                    inversePatches.Add(basePath.PathJoin(propertyName), oldValue);
+                    innerInversePatches.Add(basePath.PathJoin(propertyName), oldValue);
                 }
                 else
                 {
                     patches.Replace(basePath.PathJoin(propertyName), newValue);
-                    inversePatches.Replace(basePath.PathJoin(propertyName), oldValue);
+                    innerInversePatches.Replace(basePath.PathJoin(propertyName), oldValue);
                 }
             }
+
+            // inverse order of inverse patches.
+            innerInversePatches.Operations.Reverse();
+            inversePatches.Operations.AddRange(innerInversePatches.Operations);
         }
     }
 }

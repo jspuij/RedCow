@@ -904,7 +904,14 @@
             Extension methods for JSON Paths.
             </summary>
         </member>
-        <!-- Badly formed XML comment ignored for member "M:RedCow.Immutable.Patches.PathExtensions.PathJoin(System.String,System.String)" -->
+        <member name="M:RedCow.Immutable.Patches.PathExtensions.PathJoin(System.String,System.String)">
+            <summary>
+            Joins two paths together with the slash as separator.
+            </summary>
+            <param name="basePath">The base path.</param>
+            <param name="subPath">The sub path.</param>
+            <returns>The joined path.</returns>
+        </member>
         <member name="T:RedCow.Immutable.ProxyTypeAttribute">
             <summary>
             Proxy type attribute. Indicates which class is the proxy type for this type.
