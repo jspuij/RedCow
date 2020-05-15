@@ -488,7 +488,8 @@ namespace RedCow.Test
                         car = c;
                         throw new InvalidOperationException("Cars cannot be changed.");
                     });
-                } catch (InvalidOperationException)
+                }
+                catch (InvalidOperationException)
                 {
                     // car is revoked as it was inside the nested produce.
                     Assert.Throws<DraftRevokedException>(() => car!.Make);
