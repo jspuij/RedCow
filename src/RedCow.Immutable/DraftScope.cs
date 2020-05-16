@@ -71,9 +71,16 @@ namespace RedCow.Immutable
         {
             foreach (var iDraft in this.drafts)
             {
+                // this is a final locked draft, part of the new tree, it's draft state can be removed.
+                if (iDraft is ILockable lockable && lockable.Locked)
+                {
+                    iDraft.DraftState = null;
+                }
+
+                // remaining drafts can be set to revoked.
                 iDraft.DraftState?.Revoke();
 
-                if (iDraft is IDisposable disposable)
+                if (iDraft is IDisposable disposable && (iDraft.DraftState?.Revoked ?? false))
                 {
                     disposable.Dispose();
                 }
@@ -232,11 +239,8 @@ namespace RedCow.Immutable
                         }
                     }
 
-                    if (idraft.DraftState!.Changed)
-                    {
-                        idraft.DraftState = null;
-                    }
-                    else
+                    // not changed, return the original.
+                    if (!idraft.DraftState!.Changed)
                     {
                         draft = idraft.DraftState.GetOriginal<object?>();
                     }

@@ -33,7 +33,14 @@ namespace RedCow.Immutable.Patches
         /// <returns>The joined path.</returns>
         public static string PathJoin(this string basePath, string subPath)
         {
-            return $"/{basePath.Trim('/')}/{subPath.Trim('/')}";
+            basePath = basePath.Trim('/');
+
+            if (string.IsNullOrWhiteSpace(basePath))
+            {
+                return $"/{subPath.Trim('/')}";
+            }
+
+            return $"/{basePath}/{subPath.Trim('/')}";
         }
     }
 }

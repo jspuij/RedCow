@@ -43,7 +43,7 @@ namespace RedCow.Patches
                 throw new ArgumentNullException(nameof(draft));
             }
 
-            basePath = $"/{(basePath ?? string.Empty).Trim()}";
+            basePath = $"/{(basePath ?? string.Empty).Trim('/')}";
 
             if (patches is null)
             {

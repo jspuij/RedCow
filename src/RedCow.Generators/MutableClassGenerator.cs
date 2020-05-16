@@ -740,7 +740,7 @@ namespace RedCow.Generators
                             throw new DraftException(this, ""Draft state already set."");
                         }}
 
-                        if (((ILockable)this).Locked)
+                        if (((ILockable)this).Locked && value != null)
                         {{
                             throw new ImmutableException(this, ""This instance is immutable and cannot be assigned a new Draft state."");
                         }}

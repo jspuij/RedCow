@@ -97,7 +97,7 @@ namespace RedCow.Immutable.Collections
                     throw new DraftException(this, "Draft state already set.");
                 }
 
-                if (this.Locked)
+                if (this.Locked && value != null)
                 {
                     throw new ImmutableException(this, "This instance is immutable and cannot be assigned a new Draft state.");
                 }

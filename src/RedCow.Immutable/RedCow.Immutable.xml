@@ -1053,6 +1053,36 @@
             Gets the property setters.
             </summary>
         </member>
+        <member name="T:RedCow.Patches.PatchCollectionGenerator">
+            <summary>
+            Generates patches for a collection.
+            </summary>
+        </member>
+        <member name="M:RedCow.Patches.PatchCollectionGenerator.Generate(RedCow.Immutable.IDraft,System.String,Microsoft.AspNetCore.JsonPatch.JsonPatchDocument,Microsoft.AspNetCore.JsonPatch.JsonPatchDocument)">
+            <summary>
+            Generates JSON Patches for a draft for changes and inverse changes and
+            adds them to the specified JsonPatchDocuments.
+            </summary>
+            <param name="draft">The draft to process.</param>
+            <param name="basePath">The base path for the patches.</param>
+            <param name="patches">The patches.</param>
+            <param name="inversePatches">The inverse patches.</param>
+        </member>
+        <member name="T:RedCow.Patches.PatchGeneratorBase">
+            <summary>
+            Base class for Patch Generation.
+            </summary>
+        </member>
+        <member name="M:RedCow.Patches.PatchGeneratorBase.CheckArgumentsAndNormalizePath(RedCow.Immutable.IDraft,System.String,Microsoft.AspNetCore.JsonPatch.JsonPatchDocument,Microsoft.AspNetCore.JsonPatch.JsonPatchDocument)">
+            <summary>
+            Checks the arguments of the generator.
+            </summary>
+            <param name="draft">The draft.</param>
+            <param name="basePath">The base path.</param>
+            <param name="patches">The patches collection to add to.</param>
+            <param name="inversePatches">The inverse patches to add to.</param>
+            <returns>The adjusted base path.</returns>
+        </member>
         <member name="T:RedCow.ProducerOptions">
             <summary>
             The producer options to use.
