@@ -180,7 +180,7 @@ namespace RedCow.Immutable
                     {
                         if (draft is IDictionary dictionary)
                         {
-                            var updates = new List<Action>();
+                            var revertOperations = new List<Action>();
                             foreach (DictionaryEntry entry in dictionary)
                             {
                                 if (InternalIsDraft(entry.Value) && this.drafts.Contains(entry.Value))
@@ -196,14 +196,14 @@ namespace RedCow.Immutable
                                     // draft reverted to original.
                                     else
                                     {
-                                        updates.Add(() => dictionary[entry.Key] = immutable);
+                                        revertOperations.Add(() => dictionary[entry.Key] = immutable);
                                     }
                                 }
                             }
 
-                            foreach (var update in updates)
+                            foreach (var revert in revertOperations)
                             {
-                                update();
+                                revert();
                             }
                         }
                         else if (draft is IList list)

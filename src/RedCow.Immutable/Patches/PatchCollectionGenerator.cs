@@ -1,4 +1,4 @@
-﻿// <copyright file="PathExtensions.cs" company="Jan-Willem Spuij">
+﻿// <copyright file="PatchCollectionGenerator.cs" company="Jan-Willem Spuij">
 // Copyright 2020 Jan-Willem Spuij
 //
 // Permission is hereby granted, free of charge, to any person obtaining a copy of this software and associated documentation
@@ -14,26 +14,31 @@
 // ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 // </copyright>
 
-namespace RedCow.Immutable.Patches
+namespace RedCow.Patches
 {
     using System;
     using System.Collections.Generic;
     using System.Text;
+    using Microsoft.AspNetCore.JsonPatch;
+    using RedCow.Immutable;
+    using RedCow.Immutable.Patches;
 
     /// <summary>
-    /// Extension methods for JSON Paths.
+    /// Generates patches for a collection.
     /// </summary>
-    public static class PathExtensions
+    public class PatchCollectionGenerator : PatchGeneratorBase, IPatchGenerator
     {
-        /// <summary>
-        /// Joins two paths together with the slash as separator.
+         /// <summary>
+        /// Generates JSON Patches for a draft for changes and inverse changes and
+        /// adds them to the specified JsonPatchDocuments.
         /// </summary>
-        /// <param name="basePath">The base path.</param>
-        /// <param name="subPath">The sub path.</param>
-        /// <returns>The joined path.</returns>
-        public static string PathJoin(this string basePath, string subPath)
+        /// <param name="draft">The draft to process.</param>
+        /// <param name="basePath">The base path for the patches.</param>
+        /// <param name="patches">The patches.</param>
+        /// <param name="inversePatches">The inverse patches.</param>
+        public void Generate(IDraft draft, string basePath, JsonPatchDocument patches, JsonPatchDocument inversePatches)
         {
-            return $"/{basePath.Trim('/')}/{subPath.Trim('/')}";
+            basePath = CheckArgumentsAndNormalizePath(draft, basePath, patches, inversePatches);
         }
     }
 }

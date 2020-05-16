@@ -21,11 +21,12 @@ namespace RedCow.Immutable.Patches
     using System.IO;
     using System.Text;
     using Microsoft.AspNetCore.JsonPatch;
+    using RedCow.Patches;
 
     /// <summary>
     /// Generates JSON Patches and inverse Patches for the differences between two objects.
     /// </summary>
-    public class ObjectPatchGenerator : IPatchGenerator
+    public class ObjectPatchGenerator : PatchGeneratorBase, IPatchGenerator
     {
         /// <summary>
         /// Generates JSON Patches for a draft for changes and inverse changes and
@@ -37,33 +38,10 @@ namespace RedCow.Immutable.Patches
         /// <param name="inversePatches">The inverse patches.</param>
         public void Generate(IDraft draft, string? basePath, JsonPatchDocument patches, JsonPatchDocument inversePatches)
         {
-            if (draft is null)
-            {
-                throw new ArgumentNullException(nameof(draft));
-            }
-
-            if (basePath is null)
-            {
-                basePath = string.Empty;
-            }
-
-            if (patches is null)
-            {
-                throw new ArgumentNullException(nameof(patches));
-            }
-
-            if (inversePatches is null)
-            {
-                throw new ArgumentNullException(nameof(inversePatches));
-            }
-
-            if (draft.DraftState == null)
-            {
-                throw new PatchGenerationException(draft, "The draft has no draft state.");
-            }
+            basePath = CheckArgumentsAndNormalizePath(draft, basePath, patches, inversePatches);
 
             // nothing to do.
-            if (!draft.DraftState.Changed)
+            if (!draft.DraftState!.Changed)
             {
                 return;
             }
@@ -92,7 +70,7 @@ namespace RedCow.Immutable.Patches
                 object? oldValue = sourceProperties.PublicPropertyGetters[propertyName]();
                 object? newValue = draftProperties.PublicPropertyGetters[propertyName]();
 
-                if (Equals(oldValue, newValue))
+                if (Equals(oldValue, newValue) || (newValue is IDraft newDraft && Equals(oldValue, newDraft.DraftState!.GetOriginal<object>())))
                 {
                     continue;
                 }
