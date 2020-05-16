@@ -63,37 +63,35 @@ namespace RedCow.Immutable.Patches
                 throw new PatchGenerationException(draft, "The source has no propertyinfo.");
             }
 
-            var innerInversePatches = new JsonPatchDocument(new List<Microsoft.AspNetCore.JsonPatch.Operations.Operation>(), inversePatches.ContractResolver);
-
             foreach (string propertyName in draftProperties.PublicPropertyGetters.Keys)
             {
                 object? oldValue = sourceProperties.PublicPropertyGetters[propertyName]();
                 object? newValue = draftProperties.PublicPropertyGetters[propertyName]();
 
-                if (Equals(oldValue, newValue) || (newValue is IDraft newDraft && Equals(oldValue, newDraft.DraftState!.GetOriginal<object>())))
+                // if the newValue is a draft and points to the same original, it's actually the same object in
+                // a mutable sense and the patches will reflect that. Otherwise we would end up with very large patches
+                // of the entire tree.
+                if (Equals(oldValue, newValue) ||
+                    (newValue is IDraft newDraft && Equals(oldValue, newDraft.DraftState!.GetOriginal<object>())))
                 {
                     continue;
                 }
                 else if (oldValue == null && newValue != null)
                 {
                     patches.Add(basePath.PathJoin(propertyName), newValue);
-                    innerInversePatches.Remove(basePath.PathJoin(propertyName));
+                    inversePatches.Remove(basePath.PathJoin(propertyName));
                 }
                 else if (oldValue != null && newValue == null)
                 {
                     patches.Remove(basePath.PathJoin(propertyName));
-                    innerInversePatches.Add(basePath.PathJoin(propertyName), oldValue);
+                    inversePatches.Add(basePath.PathJoin(propertyName), oldValue);
                 }
                 else
                 {
                     patches.Replace(basePath.PathJoin(propertyName), newValue);
-                    innerInversePatches.Replace(basePath.PathJoin(propertyName), oldValue);
+                    inversePatches.Replace(basePath.PathJoin(propertyName), oldValue);
                 }
             }
-
-            // inverse order of inverse patches.
-            innerInversePatches.Operations.Reverse();
-            inversePatches.Operations.AddRange(innerInversePatches.Operations);
         }
     }
 }

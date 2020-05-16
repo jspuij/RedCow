@@ -61,6 +61,9 @@ namespace RedCow.Test.Patches
 
             patchGenerator.Generate((IDraft)draft, "/", patches, inversePatches);
 
+            // inverse order of inverse patches.
+            inversePatches.Operations.Reverse();
+
             this.AssertJsonEqual(
             @"
             [
@@ -138,6 +141,9 @@ namespace RedCow.Test.Patches
 
             patchGenerator.Generate((IDraft)draft, "/", patches, inversePatches);
 
+            // inverse order of inverse patches.
+            inversePatches.Operations.Reverse();
+
             var final = scope.FinishDraft<TestPerson, ITestPerson>(draft);
 
             var result = ITestPerson.Produce(initial, p =>
@@ -179,6 +185,9 @@ namespace RedCow.Test.Patches
             var inversePatches = new JsonPatchDocument();
 
             patchGenerator.Generate((IDraft)draft, "/", patches, inversePatches);
+
+            // inverse order of inverse patches.
+            inversePatches.Operations.Reverse();
 
             var final = scope.FinishDraft<TestPerson, ITestPerson>(draft);
 
