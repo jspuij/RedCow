@@ -55,12 +55,12 @@ namespace RedCow.Immutable.Patches
 
             if (!(draft is IPropertyAccessors draftProperties))
             {
-                throw new PatchGenerationException(draft, "The draft has no propertyinfo.");
+                throw new PatchGenerationException(draft, "The draft has no property accessors.");
             }
 
             if (!(source is IPropertyAccessors sourceProperties))
             {
-                throw new PatchGenerationException(draft, "The source has no propertyinfo.");
+                throw new PatchGenerationException(draft, "The source has no property accessors.");
             }
 
             foreach (string propertyName in draftProperties.PublicPropertyGetters.Keys)
