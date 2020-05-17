@@ -847,6 +847,16 @@
             Tests the generation of a trivial removal patch.
             </summary>
         </member>
+        <member name="T:RedCow.Test.Patches.DynamicLargestCommonSubsequenceTests">
+            <summary>
+            Unit tests for the <see cref="T:RedCow.Immutable.Patches.DynamicLargestCommonSubsequence"/> class.
+            </summary>
+        </member>
+        <member name="M:RedCow.Test.Patches.DynamicLargestCommonSubsequenceTests.LargestCommonSubsequenceTest">
+            <summary>
+            Calculates the LCS for two sequences.
+            </summary>
+        </member>
         <member name="T:RedCow.Test.Patches.JsonAssert">
             <summary>
             Asserts for JSon objects.

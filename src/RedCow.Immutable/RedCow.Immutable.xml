@@ -860,6 +860,58 @@
             <param name="patches">The patches.</param>
             <param name="inversePatches">The inverse patches.</param>
         </member>
+        <member name="T:RedCow.Immutable.Patches.DynamicLargestCommonSubsequence">
+            <summary>
+            Implementation of standard dynamic programming solution for the
+            Largest Common Subsequence problem for two sequences.
+            </summary>
+        </member>
+        <member name="M:RedCow.Immutable.Patches.DynamicLargestCommonSubsequence.Get``1(System.ReadOnlySpan{``0},System.ReadOnlySpan{``0},System.Func{``0,``0,System.Boolean})">
+            <summary>
+            Gets the longest common subsequence in the elements from two spans.
+            </summary>
+            <typeparam name="T">The type of the elements.</typeparam>
+            <param name="left">The left span. </param>
+            <param name="right">The right span.</param>
+            <param name="equalityComparer">The equality comparison function.</param>
+            <returns>The longest common subsequence.</returns>
+        </member>
+        <member name="M:RedCow.Immutable.Patches.DynamicLargestCommonSubsequence.TraceBack``1(System.Int32[0:,0:],System.ReadOnlySpan{``0},System.ReadOnlySpan{``0},System.Func{``0,``0,System.Boolean})">
+            <summary>
+            Trace back through the matrix to find the Longest Common Subsequence.
+            </summary>
+            <typeparam name="T">The type of the elements.</typeparam>
+            <param name="matrix">The matrix.</param>
+            <param name="left">The left span.</param>
+            <param name="right">The right span.</param>
+            <param name="equalityComparer">The equality comparison function.</param>
+            <returns>The Longest Common Subsequence.</returns>
+        </member>
+        <member name="M:RedCow.Immutable.Patches.DynamicLargestCommonSubsequence.CreateLcsMatrix``1(System.ReadOnlySpan{``0},System.ReadOnlySpan{``0},System.Func{``0,``0,System.Boolean})">
+            <summary>
+            Creates the Lcs Matrix to backtrack through.
+            </summary>
+            <typeparam name="T">The type of the elements.</typeparam>
+            <param name="left">The left span. </param>
+            <param name="right">The right span.</param>
+            <param name="equalityComparer">The equality comparison function.</param>
+            <returns>The matrix with the sequence length at the index positions.</returns>
+        </member>
+        <member name="T:RedCow.Immutable.Patches.ILongestCommonSubsequence">
+            <summary>
+            Interface for an algorithm that implements longest common subsequence.
+            </summary>
+        </member>
+        <member name="M:RedCow.Immutable.Patches.ILongestCommonSubsequence.Get``1(System.ReadOnlySpan{``0},System.ReadOnlySpan{``0},System.Func{``0,``0,System.Boolean})">
+            <summary>
+            Gets the longest common subsequence in the elements from two spans.
+            </summary>
+            <typeparam name="T">The type of the elements.</typeparam>
+            <param name="left">The left span. </param>
+            <param name="right">The right span.</param>
+            <param name="equalityComparer">The equality comparison function.</param>
+            <returns>The longest common subsequence.</returns>
+        </member>
         <member name="T:RedCow.Immutable.Patches.IPatchGenerator">
             <summary>
             Interface for generating patches.
