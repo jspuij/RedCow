@@ -678,6 +678,8 @@ namespace RedCow.Generators
                 /// <summary>
                 /// Gets the original.
                 /// </summary>
+                [System.Text.Json.Serialization.JsonIgnore]
+                [Newtonsoft.Json.JsonIgnore]
                 public {sourceClassDeclaration.Identifier} Original => this.draftState.GetOriginal<{sourceClassDeclaration.Identifier}>();
             ";
 
@@ -695,6 +697,8 @@ namespace RedCow.Generators
                 /// <summary>
                 /// Gets the original as Immutable.
                 /// </summary>
+                [System.Text.Json.Serialization.JsonIgnore]
+                [Newtonsoft.Json.JsonIgnore]
                 public {this.interfaceType.Name} ImmutableOriginal => this.draftState.GetOriginal<{this.interfaceType.Name}>();
             ";
 

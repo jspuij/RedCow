@@ -1,4 +1,4 @@
-﻿// <copyright file="PatchCollectionGenerator.cs" company="Jan-Willem Spuij">
+﻿// <copyright file="JsonAssert.cs" company="Jan-Willem Spuij">
 // Copyright 2020 Jan-Willem Spuij
 //
 // Permission is hereby granted, free of charge, to any person obtaining a copy of this software and associated documentation
@@ -14,31 +14,30 @@
 // ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 // </copyright>
 
-namespace RedCow.Patches
+namespace RedCow.Test.Patches
 {
     using System;
     using System.Collections.Generic;
     using System.Text;
-    using Microsoft.AspNetCore.JsonPatch;
-    using RedCow.Immutable;
-    using RedCow.Immutable.Patches;
+    using Newtonsoft.Json.Linq;
+    using Xunit;
 
     /// <summary>
-    /// Generates patches for a collection.
+    /// Asserts for JSon objects.
     /// </summary>
-    public class PatchCollectionGenerator : PatchGeneratorBase, IPatchGenerator
+    public static class JsonAssert
     {
-         /// <summary>
-        /// Generates JSON Patches for a draft for changes and inverse changes and
-        /// adds them to the specified JsonPatchDocuments.
+        /// <summary>
+        /// Asserts that two JSon strings are equal.
         /// </summary>
-        /// <param name="draft">The draft to process.</param>
-        /// <param name="basePath">The base path for the patches.</param>
-        /// <param name="patches">The patches.</param>
-        /// <param name="inversePatches">The inverse patches.</param>
-        public void Generate(IDraft draft, string basePath, JsonPatchDocument patches, JsonPatchDocument inversePatches)
+        /// <param name="expected">The expected JSON.</param>
+        /// <param name="actual">The actual JSon.</param>
+        public static void Equal(string expected, string actual)
         {
-            basePath = CheckArgumentsAndNormalizePath(draft, basePath, patches, inversePatches);
+            var expectedJObject = JToken.Parse(expected);
+            var actualJObject = JToken.Parse(actual);
+
+            Assert.True(JToken.DeepEquals(expectedJObject, actualJObject), $"JSON expected: {expected} != actual: {actual}");
         }
     }
 }

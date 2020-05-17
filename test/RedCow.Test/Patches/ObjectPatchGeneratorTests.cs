@@ -64,7 +64,7 @@ namespace RedCow.Test.Patches
             // inverse order of inverse patches.
             inversePatches.Operations.Reverse();
 
-            this.AssertJsonEqual(
+            JsonAssert.Equal(
             @"
             [
               {
@@ -91,7 +91,7 @@ namespace RedCow.Test.Patches
             ]
             ", JsonConvert.SerializeObject(patches));
 
-            this.AssertJsonEqual(
+            JsonAssert.Equal(
             @"
             [
               {
@@ -199,19 +199,6 @@ namespace RedCow.Test.Patches
             Assert.Equal(initial.FirstName, result.FirstName);
             Assert.Equal(initial.LastName, result.LastName);
             Assert.Equal(initial.FirstChild, result.FirstChild);
-        }
-
-        /// <summary>
-        /// Asserts that two JSon strings are equal.
-        /// </summary>
-        /// <param name="expected">The expected JSON.</param>
-        /// <param name="actual">The actual JSon.</param>
-        private void AssertJsonEqual(string expected, string actual)
-        {
-            var expectedJObject = JToken.Parse(expected);
-            var actualJObject = JToken.Parse(actual);
-
-            Assert.True(JToken.DeepEquals(expectedJObject, actualJObject), $"JSON expected: {expected} != actual: {actual}");
         }
     }
 }

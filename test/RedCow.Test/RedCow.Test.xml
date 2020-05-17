@@ -827,6 +827,38 @@
             Test using nested producers with a rollback in the middle.
             </summary>
         </member>
+        <member name="T:RedCow.Test.Patches.CollectionPatchGeneratorTests">
+            <summary>
+            Unit tests for the <see cref="T:RedCow.Immutable.Patches.CollectionPatchGenerator"/> class.
+            </summary>
+        </member>
+        <member name="M:RedCow.Test.Patches.CollectionPatchGeneratorTests.GenerateTrivialCollectionAdditionPatch">
+            <summary>
+            Tests the generation of a trivial addition patch.
+            </summary>
+        </member>
+        <member name="M:RedCow.Test.Patches.CollectionPatchGeneratorTests.GenerateTrivialCollectionInsertionPatch">
+            <summary>
+            Tests the generation of a trivial addition patch.
+            </summary>
+        </member>
+        <member name="M:RedCow.Test.Patches.CollectionPatchGeneratorTests.GenerateTrivialCollectionRemovalPatch">
+            <summary>
+            Tests the generation of a trivial removal patch.
+            </summary>
+        </member>
+        <member name="T:RedCow.Test.Patches.JsonAssert">
+            <summary>
+            Asserts for JSon objects.
+            </summary>
+        </member>
+        <member name="M:RedCow.Test.Patches.JsonAssert.Equal(System.String,System.String)">
+            <summary>
+            Asserts that two JSon strings are equal.
+            </summary>
+            <param name="expected">The expected JSON.</param>
+            <param name="actual">The actual JSon.</param>
+        </member>
         <member name="T:RedCow.Test.Patches.ObjectPatchGeneratorTests">
             <summary>
             Unit tests for the <see cref="T:RedCow.Immutable.Patches.ObjectPatchGenerator"/> class.
@@ -846,13 +878,6 @@
             <summary>
             Tests the generation and application of an object patch.
             </summary>
-        </member>
-        <member name="M:RedCow.Test.Patches.ObjectPatchGeneratorTests.AssertJsonEqual(System.String,System.String)">
-            <summary>
-            Asserts that two JSon strings are equal.
-            </summary>
-            <param name="expected">The expected JSON.</param>
-            <param name="actual">The actual JSon.</param>
         </member>
         <member name="T:RedCow.Test.PhoneBook">
             <summary>

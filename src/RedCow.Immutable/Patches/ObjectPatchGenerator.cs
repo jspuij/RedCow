@@ -21,7 +21,6 @@ namespace RedCow.Immutable.Patches
     using System.IO;
     using System.Text;
     using Microsoft.AspNetCore.JsonPatch;
-    using RedCow.Patches;
 
     /// <summary>
     /// Generates JSON Patches and inverse Patches for the differences between two objects.
