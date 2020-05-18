@@ -42,7 +42,7 @@ namespace RedCow.Test.Patches
 
             var expected = "BCDEFGKLMRSZ";
 
-            Assert.Equal(expected, result);
+            Assert.Equal(expected, result.Cast<char>());
         }
     }
 }

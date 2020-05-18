@@ -94,18 +94,6 @@ namespace RedCow.Immutable.Patches
                 commonTail++;
             }
 
-            if (commonHead + commonTail == sourceList.Count)
-            {
-                // Trivial case, a block (one or more consecutive items) was added
-                for (int index = commonHead; index < draftList.Count - commonTail; ++index)
-                {
-                    patches.Add(basePath.PathJoin($"{(index < sourceList.Count ? index.ToString() : "-")}"), draftList[index]);
-                    inversePatches.Remove(basePath.PathJoin($"{index}"));
-                }
-
-                return;
-            }
-
             if (commonHead + commonTail == draftList.Count)
             {
                 // Trivial case, a block (one or more consecutive items) was removed
@@ -120,6 +108,19 @@ namespace RedCow.Immutable.Patches
                 return;
             }
 
+            if (commonHead + commonTail == sourceList.Count)
+            {
+                // Trivial case, a block (one or more consecutive items) was added
+                for (int index = commonHead; index < draftList.Count - commonTail; ++index)
+                {
+                    patches.Add(basePath.PathJoin($"{(index < sourceList.Count ? index.ToString() : "-")}"), draftList[index]);
+                    inversePatches.Remove(basePath.PathJoin($"{index}"));
+                }
+
+                return;
+            }
+
+            // complex case, use lcs to determine list operations.
             var lcs = this.longestCommonSubsequence.Get(
                 sourceList,
                 draftList,
@@ -128,6 +129,34 @@ namespace RedCow.Immutable.Patches
                 commonHead,
                 draftList.Count - commonTail - commonHead,
                 DraftOrOriginalEquals);
+
+            int lcsIndex = lcs.Length - 1;
+
+            for (int index = sourceList.Count - commonTail - 1; index >= commonHead; --index)
+            {
+                if (lcsIndex < 0 || !Equals(sourceList[index], lcs[lcsIndex]))
+                {
+                    patches.Remove(basePath.PathJoin($"{index}"));
+                    inversePatches.Add(basePath.PathJoin($"{(index < draftList.Count ? index.ToString() : "-")}"), sourceList[index]);
+                } else
+                {
+                    --lcsIndex;
+                }
+            }
+
+            lcsIndex = 0;
+
+            for (int index = commonHead; index < draftList.Count - commonTail; ++index)
+            {
+                if (lcsIndex >= lcs.Length || !DraftOrOriginalEquals(lcs[lcsIndex], draftList[index]))
+                {
+                    patches.Add(basePath.PathJoin($"{(index < lcs.Length ? index.ToString() : "-")}"), draftList[index]);
+                    inversePatches.Remove(basePath.PathJoin($"{index}"));
+                } else
+                {
+                    ++lcsIndex;
+                }
+            }
         }
     }
 }

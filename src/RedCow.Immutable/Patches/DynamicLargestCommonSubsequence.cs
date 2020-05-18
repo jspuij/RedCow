@@ -37,7 +37,7 @@ namespace RedCow.Immutable.Patches
         /// <param name="rightLength">The length for the right list. </param>
         /// <param name="equalityComparer">The equality comparison function.</param>
         /// <returns>The longest common subsequence.</returns>
-        public IEnumerable Get(IList left, IList right, int leftStart, int leftLength, int rightStart, int rightLength, Func<object, object, bool> equalityComparer)
+        public object[] Get(IList left, IList right, int leftStart, int leftLength, int rightStart, int rightLength, Func<object, object, bool> equalityComparer)
         {
             var matrix = CreateLcsMatrix(left, right, leftStart, leftLength, rightStart, rightLength, equalityComparer);
             return TraceBack(matrix, left, right, leftStart, leftLength, rightStart, rightLength, equalityComparer);
@@ -55,7 +55,7 @@ namespace RedCow.Immutable.Patches
         /// <param name="rightLength">The length for the right list. </param>
         /// <param name="equalityComparer">The equality comparison function.</param>
         /// <returns>The Longest Common Subsequence.</returns>
-        private static IEnumerable TraceBack(int[,] matrix, IList left, IList right, int leftStart, int leftLength, int rightStart, int rightLength, Func<object, object, bool> equalityComparer)
+        private static object[] TraceBack(int[,] matrix, IList left, IList right, int leftStart, int leftLength, int rightStart, int rightLength, Func<object, object, bool> equalityComparer)
         {
             var result = new object[matrix[leftLength, rightLength]];
 

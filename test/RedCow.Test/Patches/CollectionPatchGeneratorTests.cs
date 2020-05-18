@@ -237,6 +237,11 @@ namespace RedCow.Test.Patches
                         Make = "Mercedes-Benz",
                         Model = "38/250 SSK",
                     },
+                    new Car()
+                    {
+                        Make = "Bugatti",
+                        Model = "Type 57 SC Atalante",
+                    },
                 },
             };
 
@@ -246,7 +251,8 @@ namespace RedCow.Test.Patches
             var patches = new JsonPatchDocument();
             var inversePatches = new JsonPatchDocument();
 
-            draft.Cars.RemoveAt(3);
+            draft.Cars.RemoveAt(2);
+            draft.Cars.RemoveAt(2);
             draft.Cars.RemoveAt(2);
 
             patchGenerator.Generate((IDraft)draft.Cars, "/Cars", patches, inversePatches);
@@ -257,6 +263,10 @@ namespace RedCow.Test.Patches
             JsonAssert.Equal(
             @"
             [
+              {
+                'path': '/Cars/4',
+                'op': 'remove'
+              },
               {
                 'path': '/Cars/3',
                 'op': 'remove'
@@ -284,6 +294,15 @@ namespace RedCow.Test.Patches
                 'value': {
                   'Make': 'Mercedes-Benz',
                   'Model': '38/250 SSK',
+                  'Crashed': false
+                },
+                'path': '/Cars/-',
+                'op': 'add'
+              },
+              {
+                'value': {
+                  'Make': 'Bugatti',
+                  'Model': 'Type 57 SC Atalante',
                   'Crashed': false
                 },
                 'path': '/Cars/-',
@@ -337,6 +356,11 @@ namespace RedCow.Test.Patches
 
             draft.Cars.RemoveAt(3);
             draft.Cars.RemoveAt(0);
+            draft.Cars.Add(new Car()
+            {
+                Make = "Bugatti",
+                Model = "Type 57 SC Atalante",
+            });
 
             patchGenerator.Generate((IDraft)draft.Cars, "/Cars", patches, inversePatches);
 
@@ -351,8 +375,17 @@ namespace RedCow.Test.Patches
                 'op': 'remove'
               },
               {
-                'path': '/Cars/2',
+                'path': '/Cars/0',
                 'op': 'remove'
+              },
+              {
+                'value': {
+                  'Make': 'Bugatti',
+                  'Model': 'Type 57 SC Atalante',
+                  'Crashed': false
+                },
+                'path': '/Cars/-',
+                'op': 'add'
               }
             ]
             ", JsonConvert.SerializeObject(patches));
@@ -361,12 +394,16 @@ namespace RedCow.Test.Patches
             @"
             [
               {
+                'path': '/Cars/2',
+                'op': 'remove'
+              },
+              {
                 'value': {
-                  'Make': 'Rolls Royce',
-                  'Model': '10 HP',
+                  'Make': 'Ferrari',
+                  'Model': '250 LM',
                   'Crashed': false
                 },
-                'path': '/Cars/-',
+                'path': '/Cars/0',
                 'op': 'add'
               },
               {
@@ -377,8 +414,7 @@ namespace RedCow.Test.Patches
                 },
                 'path': '/Cars/-',
                 'op': 'add'
-              }
-            ]
+              }            ]
             ", JsonConvert.SerializeObject(inversePatches));
         }
     }

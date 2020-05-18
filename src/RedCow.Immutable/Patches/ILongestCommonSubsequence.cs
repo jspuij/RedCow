@@ -36,6 +36,6 @@ namespace RedCow.Immutable.Patches
         /// <param name="rightLength">The length for the right list. </param>
         /// <param name="equalityComparer">The equality comparison function.</param>
         /// <returns>The longest common subsequence.</returns>
-        IEnumerable Get(IList left, IList right, int leftStart, int leftLength, int rightStart, int rightLength, Func<object, object, bool> equalityComparer);
+        object[] Get(IList left, IList right, int leftStart, int leftLength, int rightStart, int rightLength, Func<object, object, bool> equalityComparer);
     }
 }
