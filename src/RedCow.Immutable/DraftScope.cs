@@ -302,6 +302,8 @@ namespace RedCow.Immutable
                     lockable.Lock();
                 }
 
+                this.producerOptions.InversePatches?.Operations.Reverse();
+
                 return draft;
             }
             finally

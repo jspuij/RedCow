@@ -954,6 +954,16 @@
             Tests the generation and application of an object patch.
             </summary>
         </member>
+        <member name="T:RedCow.Test.PatchTests">
+            <summary>
+            Unit tests for patches.
+            </summary>
+        </member>
+        <member name="M:RedCow.Test.PatchTests.ProduceWithPatchesTest">
+            <summary>
+            Test using nested producers with patches.
+            </summary>
+        </member>
         <member name="T:RedCow.Test.PhoneBook">
             <summary>
             A phone book.
