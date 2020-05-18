@@ -118,6 +118,153 @@ namespace RedCow.Test.Patches
         }
 
         /// <summary>
+        /// Tests the generation of applying a trivial addition patch.
+        /// </summary>
+        [Fact]
+        public void ApplyTrivialCollectionAdditionPatch()
+        {
+            var patches = new JsonPatchDocument();
+            var inversePatches = new JsonPatchDocument();
+
+            var initial = new TestPerson()
+            {
+                FirstName = "John",
+                LastName = "Doe",
+                IsAdult = true,
+                Cars = new List<Car>()
+                {
+                    new Car
+                    {
+                        Make = "Ferrari",
+                        Model = "250 LM",
+                    },
+                    new Car
+                    {
+                        Make = "Shelby",
+                        Model = "Daytona Cobra Coupe",
+                    },
+                },
+            };
+
+            ITestPerson testPerson;
+
+            using (DraftScope scope = (DraftScope)DraftExtensions.CreateDraft(initial, out TestPerson draft))
+            {
+                draft.Cars.Add(new Car()
+                {
+                    Make = "Rolls Royce",
+                    Model = "10 HP",
+                });
+                draft.Cars.Add(new Car()
+                {
+                    Make = "Mercedes-Benz",
+                    Model = "38/250 SSK",
+                });
+
+                // trick the scope into thinking that is finishing and should not create proxies anymore.
+                scope.IsFinishing = true;
+
+                var patchGenerator = new CollectionPatchGenerator(new DynamicLargestCommonSubsequence());
+
+                patchGenerator.Generate((IDraft)draft.Cars, "/Cars", patches, inversePatches);
+
+                // inverse order of inverse patches.
+                inversePatches.Operations.Reverse();
+
+                testPerson = scope.FinishDraft<ITestPerson, TestPerson>(draft);
+            }
+
+            var result = ITestPerson.Produce(initial, p =>
+            {
+                patches.ApplyTo(p);
+            });
+
+            Assert.Equal(4, result.Cars.Count);
+            Assert.Equal("Ferrari", result.Cars[0].Make);
+            Assert.Equal("250 LM", result.Cars[0].Model);
+            Assert.Equal("Shelby", result.Cars[1].Make);
+            Assert.Equal("Daytona Cobra Coupe", result.Cars[1].Model);
+            Assert.Equal("Rolls Royce", result.Cars[2].Make);
+            Assert.Equal("10 HP", result.Cars[2].Model);
+            Assert.Equal("Mercedes-Benz", result.Cars[3].Make);
+            Assert.Equal("38/250 SSK", result.Cars[3].Model);
+        }
+
+        /// <summary>
+        /// Tests the generation of applying the inverse trivial addition patch.
+        /// </summary>
+        [Fact]
+        public void ApplyTrivialCollectionInverseAdditionPatch()
+        {
+            var patches = new JsonPatchDocument();
+            var inversePatches = new JsonPatchDocument();
+
+            var initial = new TestPerson()
+            {
+                FirstName = "John",
+                LastName = "Doe",
+                IsAdult = true,
+                Cars = new List<Car>()
+                {
+                    new Car
+                    {
+                        Make = "Ferrari",
+                        Model = "250 LM",
+                    },
+                    new Car
+                    {
+                        Make = "Shelby",
+                        Model = "Daytona Cobra Coupe",
+                    },
+                },
+            };
+
+            ITestPerson testPerson;
+
+            using (DraftScope scope = (DraftScope)DraftExtensions.CreateDraft(initial, out TestPerson draft))
+            {
+                draft.Cars.Add(new Car()
+                {
+                    Make = "Rolls Royce",
+                    Model = "10 HP",
+                });
+                draft.Cars.Add(new Car()
+                {
+                    Make = "Mercedes-Benz",
+                    Model = "38/250 SSK",
+                });
+
+                // trick the scope into thinking that is finishing and should not create proxies anymore.
+                scope.IsFinishing = true;
+
+                var patchGenerator = new CollectionPatchGenerator(new DynamicLargestCommonSubsequence());
+
+                patchGenerator.Generate((IDraft)draft.Cars, "/Cars", patches, inversePatches);
+
+                // inverse order of inverse patches.
+                inversePatches.Operations.Reverse();
+
+                testPerson = scope.FinishDraft<ITestPerson, TestPerson>(draft);
+            }
+
+            var result = ITestPerson.Produce(initial, p =>
+            {
+                patches.ApplyTo(p);
+            });
+
+            result = result.Produce(p =>
+            {
+                inversePatches.ApplyTo(p);
+            });
+
+            Assert.Equal(2, result.Cars.Count);
+            Assert.Equal("Ferrari", result.Cars[0].Make);
+            Assert.Equal("250 LM", result.Cars[0].Model);
+            Assert.Equal("Shelby", result.Cars[1].Make);
+            Assert.Equal("Daytona Cobra Coupe", result.Cars[1].Model);
+        }
+
+        /// <summary>
         /// Tests the generation of a trivial addition patch.
         /// </summary>
         [Fact]
@@ -202,6 +349,149 @@ namespace RedCow.Test.Patches
               }
             ]
             ", JsonConvert.SerializeObject(inversePatches));
+        }
+
+        /// <summary>
+        /// Tests the application of a trivial addition patch.
+        /// </summary>
+        [Fact]
+        public void ApplyTrivialCollectionInsertionPatch()
+        {
+            var initial = new TestPerson()
+            {
+                FirstName = "John",
+                LastName = "Doe",
+                IsAdult = true,
+                Cars = new List<Car>()
+                {
+                    new Car
+                    {
+                        Make = "Ferrari",
+                        Model = "250 LM",
+                    },
+                    new Car
+                    {
+                        Make = "Shelby",
+                        Model = "Daytona Cobra Coupe",
+                    },
+                },
+            };
+
+            var patches = new JsonPatchDocument();
+            var inversePatches = new JsonPatchDocument();
+            ITestPerson testPerson;
+
+            using (DraftScope scope = (DraftScope)DraftExtensions.CreateDraft(initial, out TestPerson draft))
+            {
+                draft.Cars.Insert(0, new Car()
+                {
+                    Make = "Rolls Royce",
+                    Model = "10 HP",
+                });
+                draft.Cars.Insert(1, new Car()
+                {
+                    Make = "Mercedes-Benz",
+                    Model = "38/250 SSK",
+                });
+
+                // trick the scope into thinking that is finishing and should not create proxies anymore.
+                scope.IsFinishing = true;
+
+                var patchGenerator = new CollectionPatchGenerator(new DynamicLargestCommonSubsequence());
+                patchGenerator.Generate((IDraft)draft.Cars, "/Cars", patches, inversePatches);
+
+                testPerson = scope.FinishDraft<ITestPerson, TestPerson>(draft);
+            }
+
+            // inverse order of inverse patches.
+            inversePatches.Operations.Reverse();
+
+            var result = ITestPerson.Produce(initial, p =>
+            {
+                patches.ApplyTo(p);
+            });
+
+            Assert.Equal(4, result.Cars.Count);
+            Assert.Equal("Rolls Royce", result.Cars[0].Make);
+            Assert.Equal("10 HP", result.Cars[0].Model);
+            Assert.Equal("Mercedes-Benz", result.Cars[1].Make);
+            Assert.Equal("38/250 SSK", result.Cars[1].Model);
+            Assert.Equal("Ferrari", result.Cars[2].Make);
+            Assert.Equal("250 LM", result.Cars[2].Model);
+            Assert.Equal("Shelby", result.Cars[3].Make);
+            Assert.Equal("Daytona Cobra Coupe", result.Cars[3].Model);
+        }
+
+        /// <summary>
+        /// Tests the application of a trivial inverse insertition patch.
+        /// </summary>
+        [Fact]
+        public void ApplyTrivialCollectionInverseInsertionPatch()
+        {
+            var initial = new TestPerson()
+            {
+                FirstName = "John",
+                LastName = "Doe",
+                IsAdult = true,
+                Cars = new List<Car>()
+                {
+                    new Car
+                    {
+                        Make = "Ferrari",
+                        Model = "250 LM",
+                    },
+                    new Car
+                    {
+                        Make = "Shelby",
+                        Model = "Daytona Cobra Coupe",
+                    },
+                },
+            };
+
+            var patches = new JsonPatchDocument();
+            var inversePatches = new JsonPatchDocument();
+            ITestPerson testPerson;
+
+            using (DraftScope scope = (DraftScope)DraftExtensions.CreateDraft(initial, out TestPerson draft))
+            {
+                draft.Cars.Insert(0, new Car()
+                {
+                    Make = "Rolls Royce",
+                    Model = "10 HP",
+                });
+                draft.Cars.Insert(1, new Car()
+                {
+                    Make = "Mercedes-Benz",
+                    Model = "38/250 SSK",
+                });
+
+                // trick the scope into thinking that is finishing and should not create proxies anymore.
+                scope.IsFinishing = true;
+
+                var patchGenerator = new CollectionPatchGenerator(new DynamicLargestCommonSubsequence());
+                patchGenerator.Generate((IDraft)draft.Cars, "/Cars", patches, inversePatches);
+
+                testPerson = scope.FinishDraft<ITestPerson, TestPerson>(draft);
+            }
+
+            // inverse order of inverse patches.
+            inversePatches.Operations.Reverse();
+
+            var result = ITestPerson.Produce(initial, p =>
+            {
+                patches.ApplyTo(p);
+            });
+
+            result = result.Produce(p =>
+            {
+                inversePatches.ApplyTo(p);
+            });
+
+            Assert.Equal(2, result.Cars.Count);
+            Assert.Equal("Ferrari", result.Cars[0].Make);
+            Assert.Equal("250 LM", result.Cars[0].Model);
+            Assert.Equal("Shelby", result.Cars[1].Make);
+            Assert.Equal("Daytona Cobra Coupe", result.Cars[1].Model);
         }
 
         /// <summary>
@@ -313,10 +603,168 @@ namespace RedCow.Test.Patches
         }
 
         /// <summary>
-        /// Tests the generation of a removal patch.
+        /// Tests the application of a trivial removal patch.
         /// </summary>
         [Fact]
-        public void GenerateCollectionRemovalPatch()
+        public void ApplyTrivialCollectionRemovalPatch()
+        {
+            var initial = new TestPerson()
+            {
+                FirstName = "John",
+                LastName = "Doe",
+                IsAdult = true,
+                Cars = new List<Car>()
+                {
+                    new Car
+                    {
+                        Make = "Ferrari",
+                        Model = "250 LM",
+                    },
+                    new Car
+                    {
+                        Make = "Shelby",
+                        Model = "Daytona Cobra Coupe",
+                    },
+                    new Car()
+                    {
+                        Make = "Rolls Royce",
+                        Model = "10 HP",
+                    },
+                    new Car()
+                    {
+                        Make = "Mercedes-Benz",
+                        Model = "38/250 SSK",
+                    },
+                    new Car()
+                    {
+                        Make = "Bugatti",
+                        Model = "Type 57 SC Atalante",
+                    },
+                },
+            };
+            var patches = new JsonPatchDocument();
+            var inversePatches = new JsonPatchDocument();
+
+            ITestPerson testPerson;
+
+            using (var scope = DraftExtensions.CreateDraft(initial, out TestPerson draft))
+            {
+                var patchGenerator = new CollectionPatchGenerator(new DynamicLargestCommonSubsequence());
+
+                draft.Cars.RemoveAt(2);
+                draft.Cars.RemoveAt(2);
+                draft.Cars.RemoveAt(2);
+
+                patchGenerator.Generate((IDraft)draft.Cars, "/Cars", patches, inversePatches);
+
+                // inverse order of inverse patches.
+                inversePatches.Operations.Reverse();
+                testPerson = scope.FinishDraft<ITestPerson, TestPerson>(draft);
+            }
+
+            // inverse order of inverse patches.
+            inversePatches.Operations.Reverse();
+
+            var result = ITestPerson.Produce(initial, p =>
+            {
+                patches.ApplyTo(p);
+            });
+
+            Assert.Equal(2, result.Cars.Count);
+            Assert.Equal("Ferrari", result.Cars[0].Make);
+            Assert.Equal("250 LM", result.Cars[0].Model);
+            Assert.Equal("Shelby", result.Cars[1].Make);
+            Assert.Equal("Daytona Cobra Coupe", result.Cars[1].Model);
+        }
+
+        /// <summary>
+        /// Tests the application of a trivial inverse removal patch.
+        /// </summary>
+        [Fact]
+        public void ApplyTrivialCollectionInverseRemovalPatch()
+        {
+            var initial = new TestPerson()
+            {
+                FirstName = "John",
+                LastName = "Doe",
+                IsAdult = true,
+                Cars = new List<Car>()
+                {
+                    new Car
+                    {
+                        Make = "Ferrari",
+                        Model = "250 LM",
+                    },
+                    new Car
+                    {
+                        Make = "Shelby",
+                        Model = "Daytona Cobra Coupe",
+                    },
+                    new Car()
+                    {
+                        Make = "Rolls Royce",
+                        Model = "10 HP",
+                    },
+                    new Car()
+                    {
+                        Make = "Mercedes-Benz",
+                        Model = "38/250 SSK",
+                    },
+                    new Car()
+                    {
+                        Make = "Bugatti",
+                        Model = "Type 57 SC Atalante",
+                    },
+                },
+            };
+            var patches = new JsonPatchDocument();
+            var inversePatches = new JsonPatchDocument();
+
+            ITestPerson testPerson;
+
+            using (var scope = DraftExtensions.CreateDraft(initial, out TestPerson draft))
+            {
+                var patchGenerator = new CollectionPatchGenerator(new DynamicLargestCommonSubsequence());
+
+                draft.Cars.RemoveAt(2);
+                draft.Cars.RemoveAt(2);
+                draft.Cars.RemoveAt(2);
+
+                patchGenerator.Generate((IDraft)draft.Cars, "/Cars", patches, inversePatches);
+
+                // inverse order of inverse patches.
+                inversePatches.Operations.Reverse();
+                testPerson = scope.FinishDraft<ITestPerson, TestPerson>(draft);
+            }
+
+            var result = ITestPerson.Produce(initial, p =>
+            {
+                patches.ApplyTo(p);
+            });
+
+            result = result.Produce(p =>
+            {
+                inversePatches.ApplyTo(p);
+            });
+
+            Assert.Equal(5, result.Cars.Count);
+            Assert.Equal("Ferrari", result.Cars[0].Make);
+            Assert.Equal("250 LM", result.Cars[0].Model);
+            Assert.Equal("Shelby", result.Cars[1].Make);
+            Assert.Equal("Daytona Cobra Coupe", result.Cars[1].Model);
+            Assert.Equal("Rolls Royce", result.Cars[2].Make);
+            Assert.Equal("10 HP", result.Cars[2].Model);
+            Assert.Equal("Mercedes-Benz", result.Cars[3].Make);
+            Assert.Equal("38/250 SSK", result.Cars[3].Model);
+            Assert.Equal("Bugatti", result.Cars[4].Make);
+            Assert.Equal("Type 57 SC Atalante", result.Cars[4].Model);
+        }
+
+        /// <summary>
+        /// Tests the generation of a complex patch.
+        /// </summary>
+        [Fact]
+        public void GenerateComplexCollectionPatch()
         {
             var initial = new TestPerson()
             {
@@ -416,6 +864,167 @@ namespace RedCow.Test.Patches
                 'op': 'add'
               }            ]
             ", JsonConvert.SerializeObject(inversePatches));
+        }
+
+        /// <summary>
+        /// Tests the application of a complex patch.
+        /// </summary>
+        [Fact]
+        public void ApplyComplexCollectionPatch()
+        {
+            var initial = new TestPerson()
+            {
+                FirstName = "John",
+                LastName = "Doe",
+                IsAdult = true,
+                Cars = new List<Car>()
+                {
+                    new Car
+                    {
+                        Make = "Ferrari",
+                        Model = "250 LM",
+                    },
+                    new Car
+                    {
+                        Make = "Shelby",
+                        Model = "Daytona Cobra Coupe",
+                    },
+                    new Car()
+                    {
+                        Make = "Rolls Royce",
+                        Model = "10 HP",
+                    },
+                    new Car()
+                    {
+                        Make = "Mercedes-Benz",
+                        Model = "38/250 SSK",
+                    },
+                },
+            };
+
+            var patches = new JsonPatchDocument();
+            var inversePatches = new JsonPatchDocument();
+            ITestPerson testPerson;
+
+            using (DraftScope scope = (DraftScope)DraftExtensions.CreateDraft(initial, out TestPerson draft))
+            {
+                var patchGenerator = new CollectionPatchGenerator(new DynamicLargestCommonSubsequence());
+
+                draft.Cars.RemoveAt(3);
+                draft.Cars.RemoveAt(0);
+                draft.Cars.Add(new Car()
+                {
+                    Make = "Bugatti",
+                    Model = "Type 57 SC Atalante",
+                });
+
+                // trick the scope into thinking that is finishing and should not create proxies anymore.
+                scope.IsFinishing = true;
+
+                patchGenerator.Generate((IDraft)draft.Cars, "/Cars", patches, inversePatches);
+
+                // inverse order of inverse patches.
+                inversePatches.Operations.Reverse();
+
+                testPerson = scope.FinishDraft<ITestPerson, TestPerson>(draft);
+            }
+
+            var result = ITestPerson.Produce(initial, p =>
+            {
+                patches.ApplyTo(p);
+            });
+
+            Assert.Equal(3, result.Cars.Count);
+            Assert.Equal("Shelby", result.Cars[0].Make);
+            Assert.Equal("Daytona Cobra Coupe", result.Cars[0].Model);
+            Assert.Equal("Rolls Royce", result.Cars[1].Make);
+            Assert.Equal("10 HP", result.Cars[1].Model);
+            Assert.Equal("Bugatti", result.Cars[2].Make);
+            Assert.Equal("Type 57 SC Atalante", result.Cars[2].Model);
+        }
+
+        /// <summary>
+        /// Tests the application of an inverse complex patch.
+        /// </summary>
+        [Fact]
+        public void ApplyInverseComplexCollectionPatch()
+        {
+            var initial = new TestPerson()
+            {
+                FirstName = "John",
+                LastName = "Doe",
+                IsAdult = true,
+                Cars = new List<Car>()
+                {
+                    new Car
+                    {
+                        Make = "Ferrari",
+                        Model = "250 LM",
+                    },
+                    new Car
+                    {
+                        Make = "Shelby",
+                        Model = "Daytona Cobra Coupe",
+                    },
+                    new Car()
+                    {
+                        Make = "Rolls Royce",
+                        Model = "10 HP",
+                    },
+                    new Car()
+                    {
+                        Make = "Mercedes-Benz",
+                        Model = "38/250 SSK",
+                    },
+                },
+            };
+
+            var patches = new JsonPatchDocument();
+            var inversePatches = new JsonPatchDocument();
+            ITestPerson testPerson;
+
+            using (DraftScope scope = (DraftScope)DraftExtensions.CreateDraft(initial, out TestPerson draft))
+            {
+                var patchGenerator = new CollectionPatchGenerator(new DynamicLargestCommonSubsequence());
+
+                draft.Cars.RemoveAt(3);
+                draft.Cars.RemoveAt(0);
+                draft.Cars.Add(new Car()
+                {
+                    Make = "Bugatti",
+                    Model = "Type 57 SC Atalante",
+                });
+
+                // trick the scope into thinking that is finishing and should not create proxies anymore.
+                scope.IsFinishing = true;
+
+                patchGenerator.Generate((IDraft)draft.Cars, "/Cars", patches, inversePatches);
+
+                // inverse order of inverse patches.
+                inversePatches.Operations.Reverse();
+
+                testPerson = scope.FinishDraft<ITestPerson, TestPerson>(draft);
+            }
+
+            var result = ITestPerson.Produce(initial, p =>
+            {
+                patches.ApplyTo(p);
+            });
+
+            result = result.Produce(p =>
+            {
+                inversePatches.ApplyTo(p);
+            });
+
+            Assert.Equal(4, result.Cars.Count);
+            Assert.Equal("Ferrari", result.Cars[0].Make);
+            Assert.Equal("250 LM", result.Cars[0].Model);
+            Assert.Equal("Shelby", result.Cars[1].Make);
+            Assert.Equal("Daytona Cobra Coupe", result.Cars[1].Model);
+            Assert.Equal("Rolls Royce", result.Cars[2].Make);
+            Assert.Equal("10 HP", result.Cars[2].Model);
+            Assert.Equal("Mercedes-Benz", result.Cars[3].Make);
+            Assert.Equal("38/250 SSK", result.Cars[3].Model);
         }
     }
 }

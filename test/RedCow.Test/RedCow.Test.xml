@@ -837,9 +837,29 @@
             Tests the generation of a trivial addition patch.
             </summary>
         </member>
+        <member name="M:RedCow.Test.Patches.CollectionPatchGeneratorTests.ApplyTrivialCollectionAdditionPatch">
+            <summary>
+            Tests the generation of applying a trivial addition patch.
+            </summary>
+        </member>
+        <member name="M:RedCow.Test.Patches.CollectionPatchGeneratorTests.ApplyTrivialCollectionInverseAdditionPatch">
+            <summary>
+            Tests the generation of applying the inverse trivial addition patch.
+            </summary>
+        </member>
         <member name="M:RedCow.Test.Patches.CollectionPatchGeneratorTests.GenerateTrivialCollectionInsertionPatch">
             <summary>
             Tests the generation of a trivial addition patch.
+            </summary>
+        </member>
+        <member name="M:RedCow.Test.Patches.CollectionPatchGeneratorTests.ApplyTrivialCollectionInsertionPatch">
+            <summary>
+            Tests the application of a trivial addition patch.
+            </summary>
+        </member>
+        <member name="M:RedCow.Test.Patches.CollectionPatchGeneratorTests.ApplyTrivialCollectionInverseInsertionPatch">
+            <summary>
+            Tests the application of a trivial inverse insertition patch.
             </summary>
         </member>
         <member name="M:RedCow.Test.Patches.CollectionPatchGeneratorTests.GenerateTrivialCollectionRemovalPatch">
@@ -847,9 +867,29 @@
             Tests the generation of a trivial removal patch.
             </summary>
         </member>
-        <member name="M:RedCow.Test.Patches.CollectionPatchGeneratorTests.GenerateCollectionRemovalPatch">
+        <member name="M:RedCow.Test.Patches.CollectionPatchGeneratorTests.ApplyTrivialCollectionRemovalPatch">
             <summary>
-            Tests the generation of a removal patch.
+            Tests the application of a trivial removal patch.
+            </summary>
+        </member>
+        <member name="M:RedCow.Test.Patches.CollectionPatchGeneratorTests.ApplyTrivialCollectionInverseRemovalPatch">
+            <summary>
+            Tests the application of a trivial inverse removal patch.
+            </summary>
+        </member>
+        <member name="M:RedCow.Test.Patches.CollectionPatchGeneratorTests.GenerateComplexCollectionPatch">
+            <summary>
+            Tests the generation of a complex patch.
+            </summary>
+        </member>
+        <member name="M:RedCow.Test.Patches.CollectionPatchGeneratorTests.ApplyComplexCollectionPatch">
+            <summary>
+            Tests the application of a complex patch.
+            </summary>
+        </member>
+        <member name="M:RedCow.Test.Patches.CollectionPatchGeneratorTests.ApplyInverseComplexCollectionPatch">
+            <summary>
+            Tests the application of an inverse complex patch.
             </summary>
         </member>
         <member name="T:RedCow.Test.Patches.DynamicLargestCommonSubsequenceTests">

@@ -132,13 +132,16 @@ namespace RedCow.Immutable.Patches
 
             int lcsIndex = lcs.Length - 1;
 
+            // reverse the order so that there is never a problem with different implementations
+            // (patch atomicity v.s. operation atomicity).
             for (int index = sourceList.Count - commonTail - 1; index >= commonHead; --index)
             {
                 if (lcsIndex < 0 || !Equals(sourceList[index], lcs[lcsIndex]))
                 {
                     patches.Remove(basePath.PathJoin($"{index}"));
                     inversePatches.Add(basePath.PathJoin($"{(index < draftList.Count ? index.ToString() : "-")}"), sourceList[index]);
-                } else
+                } 
+                else
                 {
                     --lcsIndex;
                 }
@@ -152,7 +155,8 @@ namespace RedCow.Immutable.Patches
                 {
                     patches.Add(basePath.PathJoin($"{(index < lcs.Length ? index.ToString() : "-")}"), draftList[index]);
                     inversePatches.Remove(basePath.PathJoin($"{index}"));
-                } else
+                } 
+                else
                 {
                     ++lcsIndex;
                 }

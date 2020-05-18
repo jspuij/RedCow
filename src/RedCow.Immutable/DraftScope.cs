@@ -14,6 +14,10 @@
 // ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 // </copyright>
 
+using System.Runtime.CompilerServices;
+
+[assembly: InternalsVisibleTo("RedCow.Test")]
+
 namespace RedCow.Immutable
 {
     using System;
@@ -62,7 +66,7 @@ namespace RedCow.Immutable
         /// <summary>
         /// Gets a value indicating whether this scope is finishing.
         /// </summary>
-        internal bool IsFinishing { get; private set; }
+        internal bool IsFinishing { get; set; }
 
         /// <summary>
         /// Cleans up the scope.
