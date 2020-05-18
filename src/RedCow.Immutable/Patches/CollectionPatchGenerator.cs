@@ -51,7 +51,7 @@ namespace RedCow.Immutable.Patches
         /// <param name="basePath">The base path for the patches.</param>
         /// <param name="patches">The patches.</param>
         /// <param name="inversePatches">The inverse patches.</param>
-        public void Generate(IDraft draft, string basePath, JsonPatchDocument patches, JsonPatchDocument inversePatches)
+        public void Generate(IDraft draft, string? basePath, JsonPatchDocument patches, JsonPatchDocument inversePatches)
         {
             basePath = CheckArgumentsAndNormalizePath(draft, basePath, patches, inversePatches);
 
@@ -140,7 +140,7 @@ namespace RedCow.Immutable.Patches
                 {
                     patches.Remove(basePath.PathJoin($"{index}"));
                     inversePatches.Add(basePath.PathJoin($"{(index < draftList.Count ? index.ToString() : "-")}"), sourceList[index]);
-                } 
+                }
                 else
                 {
                     --lcsIndex;
@@ -155,7 +155,7 @@ namespace RedCow.Immutable.Patches
                 {
                     patches.Add(basePath.PathJoin($"{(index < lcs.Length ? index.ToString() : "-")}"), draftList[index]);
                     inversePatches.Remove(basePath.PathJoin($"{index}"));
-                } 
+                }
                 else
                 {
                     ++lcsIndex;

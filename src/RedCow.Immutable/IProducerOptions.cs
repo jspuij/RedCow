@@ -18,6 +18,7 @@ namespace RedCow
 {
     using System;
     using System.Collections.Generic;
+    using Microsoft.AspNetCore.JsonPatch;
     using Newtonsoft.Json.Serialization;
     using RedCow.Immutable;
 
@@ -30,5 +31,15 @@ namespace RedCow
         /// Gets the immutable reference types that are allowed as Properties.
         /// </summary>
         public ISet<Type> AllowedImmutableReferenceTypes { get; }
+
+        /// <summary>
+        /// Gets the document to use for patches.
+        /// </summary>
+        public JsonPatchDocument? Patches { get; }
+
+        /// <summary>
+        /// Gets the document to use for InversePatches.
+        /// </summary>
+        public JsonPatchDocument? InversePatches { get; }
     }
 }

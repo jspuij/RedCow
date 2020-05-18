@@ -20,6 +20,9 @@ using System.Runtime.CompilerServices;
 
 namespace RedCow.Immutable
 {
+    using Microsoft.AspNetCore.JsonPatch;
+    using RedCow.Immutable.Patches;
+    using RedCow.Patches;
     using System;
     using System.Collections;
     using System.Collections.Generic;
@@ -64,7 +67,7 @@ namespace RedCow.Immutable
             this.producerOptions.AllowedImmutableReferenceTypes;
 
         /// <summary>
-        /// Gets a value indicating whether this scope is finishing.
+        /// Gets or sets a value indicating whether this scope is finishing.
         /// </summary>
         internal bool IsFinishing { get; set; }
 
@@ -152,7 +155,23 @@ namespace RedCow.Immutable
         /// <returns>The immutable variant of the instance.</returns>
         private object? FinishInstance(object? draft)
         {
-            object? Reconcile(object? draft)
+            ObjectPatchGenerator? objectPatchGenerator = null;
+            DictionaryPatchGenerator? dictionaryPatchGenerator = null;
+            CollectionPatchGenerator? collectionPatchGenerator = null;
+            JsonPatchDocument? patches = null;
+            JsonPatchDocument? inversePatches = null;
+
+            string? basePath = null;
+
+            if ((patches = this.producerOptions.Patches) != null && (inversePatches = this.producerOptions.InversePatches) != null)
+            {
+                objectPatchGenerator = new ObjectPatchGenerator();
+                dictionaryPatchGenerator = new DictionaryPatchGenerator();
+                collectionPatchGenerator = new CollectionPatchGenerator(new DynamicLargestCommonSubsequence());
+                basePath = "/";
+            }
+
+            object? Reconcile(object? draft, string? currentPath)
             {
                 if (draft == null)
                 {
@@ -175,47 +194,54 @@ namespace RedCow.Immutable
 
                 if (draft is IDraft idraft && this.drafts.Contains(draft))
                 {
+                    var delayedOperations = new List<Action>();
+
                     if (idraft.DraftState is ObjectDraftState objectDraftState)
                     {
                         foreach ((string propertyName, object child) in objectDraftState.ChildDrafts)
                         {
-                            var immutable = Reconcile(child);
+                            var immutable = Reconcile(child, currentPath?.PathJoin(propertyName));
+
                             if (ReferenceEquals(immutable, child))
                             {
-                                // use reflection to set the property and trigger changed on the parent.
-                                draftType.GetProperty(propertyName).SetValue(draft, immutable);
+                                delayedOperations.Add(() =>
+                                {
+                                    // use reflection to set the property and trigger changed on the parent.
+                                    draftType.GetProperty(propertyName).SetValue(draft, immutable);
+                                });
                             }
                         }
+
+                        objectPatchGenerator?.Generate(idraft, currentPath, patches!, inversePatches!);
                     }
                     else if (idraft.DraftState is CollectionDraftState collectionDraftState)
                     {
                         if (draft is IDictionary dictionary)
                         {
-                            var revertOperations = new List<Action>();
                             foreach (DictionaryEntry entry in dictionary)
                             {
                                 if (InternalIsDraft(entry.Value) && this.drafts.Contains(entry.Value))
                                 {
-                                    var immutable = Reconcile(entry.Value);
+                                    var immutable = Reconcile(entry.Value, currentPath?.PathJoin(entry.Key.ToString()));
 
-                                    // draft turned into immutable.
-                                    if (ReferenceEquals(immutable, entry.Value))
+                                    delayedOperations.Add(() =>
                                     {
-                                        idraft.DraftState!.Changed = true;
-                                    }
+                                        // draft turned into immutable.
+                                        if (ReferenceEquals(immutable, entry.Value))
+                                        {
+                                            idraft.DraftState!.Changed = true;
+                                        }
 
-                                    // draft reverted to original.
-                                    else
-                                    {
-                                        revertOperations.Add(() => dictionary[entry.Key] = immutable);
-                                    }
+                                        // draft reverted to original.
+                                        else
+                                        {
+                                            dictionary[entry.Key] = immutable;
+                                        }
+                                    });
                                 }
                             }
 
-                            foreach (var revert in revertOperations)
-                            {
-                                revert();
-                            }
+                            dictionaryPatchGenerator?.Generate(idraft, currentPath, patches!, inversePatches!);
                         }
                         else if (draft is IList list)
                         {
@@ -225,22 +251,35 @@ namespace RedCow.Immutable
                                 object? child = list[i];
                                 if (InternalIsDraft(child) && this.drafts.Contains(child))
                                 {
-                                    var immutable = Reconcile(child);
+                                    var immutable = Reconcile(child, currentPath?.PathJoin(i.ToString()));
 
-                                    // draft turned into immutable.
-                                    if (ReferenceEquals(immutable, child))
-                                    {
-                                        idraft.DraftState!.Changed = true;
-                                    }
+                                    // capture i
+                                    int captured = i;
 
-                                    // draft reverted to original.
-                                    else
+                                    delayedOperations.Add(() =>
                                     {
-                                        list[i] = immutable;
-                                    }
+                                        // draft turned into immutable.
+                                        if (ReferenceEquals(immutable, child))
+                                        {
+                                            idraft.DraftState!.Changed = true;
+                                        }
+
+                                        // draft reverted to original.
+                                        else
+                                        {
+                                            list[captured] = immutable;
+                                        }
+                                    });
                                 }
                             }
+
+                            collectionPatchGenerator?.Generate(idraft, currentPath, patches!, inversePatches!);
                         }
+                    }
+
+                    foreach (var toExecute in delayedOperations)
+                    {
+                        toExecute();
                     }
 
                     // not changed, return the original.
@@ -256,7 +295,7 @@ namespace RedCow.Immutable
             this.IsFinishing = true;
             try
             {
-                draft = Reconcile(draft);
+                draft = Reconcile(draft, basePath);
 
                 if (draft is ILockable lockable)
                 {

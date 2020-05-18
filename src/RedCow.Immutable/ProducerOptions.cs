@@ -18,6 +18,8 @@ namespace RedCow
 {
     using System;
     using System.Collections.Generic;
+    using System.Runtime.CompilerServices;
+    using Microsoft.AspNetCore.JsonPatch;
     using Newtonsoft.Json.Serialization;
     using RedCow.Immutable;
 
@@ -29,15 +31,51 @@ namespace RedCow
         /// <summary>
         /// Gets the default Producer options.
         /// </summary>
-        public static IProducerOptions Default { get; } = new ProducerOptions();
+        public static ProducerOptions Default { get; } = new ProducerOptions();
 
         /// <summary>
         /// Gets the set of allowed immutable reference types.
         /// </summary>
-        public ISet<Type> AllowedImmutableReferenceTypes { get; } = new HashSet<Type>()
+        public ISet<Type> AllowedImmutableReferenceTypes { get; private set; } = new HashSet<Type>()
         {
             typeof(string),
             typeof(Type),
         };
+
+        /// <summary>
+        /// Gets the Patches document to fill.
+        /// </summary>
+        public JsonPatchDocument? Patches { get; private set; }
+
+        /// <summary>
+        /// Gets the inverse Patches document to fill.
+        /// </summary>
+        public JsonPatchDocument? InversePatches { get; private set; }
+
+        /// <summary>
+        /// Returns a new <see cref="ProducerOptions"/> instance with the specified options.
+        /// </summary>
+        /// <param name="patches">The patch docoment to store patches into.</param>
+        /// <param name="inversePatches">The patch docoment to store inverse patches into.</param>
+        /// <returns>A new <see cref="ProducerOptions"/> instance.</returns>
+        public ProducerOptions WithPatches(JsonPatchDocument patches, JsonPatchDocument inversePatches)
+        {
+            if (patches is null)
+            {
+                throw new ArgumentNullException(nameof(patches));
+            }
+
+            if (inversePatches is null)
+            {
+                throw new ArgumentNullException(nameof(inversePatches));
+            }
+
+            return new ProducerOptions()
+            {
+                AllowedImmutableReferenceTypes = this.AllowedImmutableReferenceTypes,
+                Patches = patches,
+                InversePatches = inversePatches,
+            };
+        }
     }
 }

@@ -36,7 +36,7 @@ namespace RedCow.Patches
         /// <param name="basePath">The base path for the patches.</param>
         /// <param name="patches">The patches.</param>
         /// <param name="inversePatches">The inverse patches.</param>
-        public void Generate(IDraft draft, string basePath, JsonPatchDocument patches, JsonPatchDocument inversePatches)
+        public void Generate(IDraft draft, string? basePath, JsonPatchDocument patches, JsonPatchDocument inversePatches)
         {
             basePath = CheckArgumentsAndNormalizePath(draft, basePath, patches, inversePatches);
 

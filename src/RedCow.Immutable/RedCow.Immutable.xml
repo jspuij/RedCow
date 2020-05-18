@@ -690,7 +690,7 @@
         </member>
         <member name="P:RedCow.Immutable.DraftScope.IsFinishing">
             <summary>
-            Gets a value indicating whether this scope is finishing.
+            Gets or sets a value indicating whether this scope is finishing.
             </summary>
         </member>
         <member name="M:RedCow.Immutable.DraftScope.Dispose">
@@ -1143,6 +1143,16 @@
             Gets the immutable reference types that are allowed as Properties.
             </summary>
         </member>
+        <member name="P:RedCow.IProducerOptions.Patches">
+            <summary>
+            Gets the document to use for patches.
+            </summary>
+        </member>
+        <member name="P:RedCow.IProducerOptions.InversePatches">
+            <summary>
+            Gets the document to use for InversePatches.
+            </summary>
+        </member>
         <member name="T:RedCow.IPropertyAccessors">
             <summary>
             Provides the public property accessors of a class.
@@ -1187,6 +1197,24 @@
             <summary>
             Gets the set of allowed immutable reference types.
             </summary>
+        </member>
+        <member name="P:RedCow.ProducerOptions.Patches">
+            <summary>
+            Gets the Patches document to fill.
+            </summary>
+        </member>
+        <member name="P:RedCow.ProducerOptions.InversePatches">
+            <summary>
+            Gets the inverse Patches document to fill.
+            </summary>
+        </member>
+        <member name="M:RedCow.ProducerOptions.WithPatches(Microsoft.AspNetCore.JsonPatch.JsonPatchDocument,Microsoft.AspNetCore.JsonPatch.JsonPatchDocument)">
+            <summary>
+            Returns a new <see cref="T:RedCow.ProducerOptions"/> instance with the specified options.
+            </summary>
+            <param name="patches">The patch docoment to store patches into.</param>
+            <param name="inversePatches">The patch docoment to store inverse patches into.</param>
+            <returns>A new <see cref="T:RedCow.ProducerOptions"/> instance.</returns>
         </member>
     </members>
 </doc>
