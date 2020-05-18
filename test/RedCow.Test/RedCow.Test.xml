@@ -892,6 +892,26 @@
             Tests the application of an inverse complex patch.
             </summary>
         </member>
+        <member name="T:RedCow.Test.Patches.DictionaryPatchGeneratorTests">
+            <summary>
+            Unit tests for the <see cref="T:RedCow.Patches.DictionaryPatchGenerator"/> class.
+            </summary>
+        </member>
+        <member name="M:RedCow.Test.Patches.DictionaryPatchGeneratorTests.GenerateDictionaryPatch">
+            <summary>
+            Tests the generation of an object patch.
+            </summary>
+        </member>
+        <member name="M:RedCow.Test.Patches.DictionaryPatchGeneratorTests.GenerateAndApplyPatch">
+            <summary>
+            Tests the generation and application of an object patch.
+            </summary>
+        </member>
+        <member name="M:RedCow.Test.Patches.DictionaryPatchGeneratorTests.GenerateAndApplyReversePatch">
+            <summary>
+            Tests the generation and application of an object patch.
+            </summary>
+        </member>
         <member name="T:RedCow.Test.Patches.DynamicLargestCommonSubsequenceTests">
             <summary>
             Unit tests for the <see cref="T:RedCow.Immutable.Patches.DynamicLargestCommonSubsequence"/> class.

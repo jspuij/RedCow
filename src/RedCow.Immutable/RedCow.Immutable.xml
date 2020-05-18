@@ -1158,6 +1158,21 @@
             Gets the property setters.
             </summary>
         </member>
+        <member name="T:RedCow.Patches.DictionaryPatchGenerator">
+            <summary>
+            Generates patches for a dictionary.
+            </summary>
+        </member>
+        <member name="M:RedCow.Patches.DictionaryPatchGenerator.Generate(RedCow.Immutable.IDraft,System.String,Microsoft.AspNetCore.JsonPatch.JsonPatchDocument,Microsoft.AspNetCore.JsonPatch.JsonPatchDocument)">
+            <summary>
+            Generates JSON Patches for a draft for changes and inverse changes and
+            adds them to the specified JsonPatchDocuments.
+            </summary>
+            <param name="draft">The draft to process.</param>
+            <param name="basePath">The base path for the patches.</param>
+            <param name="patches">The patches.</param>
+            <param name="inversePatches">The inverse patches.</param>
+        </member>
         <member name="T:RedCow.ProducerOptions">
             <summary>
             The producer options to use.

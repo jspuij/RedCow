@@ -20,6 +20,7 @@ namespace RedCow.Immutable.Collections
     using System.Collections;
     using System.Collections.Generic;
     using System.Diagnostics;
+    using System.Linq;
     using System.Runtime.Serialization;
     using System.Text;
 
@@ -265,7 +266,7 @@ namespace RedCow.Immutable.Collections
         /// <returns>An enumerator with inner values.</returns>
         protected override System.Collections.IEnumerator GetInnerValueEnumerator()
         {
-            return this.InnerCollection.Values.GetEnumerator();
+            return this.InnerCollection.Values.ToList().GetEnumerator();
         }
 
         /// <summary>

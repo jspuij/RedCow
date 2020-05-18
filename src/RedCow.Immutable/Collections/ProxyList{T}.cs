@@ -181,7 +181,7 @@ namespace RedCow.Immutable.Collections
         /// <returns>An enumerator with inner values.</returns>
         protected override IEnumerator GetInnerValueEnumerator()
         {
-            return this.InnerCollection.GetEnumerator();
+            return this.GetEnumerator();
         }
     }
 }

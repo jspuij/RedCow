@@ -19,6 +19,7 @@ namespace RedCow.Immutable.Collections
     using System;
     using System.Collections;
     using System.Collections.Generic;
+    using System.Linq;
     using System.Text;
     using RedCow.Immutable;
 
@@ -166,14 +167,15 @@ namespace RedCow.Immutable.Collections
         public IEnumerator<TValue> GetEnumerator()
         {
             this.ThrowIfRevoked();
-            var enumerator = this.InnerCollection.GetEnumerator();
 
-            if (this.Locked || this.CollectionDraftState == null)
+            if (this.Locked || this.CollectionDraftState == null || this.CollectionDraftState.Scope.IsFinishing)
             {
-                return enumerator;
+                return this.InnerCollection.GetEnumerator();
             }
 
-            return this.GetDraftEnumerator(enumerator);
+            // TODO: this is a very expensive copy to avoid a modified enumerator. We may
+            // want to optimize this somehow.
+            return this.GetDraftEnumerator(this.innerCollection.ToList().GetEnumerator());
         }
 
         /// <summary>
