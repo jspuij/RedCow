@@ -20,15 +20,15 @@ using System.Runtime.CompilerServices;
 
 namespace RedCow.Immutable
 {
-    using Microsoft.AspNetCore.JsonPatch;
-    using RedCow.Immutable.Patches;
-    using RedCow.Patches;
     using System;
     using System.Collections;
     using System.Collections.Generic;
     using System.Linq;
     using System.Runtime.InteropServices.ComTypes;
     using System.Xml.Schema;
+    using Microsoft.AspNetCore.JsonPatch;
+    using RedCow.Immutable.Patches;
+    using RedCow.Patches;
     using static DraftExtensions;
 
     /// <summary>
