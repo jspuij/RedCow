@@ -17,7 +17,7 @@
 namespace RedCow.Immutable.Patches
 {
     using System;
-    using System.Collections.Generic;
+    using System.Collections;
     using System.Text;
 
     /// <summary>
@@ -26,13 +26,16 @@ namespace RedCow.Immutable.Patches
     public interface ILongestCommonSubsequence
     {
         /// <summary>
-        /// Gets the longest common subsequence in the elements from two spans.
+        /// Gets the longest common subsequence in the elements from two lists.
         /// </summary>
-        /// <typeparam name="T">The type of the elements.</typeparam>
         /// <param name="left">The left span. </param>
         /// <param name="right">The right span.</param>
+        /// <param name="leftStart">The start index for the left list.</param>
+        /// <param name="leftLength">The length for the left list.</param>
+        /// <param name="rightStart">The start index for the right list.</param>
+        /// <param name="rightLength">The length for the right list. </param>
         /// <param name="equalityComparer">The equality comparison function.</param>
         /// <returns>The longest common subsequence.</returns>
-        IEnumerable<T> Get<T>(ReadOnlySpan<T> left, ReadOnlySpan<T> right, Func<T, T, bool> equalityComparer);
+        IEnumerable Get(IList left, IList right, int leftStart, int leftLength, int rightStart, int rightLength, Func<object, object, bool> equalityComparer);
     }
 }

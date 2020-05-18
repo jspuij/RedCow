@@ -847,6 +847,11 @@
             Tests the generation of a trivial removal patch.
             </summary>
         </member>
+        <member name="M:RedCow.Test.Patches.CollectionPatchGeneratorTests.GenerateCollectionRemovalPatch">
+            <summary>
+            Tests the generation of a removal patch.
+            </summary>
+        </member>
         <member name="T:RedCow.Test.Patches.DynamicLargestCommonSubsequenceTests">
             <summary>
             Unit tests for the <see cref="T:RedCow.Immutable.Patches.DynamicLargestCommonSubsequence"/> class.

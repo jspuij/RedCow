@@ -69,7 +69,7 @@ namespace RedCow.Test.Patches
                 Model = "38/250 SSK",
             });
 
-            var patchGenerator = new CollectionPatchGenerator();
+            var patchGenerator = new CollectionPatchGenerator(new DynamicLargestCommonSubsequence());
             var patches = new JsonPatchDocument();
             var inversePatches = new JsonPatchDocument();
 
@@ -156,7 +156,7 @@ namespace RedCow.Test.Patches
                 Model = "38/250 SSK",
             });
 
-            var patchGenerator = new CollectionPatchGenerator();
+            var patchGenerator = new CollectionPatchGenerator(new DynamicLargestCommonSubsequence());
             var patches = new JsonPatchDocument();
             var inversePatches = new JsonPatchDocument();
 
@@ -242,12 +242,101 @@ namespace RedCow.Test.Patches
 
             using var scope = DraftExtensions.CreateDraft(initial, out TestPerson draft);
 
-            var patchGenerator = new CollectionPatchGenerator();
+            var patchGenerator = new CollectionPatchGenerator(new DynamicLargestCommonSubsequence());
             var patches = new JsonPatchDocument();
             var inversePatches = new JsonPatchDocument();
 
             draft.Cars.RemoveAt(3);
             draft.Cars.RemoveAt(2);
+
+            patchGenerator.Generate((IDraft)draft.Cars, "/Cars", patches, inversePatches);
+
+            // inverse order of inverse patches.
+            inversePatches.Operations.Reverse();
+
+            JsonAssert.Equal(
+            @"
+            [
+              {
+                'path': '/Cars/3',
+                'op': 'remove'
+              },
+              {
+                'path': '/Cars/2',
+                'op': 'remove'
+              }
+            ]
+            ", JsonConvert.SerializeObject(patches));
+
+            JsonAssert.Equal(
+            @"
+            [
+              {
+                'value': {
+                  'Make': 'Rolls Royce',
+                  'Model': '10 HP',
+                  'Crashed': false
+                },
+                'path': '/Cars/-',
+                'op': 'add'
+              },
+              {
+                'value': {
+                  'Make': 'Mercedes-Benz',
+                  'Model': '38/250 SSK',
+                  'Crashed': false
+                },
+                'path': '/Cars/-',
+                'op': 'add'
+              }
+            ]
+            ", JsonConvert.SerializeObject(inversePatches));
+        }
+
+        /// <summary>
+        /// Tests the generation of a removal patch.
+        /// </summary>
+        [Fact]
+        public void GenerateCollectionRemovalPatch()
+        {
+            var initial = new TestPerson()
+            {
+                FirstName = "John",
+                LastName = "Doe",
+                IsAdult = true,
+                Cars = new List<Car>()
+                {
+                    new Car
+                    {
+                        Make = "Ferrari",
+                        Model = "250 LM",
+                    },
+                    new Car
+                    {
+                        Make = "Shelby",
+                        Model = "Daytona Cobra Coupe",
+                    },
+                    new Car()
+                    {
+                        Make = "Rolls Royce",
+                        Model = "10 HP",
+                    },
+                    new Car()
+                    {
+                        Make = "Mercedes-Benz",
+                        Model = "38/250 SSK",
+                    },
+                },
+            };
+
+            using var scope = DraftExtensions.CreateDraft(initial, out TestPerson draft);
+
+            var patchGenerator = new CollectionPatchGenerator(new DynamicLargestCommonSubsequence());
+            var patches = new JsonPatchDocument();
+            var inversePatches = new JsonPatchDocument();
+
+            draft.Cars.RemoveAt(3);
+            draft.Cars.RemoveAt(0);
 
             patchGenerator.Generate((IDraft)draft.Cars, "/Cars", patches, inversePatches);
 

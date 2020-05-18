@@ -17,7 +17,7 @@
 namespace RedCow.Immutable.Patches
 {
     using System;
-    using System.Collections.Generic;
+    using System.Collections;
     using System.Text;
 
     /// <summary>
@@ -27,37 +27,43 @@ namespace RedCow.Immutable.Patches
     public class DynamicLargestCommonSubsequence : ILongestCommonSubsequence
     {
         /// <summary>
-        /// Gets the longest common subsequence in the elements from two spans.
+        /// Gets the longest common subsequence in the elements from two lists.
         /// </summary>
-        /// <typeparam name="T">The type of the elements.</typeparam>
         /// <param name="left">The left span. </param>
         /// <param name="right">The right span.</param>
+        /// <param name="leftStart">The start index for the left list.</param>
+        /// <param name="leftLength">The length for the left list.</param>
+        /// <param name="rightStart">The start index for the right list.</param>
+        /// <param name="rightLength">The length for the right list. </param>
         /// <param name="equalityComparer">The equality comparison function.</param>
         /// <returns>The longest common subsequence.</returns>
-        public IEnumerable<T> Get<T>(ReadOnlySpan<T> left, ReadOnlySpan<T> right, Func<T, T, bool> equalityComparer)
+        public IEnumerable Get(IList left, IList right, int leftStart, int leftLength, int rightStart, int rightLength, Func<object, object, bool> equalityComparer)
         {
-            var matrix = CreateLcsMatrix(left, right, equalityComparer);
-            return TraceBack(matrix, left, right, equalityComparer);
+            var matrix = CreateLcsMatrix(left, right, leftStart, leftLength, rightStart, rightLength, equalityComparer);
+            return TraceBack(matrix, left, right, leftStart, leftLength, rightStart, rightLength, equalityComparer);
         }
 
         /// <summary>
         /// Trace back through the matrix to find the Longest Common Subsequence.
         /// </summary>
-        /// <typeparam name="T">The type of the elements.</typeparam>
         /// <param name="matrix">The matrix.</param>
-        /// <param name="left">The left span.</param>
+        /// <param name="left">The left span. </param>
         /// <param name="right">The right span.</param>
+        /// <param name="leftStart">The start index for the left list.</param>
+        /// <param name="leftLength">The length for the left list.</param>
+        /// <param name="rightStart">The start index for the right list.</param>
+        /// <param name="rightLength">The length for the right list. </param>
         /// <param name="equalityComparer">The equality comparison function.</param>
         /// <returns>The Longest Common Subsequence.</returns>
-        private static IEnumerable<T> TraceBack<T>(int[,] matrix, ReadOnlySpan<T> left, ReadOnlySpan<T> right, Func<T, T, bool> equalityComparer)
+        private static IEnumerable TraceBack(int[,] matrix, IList left, IList right, int leftStart, int leftLength, int rightStart, int rightLength, Func<object, object, bool> equalityComparer)
         {
-            var result = new T[matrix[left.Length, right.Length]];
+            var result = new object[matrix[leftLength, rightLength]];
 
-            for (int i = left.Length, j = right.Length; i > 0 && j > 0;)
+            for (int i = leftLength, j = rightLength; i > 0 && j > 0;)
             {
-                if (equalityComparer(left[i - 1], right[j - 1]))
+                if (equalityComparer(left[leftStart + i - 1], right[rightStart + j - 1]))
                 {
-                    result[matrix[i, j] - 1] = left[i - 1];
+                    result[matrix[i, j] - 1] = left[leftStart + i - 1];
                     i--;
                     j--;
                     continue;
@@ -79,21 +85,24 @@ namespace RedCow.Immutable.Patches
         /// <summary>
         /// Creates the Lcs Matrix to backtrack through.
         /// </summary>
-        /// <typeparam name="T">The type of the elements.</typeparam>
         /// <param name="left">The left span. </param>
         /// <param name="right">The right span.</param>
+        /// <param name="leftStart">The start index for the left list.</param>
+        /// <param name="leftLength">The length for the left list.</param>
+        /// <param name="rightStart">The start index for the right list.</param>
+        /// <param name="rightLength">The length for the right list. </param>
         /// <param name="equalityComparer">The equality comparison function.</param>
         /// <returns>The matrix with the sequence length at the index positions.</returns>
-        private static int[,] CreateLcsMatrix<T>(ReadOnlySpan<T> left, ReadOnlySpan<T> right, Func<T, T, bool> equalityComparer)
+        private static int[,] CreateLcsMatrix(IList left, IList right, int leftStart, int leftLength, int rightStart, int rightLength, Func<object, object, bool> equalityComparer)
         {
             // first row and column in the array all zeroes to make the lookups a bit easier and faster.
-            var arr = new int[left.Length + 1, right.Length + 1];
+            var arr = new int[leftLength + 1, rightLength + 1];
 
-            for (int i = 1; i <= left.Length; i++)
+            for (int i = 1; i <= leftLength; i++)
             {
-                for (int j = 1; j <= right.Length; j++)
+                for (int j = 1; j <= rightLength; j++)
                 {
-                    if (equalityComparer(left[i - 1], right[j - 1]))
+                    if (equalityComparer(left[leftStart + i - 1], right[rightStart + j - 1]))
                     {
                         arr[i, j] = arr[i - 1, j - 1] + 1;
                     }

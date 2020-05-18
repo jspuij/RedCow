@@ -850,6 +850,17 @@
             Generates patches for a collection.
             </summary>
         </member>
+        <member name="F:RedCow.Immutable.Patches.CollectionPatchGenerator.longestCommonSubsequence">
+            <summary>
+            Provides the Longest Common Subsequence.
+            </summary>
+        </member>
+        <member name="M:RedCow.Immutable.Patches.CollectionPatchGenerator.#ctor(RedCow.Immutable.Patches.ILongestCommonSubsequence)">
+            <summary>
+            Initializes a new instance of the <see cref="T:RedCow.Immutable.Patches.CollectionPatchGenerator"/> class.
+            </summary>
+            <param name="longestCommonSubsequence">A provider that will provide the Longest Common Subsequence of two sequences.</param>
+        </member>
         <member name="M:RedCow.Immutable.Patches.CollectionPatchGenerator.Generate(RedCow.Immutable.IDraft,System.String,Microsoft.AspNetCore.JsonPatch.JsonPatchDocument,Microsoft.AspNetCore.JsonPatch.JsonPatchDocument)">
             <summary>
             Generates JSON Patches for a draft for changes and inverse changes and
@@ -866,34 +877,43 @@
             Largest Common Subsequence problem for two sequences.
             </summary>
         </member>
-        <member name="M:RedCow.Immutable.Patches.DynamicLargestCommonSubsequence.Get``1(System.ReadOnlySpan{``0},System.ReadOnlySpan{``0},System.Func{``0,``0,System.Boolean})">
+        <member name="M:RedCow.Immutable.Patches.DynamicLargestCommonSubsequence.Get(System.Collections.IList,System.Collections.IList,System.Int32,System.Int32,System.Int32,System.Int32,System.Func{System.Object,System.Object,System.Boolean})">
             <summary>
-            Gets the longest common subsequence in the elements from two spans.
+            Gets the longest common subsequence in the elements from two lists.
             </summary>
-            <typeparam name="T">The type of the elements.</typeparam>
             <param name="left">The left span. </param>
             <param name="right">The right span.</param>
+            <param name="leftStart">The start index for the left list.</param>
+            <param name="leftLength">The length for the left list.</param>
+            <param name="rightStart">The start index for the right list.</param>
+            <param name="rightLength">The length for the right list. </param>
             <param name="equalityComparer">The equality comparison function.</param>
             <returns>The longest common subsequence.</returns>
         </member>
-        <member name="M:RedCow.Immutable.Patches.DynamicLargestCommonSubsequence.TraceBack``1(System.Int32[0:,0:],System.ReadOnlySpan{``0},System.ReadOnlySpan{``0},System.Func{``0,``0,System.Boolean})">
+        <member name="M:RedCow.Immutable.Patches.DynamicLargestCommonSubsequence.TraceBack(System.Int32[0:,0:],System.Collections.IList,System.Collections.IList,System.Int32,System.Int32,System.Int32,System.Int32,System.Func{System.Object,System.Object,System.Boolean})">
             <summary>
             Trace back through the matrix to find the Longest Common Subsequence.
             </summary>
-            <typeparam name="T">The type of the elements.</typeparam>
             <param name="matrix">The matrix.</param>
-            <param name="left">The left span.</param>
+            <param name="left">The left span. </param>
             <param name="right">The right span.</param>
+            <param name="leftStart">The start index for the left list.</param>
+            <param name="leftLength">The length for the left list.</param>
+            <param name="rightStart">The start index for the right list.</param>
+            <param name="rightLength">The length for the right list. </param>
             <param name="equalityComparer">The equality comparison function.</param>
             <returns>The Longest Common Subsequence.</returns>
         </member>
-        <member name="M:RedCow.Immutable.Patches.DynamicLargestCommonSubsequence.CreateLcsMatrix``1(System.ReadOnlySpan{``0},System.ReadOnlySpan{``0},System.Func{``0,``0,System.Boolean})">
+        <member name="M:RedCow.Immutable.Patches.DynamicLargestCommonSubsequence.CreateLcsMatrix(System.Collections.IList,System.Collections.IList,System.Int32,System.Int32,System.Int32,System.Int32,System.Func{System.Object,System.Object,System.Boolean})">
             <summary>
             Creates the Lcs Matrix to backtrack through.
             </summary>
-            <typeparam name="T">The type of the elements.</typeparam>
             <param name="left">The left span. </param>
             <param name="right">The right span.</param>
+            <param name="leftStart">The start index for the left list.</param>
+            <param name="leftLength">The length for the left list.</param>
+            <param name="rightStart">The start index for the right list.</param>
+            <param name="rightLength">The length for the right list. </param>
             <param name="equalityComparer">The equality comparison function.</param>
             <returns>The matrix with the sequence length at the index positions.</returns>
         </member>
@@ -902,13 +922,16 @@
             Interface for an algorithm that implements longest common subsequence.
             </summary>
         </member>
-        <member name="M:RedCow.Immutable.Patches.ILongestCommonSubsequence.Get``1(System.ReadOnlySpan{``0},System.ReadOnlySpan{``0},System.Func{``0,``0,System.Boolean})">
+        <member name="M:RedCow.Immutable.Patches.ILongestCommonSubsequence.Get(System.Collections.IList,System.Collections.IList,System.Int32,System.Int32,System.Int32,System.Int32,System.Func{System.Object,System.Object,System.Boolean})">
             <summary>
-            Gets the longest common subsequence in the elements from two spans.
+            Gets the longest common subsequence in the elements from two lists.
             </summary>
-            <typeparam name="T">The type of the elements.</typeparam>
             <param name="left">The left span. </param>
             <param name="right">The right span.</param>
+            <param name="leftStart">The start index for the left list.</param>
+            <param name="leftLength">The length for the left list.</param>
+            <param name="rightStart">The start index for the right list.</param>
+            <param name="rightLength">The length for the right list. </param>
             <param name="equalityComparer">The equality comparison function.</param>
             <returns>The longest common subsequence.</returns>
         </member>

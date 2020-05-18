@@ -18,6 +18,7 @@ namespace RedCow.Test.Patches
 {
     using System;
     using System.Collections.Generic;
+    using System.Linq;
     using System.Text;
     using RedCow.Immutable.Patches;
     using Xunit;
@@ -33,11 +34,11 @@ namespace RedCow.Test.Patches
         [Fact]
         public void LargestCommonSubsequenceTest()
         {
-            var left = "ABCDEFGHIJKLMNOPQRSZ";
-            var right = "BCDQTEFG#2KLMRST4RSTZ";
+            var left = "ABCDEFGHIJKLMNOPQRSZ".ToList();
+            var right = "BCDQTEFG#2KLMRST4RSTZ".ToList();
 
             var dynamicLcs = new DynamicLargestCommonSubsequence();
-            var result = dynamicLcs.Get(left.AsSpan(), right.AsSpan(), (l, r) => Equals(l, r));
+            var result = dynamicLcs.Get(left, right, 0, left.Count, 0, right.Count, (l, r) => Equals(l, r));
 
             var expected = "BCDEFGKLMRSZ";
 

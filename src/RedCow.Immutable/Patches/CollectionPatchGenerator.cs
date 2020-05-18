@@ -29,7 +29,21 @@ namespace RedCow.Immutable.Patches
     /// </summary>
     public class CollectionPatchGenerator : PatchGeneratorBase, IPatchGenerator
     {
-         /// <summary>
+        /// <summary>
+        /// Provides the Longest Common Subsequence.
+        /// </summary>
+        private readonly ILongestCommonSubsequence longestCommonSubsequence;
+
+        /// <summary>
+        /// Initializes a new instance of the <see cref="CollectionPatchGenerator"/> class.
+        /// </summary>
+        /// <param name="longestCommonSubsequence">A provider that will provide the Longest Common Subsequence of two sequences.</param>
+        public CollectionPatchGenerator(ILongestCommonSubsequence longestCommonSubsequence)
+        {
+            this.longestCommonSubsequence = longestCommonSubsequence ?? throw new ArgumentNullException(nameof(longestCommonSubsequence));
+        }
+
+        /// <summary>
         /// Generates JSON Patches for a draft for changes and inverse changes and
         /// adds them to the specified JsonPatchDocuments.
         /// </summary>
@@ -95,6 +109,8 @@ namespace RedCow.Immutable.Patches
             if (commonHead + commonTail == draftList.Count)
             {
                 // Trivial case, a block (one or more consecutive items) was removed
+                // reverse the order so that there is never a problem with different implementations
+                // (patch atomicity v.s. operation atomicity).
                 for (int index = sourceList.Count - commonTail - 1; index >= commonHead; --index)
                 {
                     patches.Remove(basePath.PathJoin($"{index}"));
@@ -103,6 +119,15 @@ namespace RedCow.Immutable.Patches
 
                 return;
             }
+
+            var lcs = this.longestCommonSubsequence.Get(
+                sourceList,
+                draftList,
+                commonHead,
+                sourceList.Count - commonTail - commonHead,
+                commonHead,
+                draftList.Count - commonTail - commonHead,
+                DraftOrOriginalEquals);
         }
     }
 }
