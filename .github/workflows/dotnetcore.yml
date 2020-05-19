@@ -29,5 +29,5 @@ jobs:
     - name: Pack
       run: dotnet pack --configuration Release
     - name: Publish
-      run: dotnet nuget push "packages/*.nupkg"
+      run: dotnet nuget push "packages/*.nupkg" --skip-duplicate
 
