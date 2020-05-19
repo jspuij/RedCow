@@ -19,7 +19,7 @@ jobs:
         dotnet-version: 3.1.300
         source-url: https://nuget.pkg.github.com/jspuij/index.json
       env:
-        NUGET_AUTH_TOKEN: ${{secrets.GITHUB_TOKEN}}        
+        NUGET_AUTH_TOKEN: ${{secrets.BUILD_Token}}        
     - name: Install dependencies
       run: dotnet restore
     - name: Build
