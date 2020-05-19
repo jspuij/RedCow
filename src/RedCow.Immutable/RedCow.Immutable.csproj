@@ -6,6 +6,11 @@
     <RootNamespace>RedCow</RootNamespace>
     <GeneratePackageOnBuild>false</GeneratePackageOnBuild>
     <Nullable>enable</Nullable>
+    <Description>
+      RedCow is a project that allows you to create unidirectional data flow
+      inside your c# application using immutable state without any boilerplate.
+      This package allows you to create immutable state using mutable drafts.
+    </Description>
   </PropertyGroup>
 
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|AnyCPU'">

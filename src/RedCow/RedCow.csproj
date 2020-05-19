@@ -6,6 +6,10 @@
     <TargetFramework>netstandard2.1</TargetFramework>
     <GeneratePackageOnBuild>false</GeneratePackageOnBuild>
     <IncludeSymbols>false</IncludeSymbols>
+    <Description>RedCow is a project that allows you to create unidirectional data flow
+    inside your c# application using immutable state without any boilerplate.
+    This is a meta package that pulls in two other packages: RedCow.Immutable, RedCow.Generators.
+    </Description>
 </PropertyGroup>
 
   <ItemGroup>

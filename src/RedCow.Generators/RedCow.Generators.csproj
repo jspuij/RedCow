@@ -5,6 +5,11 @@
   <PropertyGroup>
     <TargetFramework>netcoreapp2.1</TargetFramework>
     <GeneratePackageOnBuild>false</GeneratePackageOnBuild>
+    <Description>
+      RedCow is a project that allows you to create unidirectional data flow
+      inside your c# application using immutable state without any boilerplate.
+      This package contains code generators to accellerate coding.
+    </Description>
   </PropertyGroup>
 
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|AnyCPU'">
