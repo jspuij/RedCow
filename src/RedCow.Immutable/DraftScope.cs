@@ -23,6 +23,7 @@ namespace RedCow.Immutable
     using System;
     using System.Collections;
     using System.Collections.Generic;
+    using System.IO;
     using System.Linq;
     using System.Runtime.InteropServices.ComTypes;
     using System.Xml.Schema;
@@ -67,9 +68,24 @@ namespace RedCow.Immutable
             this.producerOptions.AllowedImmutableReferenceTypes;
 
         /// <summary>
+        /// Gets the Patches.
+        /// </summary>
+        public JsonPatchDocument? Patches => this.producerOptions.Patches;
+
+        /// <summary>
+        /// Gets the Inverse Patches.
+        /// </summary>
+        public JsonPatchDocument? InversePatches => this.producerOptions.InversePatches;
+
+        /// <summary>
         /// Gets or sets a value indicating whether this scope is finishing.
         /// </summary>
         internal bool IsFinishing { get; set; }
+
+        /// <summary>
+        /// Gets a set of objects that we received patches for from a child scope.
+        /// </summary>
+        internal HashSet<object> HasPatches { get; } = new HashSet<object>();
 
         /// <summary>
         /// Cleans up the scope.
@@ -117,9 +133,10 @@ namespace RedCow.Immutable
         /// Creates a draft proxy using the current scope and clone provider.
         /// </summary>
         /// <param name="source">The source object to create the proxy for.</param>
+        /// <param name="path">The path.</param>
         /// <exception cref="InvalidOperationException">When the source object is not draftable.</exception>
         /// <returns>An instance of type T.</returns>
-        public object CreateProxy(object source)
+        public object CreateProxy(object source, PathSegment? path)
         {
             if (InternalGetDraftState(source)?.Scope == this)
             {
@@ -134,8 +151,8 @@ namespace RedCow.Immutable
             }
 
             var draftState = (source is System.Collections.IEnumerable) ?
-                new CollectionDraftState(this, source) :
-                (DraftState)new ObjectDraftState(this, source);
+                new CollectionDraftState(this, source, path) :
+                (DraftState)new ObjectDraftState(this, source, path);
 
             // TODO: pluggable object creation.
             object result = Activator.CreateInstance(proxyType);
@@ -161,17 +178,25 @@ namespace RedCow.Immutable
             JsonPatchDocument? patches = null;
             JsonPatchDocument? inversePatches = null;
 
-            string? basePath = null;
+            if (this.Parent?.Patches != null && this.Patches == null)
+            {
+                patches = new JsonPatchDocument();
+                inversePatches = new JsonPatchDocument();
+            }
+            else
+            {
+                patches = this.Patches;
+                inversePatches = this.InversePatches;
+            }
 
-            if ((patches = this.producerOptions.Patches) != null && (inversePatches = this.producerOptions.InversePatches) != null)
+            if (patches != null && inversePatches != null)
             {
                 objectPatchGenerator = new ObjectPatchGenerator();
                 dictionaryPatchGenerator = new DictionaryPatchGenerator();
                 collectionPatchGenerator = new CollectionPatchGenerator(new DynamicLargestCommonSubsequence());
-                basePath = "/";
             }
 
-            object? Reconcile(object? draft, string? currentPath)
+            object? Reconcile(object? draft)
             {
                 if (draft == null)
                 {
@@ -200,7 +225,7 @@ namespace RedCow.Immutable
                     {
                         foreach ((string propertyName, object child) in objectDraftState.ChildDrafts)
                         {
-                            var immutable = Reconcile(child, currentPath?.PathJoin(propertyName));
+                            var immutable = Reconcile(child);
 
                             if (ReferenceEquals(immutable, child))
                             {
@@ -212,7 +237,7 @@ namespace RedCow.Immutable
                             }
                         }
 
-                        objectPatchGenerator?.Generate(idraft, currentPath, patches!, inversePatches!);
+                        objectPatchGenerator?.Generate(idraft, idraft.DraftState!.Path!.ToString(), patches!, inversePatches!);
                     }
                     else if (idraft.DraftState is CollectionDraftState collectionDraftState)
                     {
@@ -222,7 +247,7 @@ namespace RedCow.Immutable
                             {
                                 if (InternalIsDraft(entry.Value) && this.drafts.Contains(entry.Value))
                                 {
-                                    var immutable = Reconcile(entry.Value, currentPath?.PathJoin(entry.Key.ToString()));
+                                    var immutable = Reconcile(entry.Value);
 
                                     delayedOperations.Add(() =>
                                     {
@@ -241,7 +266,7 @@ namespace RedCow.Immutable
                                 }
                             }
 
-                            dictionaryPatchGenerator?.Generate(idraft, currentPath, patches!, inversePatches!);
+                            dictionaryPatchGenerator?.Generate(idraft, idraft.DraftState!.Path!.ToString(), patches!, inversePatches!);
                         }
                         else if (draft is IList list)
                         {
@@ -251,7 +276,7 @@ namespace RedCow.Immutable
                                 object? child = list[i];
                                 if (InternalIsDraft(child) && this.drafts.Contains(child))
                                 {
-                                    var immutable = Reconcile(child, currentPath?.PathJoin(i.ToString()));
+                                    var immutable = Reconcile(child);
 
                                     // capture i
                                     int captured = i;
@@ -273,7 +298,7 @@ namespace RedCow.Immutable
                                 }
                             }
 
-                            collectionPatchGenerator?.Generate(idraft, currentPath, patches!, inversePatches!);
+                            collectionPatchGenerator?.Generate(idraft, idraft.DraftState!.Path!.ToString(), patches!, inversePatches!);
                         }
                     }
 
@@ -295,14 +320,23 @@ namespace RedCow.Immutable
             this.IsFinishing = true;
             try
             {
-                draft = Reconcile(draft, basePath);
+                draft = Reconcile(draft);
 
                 if (draft is ILockable lockable)
                 {
                     lockable.Lock();
                 }
 
-                this.producerOptions.InversePatches?.Operations.Reverse();
+                if (this.Parent?.Patches != null)
+                {
+                    this.Parent.Patches.Operations.AddRange(patches!.Operations);
+                    this.Parent.InversePatches!.Operations.AddRange(inversePatches!.Operations);
+                    this.Parent.HasPatches.Add(draft);
+                }
+                else
+                {
+                    this.producerOptions.InversePatches?.Operations.Reverse();
+                }
 
                 return draft;
             }

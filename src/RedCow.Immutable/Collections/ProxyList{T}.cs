@@ -46,7 +46,7 @@ namespace RedCow.Immutable.Collections
                     return this.InnerCollection[index];
                 }
 
-                return this.CollectionDraftState!.Get(() => this.InnerCollection[index], value => this.InnerCollection[index] = value, this.CopyOnWrite);
+                return this.CollectionDraftState!.Get(index.ToString(), () => this.InnerCollection[index], value => this.InnerCollection[index] = value, this.CopyOnWrite);
             }
 
             set
@@ -166,7 +166,7 @@ namespace RedCow.Immutable.Collections
             {
                 try
                 {
-                    yield return this.CollectionDraftState!.Get(() => enumerator.Current, value => this.InnerCollection[index] = value, this.CopyOnWrite);
+                    yield return this.CollectionDraftState!.Get(index.ToString(), () => enumerator.Current, value => this.InnerCollection[index] = value, this.CopyOnWrite);
                 }
                 finally
                 {

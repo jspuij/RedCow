@@ -70,8 +70,8 @@ namespace RedCow.Immutable.Patches
                 // if the newValue is a draft and points to the same original, it's actually the same object in
                 // a mutable sense and the patches will reflect that. Otherwise we would end up with very large patches
                 // of the entire tree.
-                if (Equals(oldValue, newValue) ||
-                    (newValue is IDraft newDraft && Equals(oldValue, newDraft.DraftState!.GetOriginal<object>())))
+                if (Equals(oldValue, newValue) || draft.DraftState.Scope.HasPatches.Contains(newValue) ||
+                    (newValue is IDraft newDraft && newDraft.DraftState != null && Equals(oldValue, newDraft.DraftState!.GetOriginal<object>())))
                 {
                     continue;
                 }

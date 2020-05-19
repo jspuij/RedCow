@@ -21,18 +21,20 @@
             A draft state for Collections.
             </summary>
         </member>
-        <member name="M:RedCow.Immutable.CollectionDraftState.#ctor(RedCow.Immutable.DraftScope,System.Object)">
+        <member name="M:RedCow.Immutable.CollectionDraftState.#ctor(RedCow.Immutable.DraftScope,System.Object,RedCow.Immutable.Patches.PathSegment)">
             <summary>
             Initializes a new instance of the <see cref="T:RedCow.Immutable.CollectionDraftState"/> class.
             </summary>
             <param name="scope">The scope this draft state belongs to.</param>
             <param name="original">The original.</param>
+            <param name="path">The path segment.</param>
         </member>
-        <member name="M:RedCow.Immutable.CollectionDraftState.Get``1(System.Func{``0},System.Action{``0},System.Action)">
+        <member name="M:RedCow.Immutable.CollectionDraftState.Get``1(System.String,System.Func{``0},System.Action{``0},System.Action)">
             <summary>
             Gets a proxy based on the get and set functions provided.
             </summary>
             <typeparam name="T">The proxy type.</typeparam>
+            <param name="index">The index path segment.</param>
             <param name="getter">The getter.</param>
             <param name="setter">The setter.</param>
             <param name="copyOnWrite">The copy on write method.</param>
@@ -688,9 +690,24 @@
             Gets the allowed immutable reference types.
             </summary>
         </member>
+        <member name="P:RedCow.Immutable.DraftScope.Patches">
+            <summary>
+            Gets the Patches.
+            </summary>
+        </member>
+        <member name="P:RedCow.Immutable.DraftScope.InversePatches">
+            <summary>
+            Gets the Inverse Patches.
+            </summary>
+        </member>
         <member name="P:RedCow.Immutable.DraftScope.IsFinishing">
             <summary>
             Gets or sets a value indicating whether this scope is finishing.
+            </summary>
+        </member>
+        <member name="P:RedCow.Immutable.DraftScope.HasPatches">
+            <summary>
+            Gets a set of objects that we received patches for from a child scope.
             </summary>
         </member>
         <member name="M:RedCow.Immutable.DraftScope.Dispose">
@@ -707,11 +724,12 @@
             <param name="draft">The draft.</param>
             <returns>The immutable.</returns>
         </member>
-        <member name="M:RedCow.Immutable.DraftScope.CreateProxy(System.Object)">
+        <member name="M:RedCow.Immutable.DraftScope.CreateProxy(System.Object,RedCow.Immutable.Patches.PathSegment)">
             <summary>
             Creates a draft proxy using the current scope and clone provider.
             </summary>
             <param name="source">The source object to create the proxy for.</param>
+            <param name="path">The path.</param>
             <exception cref="T:System.InvalidOperationException">When the source object is not draftable.</exception>
             <returns>An instance of type T.</returns>
         </member>
@@ -732,12 +750,13 @@
             The original object.
             </summary>
         </member>
-        <member name="M:RedCow.Immutable.DraftState.#ctor(RedCow.Immutable.DraftScope,System.Object)">
+        <member name="M:RedCow.Immutable.DraftState.#ctor(RedCow.Immutable.DraftScope,System.Object,RedCow.Immutable.Patches.PathSegment)">
             <summary>
             Initializes a new instance of the <see cref="T:RedCow.Immutable.DraftState"/> class.
             </summary>
             <param name="scope">The scope this draft state belongs to.</param>
             <param name="original">The original.</param>
+            <param name="path">The path segment.</param>
         </member>
         <member name="P:RedCow.Immutable.DraftState.Revoked">
             <summary>
@@ -752,6 +771,11 @@
         <member name="P:RedCow.Immutable.DraftState.Scope">
             <summary>
             Gets the scope this draft belongs to.
+            </summary>
+        </member>
+        <member name="P:RedCow.Immutable.DraftState.Path">
+            <summary>
+            Gets the path for this node. Only filled when patches are enabled.
             </summary>
         </member>
         <member name="M:RedCow.Immutable.DraftState.GetOriginal``1">
@@ -811,12 +835,13 @@
             A draft state for objects.
             </summary>
         </member>
-        <member name="M:RedCow.Immutable.ObjectDraftState.#ctor(RedCow.Immutable.DraftScope,System.Object)">
+        <member name="M:RedCow.Immutable.ObjectDraftState.#ctor(RedCow.Immutable.DraftScope,System.Object,RedCow.Immutable.Patches.PathSegment)">
             <summary>
             Initializes a new instance of the <see cref="T:RedCow.Immutable.ObjectDraftState"/> class.
             </summary>
             <param name="scope">The scope this draft state belongs to.</param>
             <param name="original">The original.</param>
+            <param name="path">The path segment.</param>
         </member>
         <member name="P:RedCow.Immutable.ObjectDraftState.ChildDrafts">
             <summary>
@@ -1016,6 +1041,40 @@
             <param name="basePath">The base path.</param>
             <param name="subPath">The sub path.</param>
             <returns>The joined path.</returns>
+        </member>
+        <member name="T:RedCow.Immutable.Patches.PathSegment">
+            <summary>
+            Represents a patch segment.
+            </summary>
+        </member>
+        <member name="M:RedCow.Immutable.Patches.PathSegment.#ctor(System.String)">
+            <summary>
+            Initializes a new instance of the <see cref="T:RedCow.Immutable.Patches.PathSegment"/> class.
+            </summary>
+            <param name="value">The value.</param>
+        </member>
+        <member name="M:RedCow.Immutable.Patches.PathSegment.#ctor(RedCow.Immutable.Patches.PathSegment,System.String)">
+            <summary>
+            Initializes a new instance of the <see cref="T:RedCow.Immutable.Patches.PathSegment"/> class.
+            </summary>
+            <param name="parent">The parent.</param>
+            <param name="value">The value.</param>
+        </member>
+        <member name="P:RedCow.Immutable.Patches.PathSegment.Parent">
+            <summary>
+            Gets the parent.
+            </summary>
+        </member>
+        <member name="P:RedCow.Immutable.Patches.PathSegment.Value">
+            <summary>
+            Gets the value.
+            </summary>
+        </member>
+        <member name="M:RedCow.Immutable.Patches.PathSegment.ToString">
+            <summary>
+            Returns the string that represents the entire path to the root.
+            </summary>
+            <returns>The path.</returns>
         </member>
         <member name="T:RedCow.Immutable.ProxyTypeAttribute">
             <summary>

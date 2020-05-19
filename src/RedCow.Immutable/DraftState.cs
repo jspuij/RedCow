@@ -18,6 +18,8 @@ namespace RedCow.Immutable
 {
     using System;
     using System.Collections.Generic;
+    using System.IO;
+    using RedCow.Immutable.Patches;
 
     /// <summary>
     /// State for drafts.
@@ -34,10 +36,12 @@ namespace RedCow.Immutable
         /// </summary>
         /// <param name="scope">The scope this draft state belongs to.</param>
         /// <param name="original">The original.</param>
-        public DraftState(DraftScope scope, object original)
+        /// <param name="path">The path segment.</param>
+        public DraftState(DraftScope scope, object original, PathSegment? path)
         {
             this.Scope = scope ?? throw new ArgumentNullException(nameof(scope));
             this.original = original ?? throw new ArgumentNullException(nameof(original));
+            this.Path = path;
         }
 
         /// <summary>
@@ -54,6 +58,11 @@ namespace RedCow.Immutable
         /// Gets the scope this draft belongs to.
         /// </summary>
         public DraftScope Scope { get; private set;  }
+
+        /// <summary>
+        /// Gets the path for this node. Only filled when patches are enabled.
+        /// </summary>
+        public PathSegment? Path { get; private set; }
 
         /// <summary>
         /// Gets the original.

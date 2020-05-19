@@ -22,6 +22,7 @@ namespace RedCow.Immutable
     using System.Linq;
     using System.Reflection;
     using RedCow.Immutable.Collections;
+    using RedCow.Immutable.Patches;
 
     /// <summary>
     /// Extension methods for drafts.
@@ -81,13 +82,19 @@ namespace RedCow.Immutable
 
             try
             {
+                PathSegment? path = (scope.Patches != null) ? new PathSegment("/") : null;
+
                 var draftState = InternalGetDraftState(state);
                 if (draftState != null)
                 {
                     scope.Parent = draftState.Scope;
+                    if (draftState != null)
+                    {
+                        path = draftState.Path;
+                    }
                 }
 
-                draft = (T)scope.CreateProxy(state);
+                draft = (T)scope.CreateProxy(state, path);
                 return scope;
             }
             catch

@@ -20,6 +20,7 @@ namespace RedCow.Immutable
     using System.Collections.Generic;
     using System.Text;
     using RedCow.Immutable;
+    using RedCow.Immutable.Patches;
     using static DraftExtensions;
 
     /// <summary>
@@ -32,8 +33,9 @@ namespace RedCow.Immutable
         /// </summary>
         /// <param name="scope">The scope this draft state belongs to.</param>
         /// <param name="original">The original.</param>
-        public CollectionDraftState(DraftScope scope, object original)
-            : base(scope, original)
+        /// <param name="path">The path segment.</param>
+        public CollectionDraftState(DraftScope scope, object original, PathSegment? path)
+            : base(scope, original, path)
         {
         }
 
@@ -41,11 +43,12 @@ namespace RedCow.Immutable
         /// Gets a proxy based on the get and set functions provided.
         /// </summary>
         /// <typeparam name="T">The proxy type.</typeparam>
+        /// <param name="index">The index path segment.</param>
         /// <param name="getter">The getter.</param>
         /// <param name="setter">The setter.</param>
         /// <param name="copyOnWrite">The copy on write method.</param>
         /// <returns>The proxied value.</returns>
-        public T Get<T>(Func<T> getter, Action<T> setter, Action copyOnWrite)
+        public T Get<T>(string index, Func<T> getter, Action<T> setter, Action copyOnWrite)
         {
             if (this.Revoked)
             {
@@ -71,7 +74,9 @@ namespace RedCow.Immutable
                 return result;
             }
 
-            result = (T)this.Scope.CreateProxy(result);
+            PathSegment? path = (this.Path != null) ? new PathSegment(this.Path, index) : null;
+
+            result = (T)this.Scope.CreateProxy(result, path);
             copyOnWrite();
             setter(result);
 

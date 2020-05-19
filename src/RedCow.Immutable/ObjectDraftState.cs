@@ -21,6 +21,7 @@ namespace RedCow.Immutable
     using System.Text;
     using RedCow;
     using RedCow.Immutable;
+    using RedCow.Immutable.Patches;
     using static DraftExtensions;
 
     /// <summary>
@@ -33,8 +34,9 @@ namespace RedCow.Immutable
         /// </summary>
         /// <param name="scope">The scope this draft state belongs to.</param>
         /// <param name="original">The original.</param>
-        public ObjectDraftState(DraftScope scope, object original)
-            : base(scope, original)
+        /// <param name="path">The path segment.</param>
+        public ObjectDraftState(DraftScope scope, object original, PathSegment? path)
+            : base(scope, original, path)
         {
         }
 
@@ -88,7 +90,9 @@ namespace RedCow.Immutable
                 return result;
             }
 
-            result = (T)this.Scope.CreateProxy(result);
+            PathSegment? path = (this.Path != null) ? new PathSegment(this.Path, propertyName) : null;
+
+            result = (T)this.Scope.CreateProxy(result, path);
             this.ChildDrafts.Add(propertyName, result);
             setter(result);
 

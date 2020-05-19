@@ -63,9 +63,9 @@ namespace RedCow.Patches
 
             // Equals function that compares both values, but also checks whether the newValue might be just a
             // draft of the old value.
-            static bool DraftOrOriginalEquals(object oldValue, object newValue) =>
-                Equals(oldValue, newValue) ||
-                   (newValue is IDraft newDraft && Equals(oldValue, newDraft.DraftState!.GetOriginal<object>()));
+            bool DraftOrOriginalEquals(object oldValue, object newValue) =>
+                Equals(oldValue, newValue) || draft.DraftState.Scope.HasPatches.Contains(newValue) ||
+                   (newValue is IDraft newDraft && newDraft.DraftState != null && Equals(oldValue, newDraft.DraftState!.GetOriginal<object>()));
 
             foreach (DictionaryEntry entry in sourceDictionary)
             {

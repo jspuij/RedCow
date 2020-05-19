@@ -122,7 +122,7 @@ namespace RedCow.Immutable.Collections
                     return this.InnerCollection[key];
                 }
 
-                return this.CollectionDraftState!.Get(() => this.InnerCollection[key], value => this.InnerCollection[key] = value, this.CopyOnWrite);
+                return this.CollectionDraftState!.Get(key.ToString(), () => this.InnerCollection[key], value => this.InnerCollection[key] = value, this.CopyOnWrite);
             }
 
             set
@@ -191,7 +191,7 @@ namespace RedCow.Immutable.Collections
             }
             else
             {
-                value = this.CollectionDraftState!.Get(() => source, v => this.InnerCollection[key] = v, this.CopyOnWrite);
+                value = this.CollectionDraftState!.Get(key.ToString(), () => source, v => this.InnerCollection[key] = v, this.CopyOnWrite);
             }
 
             return result;
@@ -245,7 +245,7 @@ namespace RedCow.Immutable.Collections
             while (enumerator.MoveNext())
             {
                 var original = enumerator.Current;
-                yield return new KeyValuePair<TKey, TValue>(original.Key, this.CollectionDraftState!.Get(() => original.Value, value => this.InnerCollection[original.Key] = value, this.CopyOnWrite));
+                yield return new KeyValuePair<TKey, TValue>(original.Key, this.CollectionDraftState!.Get(original.Key.ToString(), () => original.Value, value => this.InnerCollection[original.Key] = value, this.CopyOnWrite));
             }
         }
 
@@ -449,7 +449,7 @@ namespace RedCow.Immutable.Collections
                 while (enumerator.MoveNext())
                 {
                     var original = enumerator.Current;
-                    yield return this.dictionary.CollectionDraftState!.Get(() => original.Value, value => this.dictionary.InnerCollection[original.Key] = value, this.dictionary.CopyOnWrite);
+                    yield return this.dictionary.CollectionDraftState!.Get(original.Key.ToString(), () => original.Value, value => this.dictionary.InnerCollection[original.Key] = value, this.dictionary.CopyOnWrite);
                 }
             }
         }

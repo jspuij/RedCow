@@ -30,7 +30,7 @@ namespace RedCow.Test
     public class PatchTests
     {
         /// <summary>
-        /// Test using nested producers with patches.
+        /// Test using producers with patches.
         /// </summary>
         [Fact]
         public void ProduceWithPatchesTest()
@@ -89,6 +89,93 @@ namespace RedCow.Test
               {
                 'value': 'Doe',
                 'path': '/LastName',
+                'op': 'replace'
+              },
+              {
+                'value': false,
+                'path': '/Cars/0/Crashed',
+                'op': 'replace'
+              }
+            ]
+            ", JsonConvert.SerializeObject(inversePatches));
+        }
+
+        /// <summary>
+        /// Test using nested producers with patches.
+        /// </summary>
+        [Fact]
+        public void NestedProduceWithPatchesTest()
+        {
+            ITestPerson initial = ITestPerson.Produce(new TestPerson()
+            {
+                FirstName = "John",
+                LastName = "Doe",
+                IsAdult = true,
+                Cars = new List<Car>()
+                {
+                    new Car
+                    {
+                        Make = "Ferrari",
+                        Model = "250 LM",
+                    },
+                    new Car
+                    {
+                        Make = "Shelby",
+                        Model = "Daytona Cobra Coupe",
+                    },
+                },
+            });
+
+            var patches = new JsonPatchDocument();
+            var inversePatches = new JsonPatchDocument();
+
+            var options = ProducerOptions.Default.WithPatches(patches, inversePatches);
+
+            var crasher = ICar.Producer(c => c.Crashed = true);
+
+            var result = initial.Produce(
+                p =>
+                {
+                    p.LastName = "SadDoe";
+
+                    for (int i = 0; i < p.Cars.Count; i++)
+                    {
+                        p.Cars[i] = (Car)crasher.Invoke(p.Cars[i]);
+                    }
+                }, options);
+
+            JsonAssert.Equal(
+            @"
+           [
+              {
+                'value': true,
+                'path': '/Cars/0/Crashed',
+                'op': 'replace'
+              },
+              {
+                'value': true,
+                'path': '/Cars/1/Crashed',
+                'op': 'replace'
+              },
+              {
+                'value': 'SadDoe',
+                'path': '/LastName',
+                'op': 'replace'
+              }
+            ]
+            ", JsonConvert.SerializeObject(patches));
+
+            JsonAssert.Equal(
+            @"
+            [
+              {
+                'value': 'Doe',
+                'path': '/LastName',
+                'op': 'replace'
+              },
+              {
+                'value': false,
+                'path': '/Cars/1/Crashed',
                 'op': 'replace'
               },
               {

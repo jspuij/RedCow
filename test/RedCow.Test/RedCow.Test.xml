@@ -961,6 +961,11 @@
         </member>
         <member name="M:RedCow.Test.PatchTests.ProduceWithPatchesTest">
             <summary>
+            Test using producers with patches.
+            </summary>
+        </member>
+        <member name="M:RedCow.Test.PatchTests.NestedProduceWithPatchesTest">
+            <summary>
             Test using nested producers with patches.
             </summary>
         </member>
