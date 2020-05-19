@@ -331,7 +331,10 @@ namespace RedCow.Immutable
                 {
                     this.Parent.Patches.Operations.AddRange(patches!.Operations);
                     this.Parent.InversePatches!.Operations.AddRange(inversePatches!.Operations);
-                    this.Parent.HasPatches.Add(draft);
+                    if (draft != null)
+                    {
+                        this.Parent.HasPatches.Add(draft);
+                    }
                 }
                 else
                 {
