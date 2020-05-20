@@ -4,6 +4,22 @@
         <name>RedCow.X</name>
     </assembly>
     <members>
+        <member name="T:RedCow.DelegateDisposable">
+            <summary>
+            Executes a delegate when disposed.
+            </summary>
+        </member>
+        <member name="M:RedCow.DelegateDisposable.#ctor(System.Action)">
+            <summary>
+            Initializes a new instance of the <see cref="T:RedCow.DelegateDisposable"/> class.
+            </summary>
+            <param name="disposeAction">The dispose action.</param>
+        </member>
+        <member name="M:RedCow.DelegateDisposable.Dispose">
+            <summary>
+            Executes the delegate.
+            </summary>
+        </member>
         <member name="T:RedCow.GenerateActionAttribute">
             <summary>
             Generates an action type for all methods decorated with this attribute.
@@ -26,21 +42,64 @@
             </summary>
             <param name="action">The action to dispatch.</param>
         </member>
+        <member name="T:RedCow.StateException">
+            <summary>
+            Exception that occurs when the state cannot be received.
+            </summary>
+        </member>
+        <member name="M:RedCow.StateException.#ctor(System.String)">
+            <summary>
+            Initializes a new instance of the <see cref="T:RedCow.StateException"/> class.
+            </summary>
+            <param name="message">The error message.</param>
+        </member>
         <member name="T:RedCow.Store`1">
             <summary>
             Implements a store.
             </summary>
             <typeparam name="T">The type of the State in the store.</typeparam>
         </member>
+        <member name="F:RedCow.Store`1.Init">
+            <summary>
+            An action that is dispatched at the start to make sure that the
+            store is initialized by calling all the reducers.
+            </summary>
+        </member>
         <member name="F:RedCow.Store`1.reducer">
             <summary>
             The reducer that is called on dispatch.
+            </summary>
+        </member>
+        <member name="F:RedCow.Store`1.subscriptions">
+            <summary>
+            Subscriptions to this observable.
+            </summary>
+        </member>
+        <member name="F:RedCow.Store`1.subscriptionsChanged">
+            <summary>
+            A boolean indicating that the subscriptions changed.
+            </summary>
+        </member>
+        <member name="F:RedCow.Store`1.subscriptionsToNotify">
+            <summary>
+            A copy of the subscriptions that is used to iterate over.
             </summary>
         </member>
         <member name="F:RedCow.Store`1.dispatching">
             <summary>
             A boolean indicating that we are dispatching.
             </summary>
+        </member>
+        <member name="F:RedCow.Store`1.state">
+            <summary>
+            A reference to the store state.
+            </summary>
+        </member>
+        <member name="M:RedCow.Store`1.#ctor(System.Func{`0,System.Object,`0})">
+            <summary>
+            Initializes a new instance of the <see cref="T:RedCow.Store`1"/> class.
+            </summary>
+            <param name="reducer">The root reducer.</param>
         </member>
         <member name="M:RedCow.Store`1.#ctor(`0,System.Func{`0,System.Object,`0})">
             <summary>
@@ -59,6 +118,13 @@
             Dispatches an action.
             </summary>
             <param name="action">The action to dispatch.</param>
+        </member>
+        <member name="M:RedCow.Store`1.Subscribe(System.IObserver{`0})">
+            <summary>
+            Notifies the store that an observer is ready to receive notifications.
+            </summary>
+            <param name="observer">The observer.</param>
+            <returns>A disposable that can be used to cancel the subscription.</returns>
         </member>
     </members>
 </doc>

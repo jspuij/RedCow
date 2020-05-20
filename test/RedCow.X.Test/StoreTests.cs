@@ -16,6 +16,9 @@
 
 namespace RedCow.X.Test
 {
+    using System;
+    using System.Collections.Generic;
+    using RedCow.Test;
     using Xunit;
 
     /// <summary>
@@ -23,9 +26,99 @@ namespace RedCow.X.Test
     /// </summary>
     public class StoreTests
     {
+        /// <summary>
+        /// Tests that Dispatch of an action works.
+        /// </summary>
         [Fact]
-        public void Test1()
+        public void DispatchTest()
         {
+            TestPerson initial = new TestPerson()
+            {
+                FirstName = "John",
+                LastName = "Doe",
+            };
+
+            var reducer = ITestPerson.Producer<object>((person, action) =>
+            {
+                switch (action)
+                {
+                    case "ChangeGender":
+                        person.FirstName = "Jane";
+                        break;
+                }
+            });
+
+            var store = new Store<ITestPerson>(initial, reducer);
+            store.Dispatch("ChangeGender");
+
+            Assert.NotSame(initial, store.State);
+            Assert.Equal("Jane", store.State.FirstName);
+        }
+
+        /// <summary>
+        /// Tests registering an observer to the store.
+        /// </summary>
+        [Fact]
+        public void ObserverTest()
+        {
+            TestPerson initial = new TestPerson()
+            {
+                FirstName = "John",
+                LastName = "Doe",
+            };
+
+            var reducer = ITestPerson.Producer<object>((person, action) =>
+            {
+                switch (action)
+                {
+                    case "ChangeGender":
+                        person.FirstName = "Jane";
+                        break;
+                }
+            });
+
+            var store = new Store<ITestPerson>(initial, reducer);
+            var observer = new StoreObserver();
+
+            using var disposable = store.Subscribe(observer);
+            store.Dispatch("ChangeGender");
+
+            Assert.Collection(observer.Values, t =>
+            {
+                Assert.NotSame(initial, t);
+                Assert.Equal("Jane", t.FirstName);
+            });
+        }
+
+        /// <summary>
+        /// Mini observer class to test the observables.
+        /// </summary>
+        private class StoreObserver : IObserver<ITestPerson>
+        {
+            private readonly List<ITestPerson> values = new List<ITestPerson>();
+
+            /// <summary>
+            /// Gets the values that were observed.
+            /// </summary>
+            public IReadOnlyList<ITestPerson> Values { get => this.values; }
+
+            public void OnCompleted()
+            {
+            }
+
+            public void OnError(Exception error)
+            {
+            }
+
+            /// <summary>
+            /// Provides the observer with new data.
+            /// Stores dat in values list.
+            /// </summary>
+            /// <param name="value">The provided value.</param>
+            public void OnNext(ITestPerson value)
+            {
+                this.values.Add(value);
+            }
         }
     }
 }

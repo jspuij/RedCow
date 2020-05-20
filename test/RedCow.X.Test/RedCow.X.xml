@@ -9,5 +9,32 @@
             Unit tests for the store.
             </summary>
         </member>
+        <member name="M:RedCow.X.Test.StoreTests.DispatchTest">
+            <summary>
+            Tests that Dispatch of an action works.
+            </summary>
+        </member>
+        <member name="M:RedCow.X.Test.StoreTests.ObserverTest">
+            <summary>
+            Tests registering an observer to the store.
+            </summary>
+        </member>
+        <member name="T:RedCow.X.Test.StoreTests.StoreObserver">
+            <summary>
+            Mini observer class to test the observables.
+            </summary>
+        </member>
+        <member name="P:RedCow.X.Test.StoreTests.StoreObserver.Values">
+            <summary>
+            Gets the values that were observed.
+            </summary>
+        </member>
+        <member name="M:RedCow.X.Test.StoreTests.StoreObserver.OnNext(RedCow.Test.ITestPerson)">
+            <summary>
+            Provides the observer with new data.
+            Stores dat in values list.
+            </summary>
+            <param name="value">The provided value.</param>
+        </member>
     </members>
 </doc>

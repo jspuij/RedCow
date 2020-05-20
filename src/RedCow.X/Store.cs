@@ -17,22 +17,40 @@
 namespace RedCow
 {
     using System;
-    using System.Collections.Concurrent;
     using System.Collections.Generic;
-    using System.Runtime.InteropServices.ComTypes;
-    using System.Text;
-    using System.Threading;
+    using System.Linq;
 
     /// <summary>
     /// Implements a store.
     /// </summary>
     /// <typeparam name="T">The type of the State in the store.</typeparam>
-    public class Store<T> : IStore<T>
+    public class Store<T> : IStore<T>, IObservable<T>
     {
+        /// <summary>
+        /// An action that is dispatched at the start to make sure that the
+        /// store is initialized by calling all the reducers.
+        /// </summary>
+        private const string Init = "RedCow.X.Store.Init";
+
         /// <summary>
         /// The reducer that is called on dispatch.
         /// </summary>
         private readonly Func<T, object, T> reducer;
+
+        /// <summary>
+        /// Subscriptions to this observable.
+        /// </summary>
+        private readonly HashSet<IObserver<T>> subscriptions = new HashSet<IObserver<T>>();
+
+        /// <summary>
+        /// A boolean indicating that the subscriptions changed.
+        /// </summary>
+        private bool subscriptionsChanged = false;
+
+        /// <summary>
+        /// A copy of the subscriptions that is used to iterate over.
+        /// </summary>
+        private IObserver<T>[]? subscriptionsToNotify;
 
         /// <summary>
         /// A boolean indicating that we are dispatching.
@@ -40,20 +58,47 @@ namespace RedCow
         private bool dispatching = false;
 
         /// <summary>
+        /// A reference to the store state.
+        /// </summary>
+        private T state;
+
+        /// <summary>
+        /// Initializes a new instance of the <see cref="Store{T}"/> class.
+        /// </summary>
+        /// <param name="reducer">The root reducer.</param>
+        public Store(Func<T, object, T> reducer)
+            : this(default!, reducer)
+        {
+        }
+
+        /// <summary>
         /// Initializes a new instance of the <see cref="Store{T}"/> class.
         /// </summary>
         /// <param name="initialState">The initial state.</param>
         /// <param name="reducer">The root reducer.</param>
-        private Store(T initialState, Func<T, object, T> reducer)
+        public Store(T initialState, Func<T, object, T> reducer)
         {
-            this.State = initialState;
-            this.reducer = reducer;
+            this.state = initialState;
+            this.reducer = reducer ?? throw new ArgumentNullException(nameof(reducer));
+
+            this.Dispatch(Init);
         }
 
         /// <summary>
         /// Gets the State.
         /// </summary>
-        public T State { get; private set; }
+        public T State
+        {
+            get
+            {
+                if (this.dispatching)
+                {
+                    throw new StateException("Cannot get the State while dispatching.");
+                }
+
+                return this.state;
+            }
+        }
 
         /// <summary>
         /// Dispatches an action.
@@ -61,15 +106,53 @@ namespace RedCow
         /// <param name="action">The action to dispatch.</param>
         public void Dispatch(object action)
         {
+            if (this.dispatching)
+            {
+                throw new StateException("Dispatching actions from reducers is not allowed.");
+            }
+
             try
             {
                 this.dispatching = true;
-                this.State = this.reducer(this.State, action);
+                this.state = this.reducer(this.state, action);
             }
             finally
             {
                 this.dispatching = false;
             }
+
+            // copy the list so that the enumerator is always valid, even
+            // if a subscription is removed or added during iteration.
+            if (this.subscriptionsToNotify == null || this.subscriptionsChanged)
+            {
+                this.subscriptionsToNotify = this.subscriptions.ToArray();
+            }
+
+            foreach (var observer in this.subscriptionsToNotify)
+            {
+                observer.OnNext(this.state);
+            }
+        }
+
+        /// <summary>
+        /// Notifies the store that an observer is ready to receive notifications.
+        /// </summary>
+        /// <param name="observer">The observer.</param>
+        /// <returns>A disposable that can be used to cancel the subscription.</returns>
+        public IDisposable Subscribe(IObserver<T> observer)
+        {
+            if (observer is null)
+            {
+                throw new ArgumentNullException(nameof(observer));
+            }
+
+            this.subscriptionsChanged = true;
+            this.subscriptions.Add(observer);
+            return new DelegateDisposable(() =>
+            {
+                this.subscriptionsChanged = true;
+                this.subscriptions.Remove(observer);
+            });
         }
     }
 }

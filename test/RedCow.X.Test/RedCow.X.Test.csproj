@@ -43,6 +43,8 @@
   <ItemGroup>
     <ProjectReference Include="..\..\src\RedCow.Immutable\RedCow.Immutable.csproj" />
     <ProjectReference Include="..\..\src\RedCow.Generators\RedCow.Generators.csproj" OutputItemType="CodeGenerationRoslynPlugin" />
+    <ProjectReference Include="..\..\src\RedCow.X\RedCow.X.csproj" />
+    <ProjectReference Include="..\RedCow.Test\RedCow.Test.csproj" />
   </ItemGroup>
 
 </Project>
