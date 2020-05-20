@@ -13,7 +13,7 @@
     </Description>
   </PropertyGroup>
 
-  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|AnyCPU'">
+  <PropertyGroup>
     <DocumentationFile>RedCow.Immutable.xml</DocumentationFile>
   </PropertyGroup>
 

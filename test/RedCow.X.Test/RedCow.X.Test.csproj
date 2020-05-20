@@ -1,4 +1,4 @@
-﻿<Project Sdk="Microsoft.NET.Sdk">
+<Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
     <TargetFramework>netcoreapp3.1</TargetFramework>
@@ -7,7 +7,7 @@
   </PropertyGroup>
 
   <PropertyGroup>
-    <DocumentationFile>RedCow.Test.xml</DocumentationFile>
+    <DocumentationFile>RedCow.X.xml</DocumentationFile>
   </PropertyGroup>
 
   <ItemGroup>

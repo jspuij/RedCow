@@ -1,0 +1,64 @@
+<?xml version="1.0"?>
+<doc>
+    <assembly>
+        <name>RedCow.X</name>
+    </assembly>
+    <members>
+        <member name="T:RedCow.GenerateActionAttribute">
+            <summary>
+            Generates an action type for all methods decorated with this attribute.
+            </summary>
+        </member>
+        <member name="T:RedCow.IStore`1">
+            <summary>
+            Interface for a Store.
+            </summary>
+            <typeparam name="T">The type of the State.</typeparam>
+        </member>
+        <member name="P:RedCow.IStore`1.State">
+            <summary>
+            Gets the State.
+            </summary>
+        </member>
+        <member name="M:RedCow.IStore`1.Dispatch(System.Object)">
+            <summary>
+            Dispatches an action.
+            </summary>
+            <param name="action">The action to dispatch.</param>
+        </member>
+        <member name="T:RedCow.Store`1">
+            <summary>
+            Implements a store.
+            </summary>
+            <typeparam name="T">The type of the State in the store.</typeparam>
+        </member>
+        <member name="F:RedCow.Store`1.reducer">
+            <summary>
+            The reducer that is called on dispatch.
+            </summary>
+        </member>
+        <member name="F:RedCow.Store`1.dispatching">
+            <summary>
+            A boolean indicating that we are dispatching.
+            </summary>
+        </member>
+        <member name="M:RedCow.Store`1.#ctor(`0,System.Func{`0,System.Object,`0})">
+            <summary>
+            Initializes a new instance of the <see cref="T:RedCow.Store`1"/> class.
+            </summary>
+            <param name="initialState">The initial state.</param>
+            <param name="reducer">The root reducer.</param>
+        </member>
+        <member name="P:RedCow.Store`1.State">
+            <summary>
+            Gets the State.
+            </summary>
+        </member>
+        <member name="M:RedCow.Store`1.Dispatch(System.Object)">
+            <summary>
+            Dispatches an action.
+            </summary>
+            <param name="action">The action to dispatch.</param>
+        </member>
+    </members>
+</doc>

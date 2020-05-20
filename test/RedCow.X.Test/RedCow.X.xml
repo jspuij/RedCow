@@ -1,0 +1,13 @@
+<?xml version="1.0"?>
+<doc>
+    <assembly>
+        <name>RedCow.X.Test</name>
+    </assembly>
+    <members>
+        <member name="T:RedCow.X.Test.StoreTests">
+            <summary>
+            Unit tests for the store.
+            </summary>
+        </member>
+    </members>
+</doc>

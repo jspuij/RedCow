@@ -1,19 +1,21 @@
-﻿<Project Sdk="Microsoft.NET.Sdk">
-  <Sdk Name="CodeGeneration.Roslyn.Plugin.Sdk" Version="0.7.63" />
+<Project Sdk="Microsoft.NET.Sdk">
   <Import Project="../../build/build.props" />
 
   <PropertyGroup>
-    <TargetFramework>netcoreapp2.1</TargetFramework>
+    <TargetFramework>netstandard2.1</TargetFramework>
     <GeneratePackageOnBuild>false</GeneratePackageOnBuild>
+    <IncludeSymbols>false</IncludeSymbols>
+    <RootNamespace>RedCow</RootNamespace>
+    <Nullable>enable</Nullable>
     <Description>
       RedCow is a project that allows you to create unidirectional data flow
       inside your c# application using immutable state without any boilerplate.
-      This package contains code generators to accellerate coding.
+      This is the package that includes all the features of the Flux pattern.
     </Description>
   </PropertyGroup>
 
   <PropertyGroup>
-    <DocumentationFile>RedCow.Generators.xml</DocumentationFile>
+    <DocumentationFile>RedCow.X.xml</DocumentationFile>
   </PropertyGroup>
 
   <ItemGroup>
@@ -24,11 +26,12 @@
     <AdditionalFiles Include="stylecop.json" />
   </ItemGroup>
 
+
   <ItemGroup>
+    <PackageReference Include="CodeGeneration.Roslyn.Attributes" Version="0.7.63" />
     <PackageReference Include="StyleCop.Analyzers" Version="1.2.0-beta.164">
       <PrivateAssets>all</PrivateAssets>
       <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
     </PackageReference>
   </ItemGroup>
-
 </Project>
