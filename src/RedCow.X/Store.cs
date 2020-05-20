@@ -126,6 +126,7 @@ namespace RedCow
             if (this.subscriptionsToNotify == null || this.subscriptionsChanged)
             {
                 this.subscriptionsToNotify = this.subscriptions.ToArray();
+                this.subscriptionsChanged = false;
             }
 
             foreach (var observer in this.subscriptionsToNotify)

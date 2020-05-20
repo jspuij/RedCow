@@ -78,47 +78,57 @@ namespace RedCow.X.Test
             });
 
             var store = new Store<ITestPerson>(initial, reducer);
-            var observer = new StoreObserver();
+
+            bool observed = false;
+
+            var observer = new DelegateObserver<ITestPerson>(value =>
+            {
+                observed = true;
+                Assert.NotSame(initial, value);
+                Assert.Equal("Jane", value.FirstName);
+            });
 
             using var disposable = store.Subscribe(observer);
             store.Dispatch("ChangeGender");
 
-            Assert.Collection(observer.Values, t =>
-            {
-                Assert.NotSame(initial, t);
-                Assert.Equal("Jane", t.FirstName);
-            });
+            Assert.True(observed);
         }
 
         /// <summary>
-        /// Mini observer class to test the observables.
+        /// Tests that unsubscribing during dispatch works.
         /// </summary>
-        private class StoreObserver : IObserver<ITestPerson>
+        [Fact]
+        public void UnsubscribeDuringDispatch()
         {
-            private readonly List<ITestPerson> values = new List<ITestPerson>();
-
-            /// <summary>
-            /// Gets the values that were observed.
-            /// </summary>
-            public IReadOnlyList<ITestPerson> Values { get => this.values; }
-
-            public void OnCompleted()
+            TestPerson initial = new TestPerson()
             {
-            }
+                FirstName = "John",
+                LastName = "Doe",
+            };
 
-            public void OnError(Exception error)
+            var reducer = ITestPerson.Producer<object>((person, action) =>
             {
-            }
+                switch (action)
+                {
+                    case "ChangeGender":
+                        person.FirstName = "Jane";
+                        break;
+                }
+            });
 
-            /// <summary>
-            /// Provides the observer with new data.
-            /// Stores dat in values list.
-            /// </summary>
-            /// <param name="value">The provided value.</param>
-            public void OnNext(ITestPerson value)
+            var store = new Store<ITestPerson>(initial, reducer);
+
+            IDisposable? disposable = null;
+
+            var observer = new DelegateObserver<ITestPerson>(value =>
             {
-                this.values.Add(value);
-            }
+                disposable!.Dispose();
+            });
+
+            disposable = store.Subscribe(observer);
+
+            // should not throw.
+            store.Dispatch("ChangeGender");
         }
     }
 }

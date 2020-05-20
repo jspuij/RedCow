@@ -4,6 +4,44 @@
         <name>RedCow.X.Test</name>
     </assembly>
     <members>
+        <member name="T:RedCow.X.Test.DelegateObserver`1">
+            <summary>
+            A class that fires delegates when the methods
+            of IObserver<typeparamref name="T"/>> are fired.
+            </summary>
+            <typeparam name="T">The type.</typeparam>
+        </member>
+        <member name="M:RedCow.X.Test.DelegateObserver`1.#ctor(System.Action{`0})">
+            <summary>
+            Initializes a new instance of the <see cref="T:RedCow.X.Test.DelegateObserver`1"/> class.
+            </summary>
+            <param name="valueAction">The value function.</param>
+        </member>
+        <member name="M:RedCow.X.Test.DelegateObserver`1.#ctor(System.Action,System.Action{System.Exception},System.Action{`0})">
+            <summary>
+            Initializes a new instance of the <see cref="T:RedCow.X.Test.DelegateObserver`1"/> class.
+            </summary>
+            <param name="completedAction">The action when the delegate is completed.</param>
+            <param name="errorAction">The error action.</param>
+            <param name="valueAction">The value function.</param>
+        </member>
+        <member name="M:RedCow.X.Test.DelegateObserver`1.OnCompleted">
+            <summary>
+            Notifies the observer that the observable finished.
+            </summary>
+        </member>
+        <member name="M:RedCow.X.Test.DelegateObserver`1.OnError(System.Exception)">
+            <summary>
+            Notifies the observer that an error occured.
+            </summary>
+            <param name="error">The error.</param>
+        </member>
+        <member name="M:RedCow.X.Test.DelegateObserver`1.OnNext(`0)">
+            <summary>
+            Notifies the observer of the next value.
+            </summary>
+            <param name="value">The value.</param>
+        </member>
         <member name="T:RedCow.X.Test.StoreTests">
             <summary>
             Unit tests for the store.
@@ -19,22 +57,10 @@
             Tests registering an observer to the store.
             </summary>
         </member>
-        <member name="T:RedCow.X.Test.StoreTests.StoreObserver">
+        <member name="M:RedCow.X.Test.StoreTests.UnsubscribeDuringDispatch">
             <summary>
-            Mini observer class to test the observables.
+            Tests that unsubscribing during dispatch works.
             </summary>
-        </member>
-        <member name="P:RedCow.X.Test.StoreTests.StoreObserver.Values">
-            <summary>
-            Gets the values that were observed.
-            </summary>
-        </member>
-        <member name="M:RedCow.X.Test.StoreTests.StoreObserver.OnNext(RedCow.Test.ITestPerson)">
-            <summary>
-            Provides the observer with new data.
-            Stores dat in values list.
-            </summary>
-            <param name="value">The provided value.</param>
         </member>
     </members>
 </doc>
