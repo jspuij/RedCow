@@ -24,7 +24,7 @@ namespace RedCow
     /// Implements a store.
     /// </summary>
     /// <typeparam name="T">The type of the State in the store.</typeparam>
-    public class Store<T> : IStore<T>, IObservable<T>
+    public class Store<T> : IStore<T>, IObservable<T>, IDispatch
     {
         /// <summary>
         /// An action that is dispatched at the start to make sure that the

@@ -25,6 +25,17 @@
             Generates an action type for all methods decorated with this attribute.
             </summary>
         </member>
+        <member name="T:RedCow.IDispatch">
+            <summary>
+            Interface that describes the Dispatch contract.
+            </summary>
+        </member>
+        <member name="M:RedCow.IDispatch.Dispatch(System.Object)">
+            <summary>
+            Dispatches an action to modify the state.
+            </summary>
+            <param name="action">The action to dispatch.</param>
+        </member>
         <member name="T:RedCow.IStore`1">
             <summary>
             Interface for a Store.
