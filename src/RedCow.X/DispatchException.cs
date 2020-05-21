@@ -1,4 +1,4 @@
-﻿// <copyright file="StateException.cs" company="Jan-Willem Spuij">
+﻿// <copyright file="DispatchException.cs" company="Jan-Willem Spuij">
 // Copyright 2020 Jan-Willem Spuij
 //
 // Permission is hereby granted, free of charge, to any person obtaining a copy of this software and associated documentation
@@ -21,15 +21,17 @@ namespace RedCow
     using System.Text;
 
     /// <summary>
-    /// Exception that occurs when the state cannot be received.
+    /// Exception that occurs when the state is dispatching.
+    /// This exception is mainly thrown to make sure that reducers
+    /// are pure and don't interact with the Store during dispatch.
     /// </summary>
-    public class StateException : Exception
+    public class DispatchException : Exception
     {
         /// <summary>
-        /// Initializes a new instance of the <see cref="StateException"/> class.
+        /// Initializes a new instance of the <see cref="DispatchException"/> class.
         /// </summary>
         /// <param name="message">The error message.</param>
-        public StateException(string message)
+        public DispatchException(string message)
             : base(message)
         {
         }

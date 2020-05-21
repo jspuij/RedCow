@@ -20,6 +20,19 @@
             Executes the delegate.
             </summary>
         </member>
+        <member name="T:RedCow.DispatchException">
+            <summary>
+            Exception that occurs when the state is dispatching.
+            This exception is mainly thrown to make sure that reducers
+            are pure and don't interact with the Store during dispatch.
+            </summary>
+        </member>
+        <member name="M:RedCow.DispatchException.#ctor(System.String)">
+            <summary>
+            Initializes a new instance of the <see cref="T:RedCow.DispatchException"/> class.
+            </summary>
+            <param name="message">The error message.</param>
+        </member>
         <member name="T:RedCow.GenerateActionAttribute">
             <summary>
             Generates an action type for all methods decorated with this attribute.
@@ -52,17 +65,6 @@
             Dispatches an action.
             </summary>
             <param name="action">The action to dispatch.</param>
-        </member>
-        <member name="T:RedCow.StateException">
-            <summary>
-            Exception that occurs when the state cannot be received.
-            </summary>
-        </member>
-        <member name="M:RedCow.StateException.#ctor(System.String)">
-            <summary>
-            Initializes a new instance of the <see cref="T:RedCow.StateException"/> class.
-            </summary>
-            <param name="message">The error message.</param>
         </member>
         <member name="T:RedCow.Store`1">
             <summary>

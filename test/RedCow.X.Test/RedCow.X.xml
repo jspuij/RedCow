@@ -57,9 +57,29 @@
             Tests registering an observer to the store.
             </summary>
         </member>
-        <member name="M:RedCow.X.Test.StoreTests.UnsubscribeDuringDispatch">
+        <member name="M:RedCow.X.Test.StoreTests.UnsubscribeDuringObserve">
             <summary>
-            Tests that unsubscribing during dispatch works.
+            Tests that unsubscribing during observe doesn not throw.
+            </summary>
+        </member>
+        <member name="M:RedCow.X.Test.StoreTests.UnsubscribeDuringDispathThrows">
+            <summary>
+            Tests that unsubscribing during dispatch throws.
+            </summary>
+        </member>
+        <member name="M:RedCow.X.Test.StoreTests.SubscribeDuringDispathThrows">
+            <summary>
+            Tests that subscribing during dispatch throws.
+            </summary>
+        </member>
+        <member name="M:RedCow.X.Test.StoreTests.DispatchGetStateThrowsTest">
+            <summary>
+            Tests that getting the state during dispatch throws.
+            </summary>
+        </member>
+        <member name="M:RedCow.X.Test.StoreTests.DispatchDispatchThrowsTest">
+            <summary>
+            Tests that dispatching during dispatch throws.
             </summary>
         </member>
     </members>

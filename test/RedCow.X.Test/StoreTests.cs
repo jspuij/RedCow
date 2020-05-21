@@ -42,14 +42,14 @@ namespace RedCow.X.Test
             {
                 switch (action)
                 {
-                    case "ChangeGender":
+                    case "ChangeFirstName":
                         person.FirstName = "Jane";
                         break;
                 }
             });
 
             var store = new Store<ITestPerson>(initial, reducer);
-            store.Dispatch("ChangeGender");
+            store.Dispatch("ChangeFirstName");
 
             Assert.NotSame(initial, store.State);
             Assert.Equal("Jane", store.State.FirstName);
@@ -71,7 +71,7 @@ namespace RedCow.X.Test
             {
                 switch (action)
                 {
-                    case "ChangeGender":
+                    case "ChangeFirstName":
                         person.FirstName = "Jane";
                         break;
                 }
@@ -89,16 +89,16 @@ namespace RedCow.X.Test
             });
 
             using var disposable = store.Subscribe(observer);
-            store.Dispatch("ChangeGender");
+            store.Dispatch("ChangeFirstName");
 
             Assert.True(observed);
         }
 
         /// <summary>
-        /// Tests that unsubscribing during dispatch works.
+        /// Tests that unsubscribing during observe doesn not throw.
         /// </summary>
         [Fact]
-        public void UnsubscribeDuringDispatch()
+        public void UnsubscribeDuringObserve()
         {
             TestPerson initial = new TestPerson()
             {
@@ -110,7 +110,7 @@ namespace RedCow.X.Test
             {
                 switch (action)
                 {
-                    case "ChangeGender":
+                    case "ChangeFirstName":
                         person.FirstName = "Jane";
                         break;
                 }
@@ -128,7 +128,138 @@ namespace RedCow.X.Test
             disposable = store.Subscribe(observer);
 
             // should not throw.
-            store.Dispatch("ChangeGender");
+            store.Dispatch("ChangeFirstName");
+        }
+
+        /// <summary>
+        /// Tests that unsubscribing during dispatch throws.
+        /// </summary>
+        [Fact]
+        public void UnsubscribeDuringDispathThrows()
+        {
+            TestPerson initial = new TestPerson()
+            {
+                FirstName = "John",
+                LastName = "Doe",
+            };
+
+            IDisposable? disposable = null;
+
+            var reducer = ITestPerson.Producer<object>((person, action) =>
+            {
+                switch (action)
+                {
+                    case "Unsubscribe":
+                        disposable!.Dispose();
+                        break;
+                }
+            });
+
+            var store = new Store<ITestPerson>(initial, reducer);
+
+            var observer = new DelegateObserver<ITestPerson>(value =>
+            {
+                Assert.True(false);
+            });
+
+            disposable = store.Subscribe(observer);
+
+            // should throw.
+            Assert.Throws<DispatchException>(() => store.Dispatch("Unsubscribe"));
+        }
+
+        /// <summary>
+        /// Tests that subscribing during dispatch throws.
+        /// </summary>
+        [Fact]
+        public void SubscribeDuringDispathThrows()
+        {
+            TestPerson initial = new TestPerson()
+            {
+                FirstName = "John",
+                LastName = "Doe",
+            };
+
+            IDisposable? disposable = null;
+            Store<ITestPerson>? store = null;
+
+            var observer = new DelegateObserver<ITestPerson>(value =>
+            {
+                Assert.True(false);
+            });
+
+            var reducer = ITestPerson.Producer<object>((person, action) =>
+            {
+                switch (action)
+                {
+                    case "Subscribe":
+                        disposable = store!.Subscribe(observer);
+                        break;
+                }
+            });
+
+            store = new Store<ITestPerson>(initial, reducer);
+
+            // should throw.
+            Assert.Throws<DispatchException>(() => store.Dispatch("Subscribe"));
+        }
+
+        /// <summary>
+        /// Tests that getting the state during dispatch throws.
+        /// </summary>
+        [Fact]
+        public void DispatchGetStateThrowsTest()
+        {
+            TestPerson initial = new TestPerson()
+            {
+                FirstName = "John",
+                LastName = "Doe",
+            };
+
+            Store<ITestPerson>? store = null;
+
+            var reducer = ITestPerson.Producer<object>((person, action) =>
+            {
+                switch (action)
+                {
+                    case "GetState":
+                        Assert.NotSame(initial, store!.State);
+                        break;
+                }
+            });
+
+            store = new Store<ITestPerson>(initial, reducer);
+            Assert.Throws<DispatchException>(() => store.Dispatch("GetState"));
+        }
+
+        /// <summary>
+        /// Tests that dispatching during dispatch throws.
+        /// </summary>
+        [Fact]
+        public void DispatchDispatchThrowsTest()
+        {
+            TestPerson initial = new TestPerson()
+            {
+                FirstName = "John",
+                LastName = "Doe",
+            };
+
+            Store<ITestPerson>? store = null;
+
+            var reducer = ITestPerson.Producer<object>((person, action) =>
+            {
+                switch (action)
+                {
+                    case "Dispatch":
+                        store!.Dispatch("AnotherDispatch");
+                        break;
+                    case "AnotherDispatch":
+                        throw new Exception("We should not have gotten here");
+                }
+            });
+
+            store = new Store<ITestPerson>(initial, reducer);
+            Assert.Throws<DispatchException>(() => store.Dispatch("Dispatch"));
         }
     }
 }

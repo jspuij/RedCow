@@ -93,7 +93,7 @@ namespace RedCow
             {
                 if (this.dispatching)
                 {
-                    throw new StateException("Cannot get the State while dispatching.");
+                    throw new DispatchException("Cannot get the State while dispatching.");
                 }
 
                 return this.state;
@@ -108,7 +108,7 @@ namespace RedCow
         {
             if (this.dispatching)
             {
-                throw new StateException("Dispatching actions from reducers is not allowed.");
+                throw new DispatchException("Dispatching actions from reducers is not allowed.");
             }
 
             try
@@ -147,10 +147,20 @@ namespace RedCow
                 throw new ArgumentNullException(nameof(observer));
             }
 
+            if (this.dispatching)
+            {
+                throw new DispatchException("Adding subscriptions during Dispatching is not allowed.");
+            }
+
             this.subscriptionsChanged = true;
             this.subscriptions.Add(observer);
             return new DelegateDisposable(() =>
             {
+                if (this.dispatching)
+                {
+                    throw new DispatchException("Removing subscriptions during Dispatching is not allowed.");
+                }
+
                 this.subscriptionsChanged = true;
                 this.subscriptions.Remove(observer);
             });
