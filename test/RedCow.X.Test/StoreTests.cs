@@ -18,12 +18,14 @@ namespace RedCow.X.Test
 {
     using System;
     using System.Collections.Generic;
+    using System.Diagnostics.CodeAnalysis;
     using RedCow.Test;
     using Xunit;
 
     /// <summary>
     /// Unit tests for the store.
     /// </summary>
+    [ExcludeFromCodeCoverage]
     public class StoreTests
     {
         /// <summary>

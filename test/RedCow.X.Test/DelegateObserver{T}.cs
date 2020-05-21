@@ -18,6 +18,7 @@ namespace RedCow.X.Test
 {
     using System;
     using System.Collections.Generic;
+    using System.Diagnostics.CodeAnalysis;
     using System.Text;
 
     /// <summary>
@@ -25,6 +26,7 @@ namespace RedCow.X.Test
     /// of IObserver<typeparamref name="T"/>> are fired.
     /// </summary>
     /// <typeparam name="T">The type.</typeparam>
+    [ExcludeFromCodeCoverage]
     public class DelegateObserver<T> : IObserver<T>
     {
         private readonly Action completedAction;
