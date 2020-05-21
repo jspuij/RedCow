@@ -50,7 +50,7 @@ namespace RedCow.X.Test
                 }
             });
 
-            var store = new Store<ITestPerson>(initial, reducer);
+            var store = new Store<ITestPerson>(initial, new Dispatcher<ITestPerson>(reducer));
             store.Dispatch("ChangeFirstName");
 
             Assert.NotSame(initial, store.State);
@@ -79,7 +79,7 @@ namespace RedCow.X.Test
                 }
             });
 
-            var store = new Store<ITestPerson>(initial, reducer);
+            var store = new Store<ITestPerson>(initial, new Dispatcher<ITestPerson>(reducer));
 
             bool observed = false;
 
@@ -118,7 +118,7 @@ namespace RedCow.X.Test
                 }
             });
 
-            var store = new Store<ITestPerson>(initial, reducer);
+            var store = new Store<ITestPerson>(initial, new Dispatcher<ITestPerson>(reducer));
 
             IDisposable? disposable = null;
 
@@ -157,7 +157,7 @@ namespace RedCow.X.Test
                 }
             });
 
-            var store = new Store<ITestPerson>(initial, reducer);
+            var store = new Store<ITestPerson>(initial, new Dispatcher<ITestPerson>(reducer));
 
             var observer = new DelegateObserver<ITestPerson>(value =>
             {
@@ -200,7 +200,7 @@ namespace RedCow.X.Test
                 }
             });
 
-            store = new Store<ITestPerson>(initial, reducer);
+            store = new Store<ITestPerson>(initial, new Dispatcher<ITestPerson>(reducer));
 
             // should throw.
             Assert.Throws<DispatchException>(() => store.Dispatch("Subscribe"));
@@ -230,7 +230,7 @@ namespace RedCow.X.Test
                 }
             });
 
-            store = new Store<ITestPerson>(initial, reducer);
+            store = new Store<ITestPerson>(initial, new Dispatcher<ITestPerson>(reducer));
             Assert.Throws<DispatchException>(() => store.Dispatch("GetState"));
         }
 
@@ -260,7 +260,7 @@ namespace RedCow.X.Test
                 }
             });
 
-            store = new Store<ITestPerson>(initial, reducer);
+            store = new Store<ITestPerson>(initial, new Dispatcher<ITestPerson>(reducer));
             Assert.Throws<DispatchException>(() => store.Dispatch("Dispatch"));
         }
     }

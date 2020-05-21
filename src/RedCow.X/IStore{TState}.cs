@@ -1,4 +1,4 @@
-﻿// <copyright file="IStore{T}.cs" company="Jan-Willem Spuij">
+﻿// <copyright file="IStore{TState}.cs" company="Jan-Willem Spuij">
 // Copyright 2020 Jan-Willem Spuij
 //
 // Permission is hereby granted, free of charge, to any person obtaining a copy of this software and associated documentation
@@ -23,13 +23,13 @@ namespace RedCow
     /// <summary>
     /// Interface for a Store.
     /// </summary>
-    /// <typeparam name="T">The type of the State.</typeparam>
-    public interface IStore<T>
+    /// <typeparam name="TState">The type of the State.</typeparam>
+    public interface IStore<TState>
     {
         /// <summary>
         /// Gets the State.
         /// </summary>
-        T State { get; }
+        TState State { get; }
 
         /// <summary>
         /// Dispatches an action.

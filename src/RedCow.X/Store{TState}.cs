@@ -1,4 +1,4 @@
-﻿// <copyright file="Store.cs" company="Jan-Willem Spuij">
+﻿// <copyright file="Store{TState}.cs" company="Jan-Willem Spuij">
 // Copyright 2020 Jan-Willem Spuij
 //
 // Permission is hereby granted, free of charge, to any person obtaining a copy of this software and associated documentation
@@ -23,8 +23,8 @@ namespace RedCow
     /// <summary>
     /// Implements a store.
     /// </summary>
-    /// <typeparam name="T">The type of the State in the store.</typeparam>
-    public class Store<T> : IStore<T>, IObservable<T>, IDispatch
+    /// <typeparam name="TState">The type of the State in the store.</typeparam>
+    public class Store<TState> : IStore<TState>, IObservable<TState>, IDispatch
     {
         /// <summary>
         /// An action that is dispatched at the start to make sure that the
@@ -35,12 +35,12 @@ namespace RedCow
         /// <summary>
         /// The reducer that is called on dispatch.
         /// </summary>
-        private readonly Func<T, object, T> reducer;
+        private readonly IDispatcher<TState> dispatcher;
 
         /// <summary>
         /// Subscriptions to this observable.
         /// </summary>
-        private readonly HashSet<IObserver<T>> subscriptions = new HashSet<IObserver<T>>();
+        private readonly HashSet<IObserver<TState>> subscriptions = new HashSet<IObserver<TState>>();
 
         /// <summary>
         /// A boolean indicating that the subscriptions changed.
@@ -50,7 +50,7 @@ namespace RedCow
         /// <summary>
         /// A copy of the subscriptions that is used to iterate over.
         /// </summary>
-        private IObserver<T>[]? subscriptionsToNotify;
+        private IObserver<TState>[]? subscriptionsToNotify;
 
         /// <summary>
         /// A boolean indicating that we are dispatching.
@@ -60,14 +60,14 @@ namespace RedCow
         /// <summary>
         /// A reference to the store state.
         /// </summary>
-        private T state;
+        private TState state;
 
         /// <summary>
         /// Initializes a new instance of the <see cref="Store{T}"/> class.
         /// </summary>
-        /// <param name="reducer">The root reducer.</param>
-        public Store(Func<T, object, T> reducer)
-            : this(default!, reducer)
+        /// <param name="dispatcher">The dispatcher (chain).</param>
+        public Store(IDispatcher<TState> dispatcher)
+            : this(default!, dispatcher)
         {
         }
 
@@ -75,11 +75,11 @@ namespace RedCow
         /// Initializes a new instance of the <see cref="Store{T}"/> class.
         /// </summary>
         /// <param name="initialState">The initial state.</param>
-        /// <param name="reducer">The root reducer.</param>
-        public Store(T initialState, Func<T, object, T> reducer)
+        /// <param name="dispatcher">The dispatcher (chain).</param>
+        public Store(TState initialState, IDispatcher<TState> dispatcher)
         {
             this.state = initialState;
-            this.reducer = reducer ?? throw new ArgumentNullException(nameof(reducer));
+            this.dispatcher = dispatcher ?? throw new ArgumentNullException(nameof(dispatcher));
 
             this.Dispatch(Init);
         }
@@ -87,7 +87,7 @@ namespace RedCow
         /// <summary>
         /// Gets the State.
         /// </summary>
-        public T State
+        public TState State
         {
             get
             {
@@ -114,7 +114,7 @@ namespace RedCow
             try
             {
                 this.dispatching = true;
-                this.state = this.reducer(this.state, action);
+                this.state = this.dispatcher.Dispatch(this.state, action);
             }
             finally
             {
@@ -140,7 +140,7 @@ namespace RedCow
         /// </summary>
         /// <param name="observer">The observer.</param>
         /// <returns>A disposable that can be used to cancel the subscription.</returns>
-        public IDisposable Subscribe(IObserver<T> observer)
+        public IDisposable Subscribe(IObserver<TState> observer)
         {
             if (observer is null)
             {

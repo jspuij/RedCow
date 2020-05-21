@@ -20,6 +20,27 @@
             Executes the delegate.
             </summary>
         </member>
+        <member name="T:RedCow.Dispatcher`1">
+            <summary>
+            The implementation of the default dispatcher.
+            This dispatcher should be the last one in the middleware chain.
+            </summary>
+            <typeparam name="TState">The type of the state.</typeparam>
+        </member>
+        <member name="M:RedCow.Dispatcher`1.#ctor(System.Func{`0,System.Object,`0})">
+            <summary>
+            Initializes a new instance of the <see cref="T:RedCow.Dispatcher`1"/> class.
+            </summary>
+            <param name="reducer">The root reducer to dispatch to.</param>
+        </member>
+        <member name="M:RedCow.Dispatcher`1.Dispatch(`0,System.Object)">
+            <summary>
+            Dispatches an action to modify the state.
+            </summary>
+            <param name="state">The state to use.</param>
+            <param name="action">The action to dispatch.</param>
+            <returns>The new state.</returns>
+        </member>
         <member name="T:RedCow.DispatchException">
             <summary>
             Exception that occurs when the state is dispatching.
@@ -49,11 +70,26 @@
             </summary>
             <param name="action">The action to dispatch.</param>
         </member>
+        <member name="T:RedCow.IDispatcher`1">
+            <summary>
+            Interface that describes the contract of a dispatcher that can
+            dispatch using state of type <typeparamref name="TState"/>.
+            </summary>
+            <typeparam name="TState">The type of the state.</typeparam>
+        </member>
+        <member name="M:RedCow.IDispatcher`1.Dispatch(`0,System.Object)">
+            <summary>
+            Dispatches an action to modify the state.
+            </summary>
+            <param name="state">The state to use.</param>
+            <param name="action">The action to dispatch.</param>
+            <returns>The new state.</returns>
+        </member>
         <member name="T:RedCow.IStore`1">
             <summary>
             Interface for a Store.
             </summary>
-            <typeparam name="T">The type of the State.</typeparam>
+            <typeparam name="TState">The type of the State.</typeparam>
         </member>
         <member name="P:RedCow.IStore`1.State">
             <summary>
@@ -66,11 +102,28 @@
             </summary>
             <param name="action">The action to dispatch.</param>
         </member>
+        <member name="T:RedCow.Middleware`1">
+            <summary>
+            Abstract base class for Middleware.
+            </summary>
+            <typeparam name="TInterface">The type of the interface that the middleware implements.</typeparam>
+        </member>
+        <member name="M:RedCow.Middleware`1.#ctor(`0)">
+            <summary>
+            Initializes a new instance of the <see cref="T:RedCow.Middleware`1"/> class.
+            </summary>
+            <param name="other">The other middleware to chain to.</param>
+        </member>
+        <member name="P:RedCow.Middleware`1.Next">
+            <summary>
+            Gets the next instance of middleware in the chain.
+            </summary>
+        </member>
         <member name="T:RedCow.Store`1">
             <summary>
             Implements a store.
             </summary>
-            <typeparam name="T">The type of the State in the store.</typeparam>
+            <typeparam name="TState">The type of the State in the store.</typeparam>
         </member>
         <member name="F:RedCow.Store`1.Init">
             <summary>
@@ -78,7 +131,7 @@
             store is initialized by calling all the reducers.
             </summary>
         </member>
-        <member name="F:RedCow.Store`1.reducer">
+        <member name="F:RedCow.Store`1.dispatcher">
             <summary>
             The reducer that is called on dispatch.
             </summary>
@@ -108,18 +161,18 @@
             A reference to the store state.
             </summary>
         </member>
-        <member name="M:RedCow.Store`1.#ctor(System.Func{`0,System.Object,`0})">
+        <member name="M:RedCow.Store`1.#ctor(RedCow.IDispatcher{`0})">
             <summary>
             Initializes a new instance of the <see cref="T:RedCow.Store`1"/> class.
             </summary>
-            <param name="reducer">The root reducer.</param>
+            <param name="dispatcher">The dispatcher (chain).</param>
         </member>
-        <member name="M:RedCow.Store`1.#ctor(`0,System.Func{`0,System.Object,`0})">
+        <member name="M:RedCow.Store`1.#ctor(`0,RedCow.IDispatcher{`0})">
             <summary>
             Initializes a new instance of the <see cref="T:RedCow.Store`1"/> class.
             </summary>
             <param name="initialState">The initial state.</param>
-            <param name="reducer">The root reducer.</param>
+            <param name="dispatcher">The dispatcher (chain).</param>
         </member>
         <member name="P:RedCow.Store`1.State">
             <summary>
